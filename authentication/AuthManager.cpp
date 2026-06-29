@@ -262,24 +262,24 @@ bool AuthManager::VerifyUserEmail(const uint8_t* user_id) {
     return user_store_.SetEmailVerified(user_id);
 }
 
-// ============================================================================
+
 // Core Login Pipeline
-// ============================================================================
+
 
 AuthResult AuthManager::ProcessLogin(const std::string& identifier,
                                      const std::string& password,
                                      Session* session) {
-    // -----------------------------------------------------------------------
-    // Step 1: Look up the user by email (most common login identifier).
-    //         If not found by email, try username as a fallback.
-    // -----------------------------------------------------------------------
+   
+    // Step 1: Look up the user by email 
+           //      If not found by email, try username as a fallback.
+    
     std::optional<UserRecord> record_opt = user_store_.FindByEmail(identifier);
 
     if (!record_opt.has_value()) {
         record_opt = user_store_.FindByUsername(identifier);
     }
 
-    // -----------------------------------------------------------------------
+ 
     // Step 2: Timing Attack Mitigation
     //
     // If the user doesn't exist, we MUST still execute a full Argon2id
@@ -291,7 +291,7 @@ AuthResult AuthManager::ProcessLogin(const std::string& identifier,
     // measuring response latencies:
     //   - "User not found" → fast response (no Argon2id)
     //   - "Wrong password" → slow response (Argon2id verification)
-    // -----------------------------------------------------------------------
+    
     if (!record_opt.has_value()) {
         // Execute the dummy verification cycle (result is always failure,
         // but the timing matches a real verification)
@@ -309,9 +309,9 @@ AuthResult AuthManager::ProcessLogin(const std::string& identifier,
 
     const UserRecord& record = record_opt.value();
 
-    // -----------------------------------------------------------------------
+   
     // Step 3: Check email verification status
-    // -----------------------------------------------------------------------
+   
     if (!record.email_verified) {
         // Still need to run a dummy verify to prevent timing leakage
         // that distinguishes "unverified" from "wrong password"
@@ -327,9 +327,8 @@ AuthResult AuthManager::ProcessLogin(const std::string& identifier,
         return AuthResult::EMAIL_NOT_VERIFIED;
     }
 
-    // -----------------------------------------------------------------------
     // Step 4: Verify the password against the stored Argon2id hash
-    // -----------------------------------------------------------------------
+   
     if (crypto_pwhash_str_verify(
             record.password_hash,
             password.c_str(),
@@ -340,9 +339,9 @@ AuthResult AuthManager::ProcessLogin(const std::string& identifier,
         return AuthResult::INVALID_CREDENTIALS;
     }
 
-    // -----------------------------------------------------------------------
+ 
     // Step 5: Password verified — issue the token pair
-    // -----------------------------------------------------------------------
+    
     LoginResult tokens = IssueTokenPair(record.user_id);
     if (!tokens.valid) {
         Logger::error("[AUTH] Token issuance failed for user "
@@ -351,9 +350,8 @@ AuthResult AuthManager::ProcessLogin(const std::string& identifier,
         return AuthResult::INTERNAL_ERROR;
     }
 
-    // -----------------------------------------------------------------------
     // Step 6: Create a refresh family record for reuse detection
-    // -----------------------------------------------------------------------
+    
     RefreshFamilyRecord family;
     family.family_id = tokens.refresh_token.payload.family_id;
     std::memcpy(family.user_id, record.user_id, 16);
@@ -361,38 +359,38 @@ AuthResult AuthManager::ProcessLogin(const std::string& identifier,
     family.revoked = false;
     family_store_.Insert(family);
 
-    // -----------------------------------------------------------------------
+  
     // Step 7: Cache auth state on the IOCP session (zero-lock hot path)
     //
     // After this point, every subsequent packet on this session will be
     // validated by ValidateSessionHotPath — a pure integer compare with
     // no locks, no crypto, and no database lookups.
-    // -----------------------------------------------------------------------
+  
     CacheAuthOnSession(session, record.user_id,
                        tokens.access_token.payload.expiry);
 
-    // -----------------------------------------------------------------------
+
     // Step 8: Set session userId for SessionManager routing compatibility
     //
     // The existing SessionManager uses string-keyed maps. We convert the
     // 16-byte UUID to a 32-character hex string for compatibility.
-    // -----------------------------------------------------------------------
+   
     session->userId = UserIdToHexString(record.user_id);
 
     Logger::info("[AUTH] Login successful: " + session->userId +
                  " (identifier=" + identifier + ")");
 
-    // -----------------------------------------------------------------------
+
     // Step 9: Send the token pair to the client
-    // -----------------------------------------------------------------------
+    
     SendTokenGranted(session, tokens);
 
     return AuthResult::SUCCESS;
 }
 
-// ============================================================================
+
 // Token Issuance — Stateless Signed Binary Blobs
-// ============================================================================
+
 
 LoginResult AuthManager::IssueTokenPair(const uint8_t* user_id) {
     LoginResult result;
@@ -445,9 +443,9 @@ LoginResult AuthManager::IssueTokenPair(const uint8_t* user_id) {
     return result;
 }
 
-// ============================================================================
+
 // Token Validation — Cryptographic Signature + Expiry Verification
-// ============================================================================
+
 
 bool AuthManager::ValidateAccessToken(const uint8_t* token_data, size_t len,
                                       AccessTokenPayload& out_payload) {
@@ -536,9 +534,9 @@ bool AuthManager::ValidateRefreshToken(const uint8_t* token_data, size_t len,
     return true;
 }
 
-// ============================================================================
+
 // Session Cache — Write auth state onto the IOCP session context
-// ============================================================================
+
 
 void AuthManager::CacheAuthOnSession(Session* session,
                                      const uint8_t* user_id,
@@ -564,9 +562,9 @@ void AuthManager::CacheAuthOnSession(Session* session,
         std::memory_order_release);
 }
 
-// ============================================================================
+
 // Response Packet Builders
-// ============================================================================
+
 
 void AuthManager::SendAuthFailure(Session* sender, const std::string& reason) {
     if (!sender || !sender->iocp) {
@@ -627,9 +625,7 @@ void AuthManager::SendTokenGranted(Session* sender, const LoginResult& tokens) {
     sender->sendPacket(response); // it is boolfunction  so check whether it has been sent or not 
 }
 
-// ============================================================================
-// Utility
-// ============================================================================
+//utility
 
 std::string AuthManager::UserIdToHexString(const uint8_t* user_id) {
     return UserStore::ToHex(user_id, 16);

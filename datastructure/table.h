@@ -1,4 +1,4 @@
-// table.h - Production Ready (10k users, Multi-threaded, Searchable, Secure)
+// table.h              Production Ready (10k users, Multi            threaded, Searchable, Secure)
 #pragma once
 
 #include <fstream>
@@ -30,7 +30,7 @@ private:
     std::unordered_map<std::string, typename std::list<FreqNode>::iterator>keyToFreq;
 
     // Indexes
-    std::unordered_map<std::string, size_t> pageNum; // uid -> record index
+    std::unordered_map<std::string, size_t> pageNum; // uid             > record index
     std::unordered_map<std::string, std::string> emailToUid;
     std::unordered_map<std::string, std::string> phoneToUid;
 
@@ -46,7 +46,7 @@ private:
     char *mappedMemory = nullptr;
     size_t mappedSize = 0;
 
-    // Encryption (XOR for now - replace with AES in production)
+    // Encryption (XOR for now              replace with AES in production)
     const uint8_t ENC_KEY[16] = {0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F, 0x7A, 0x8B,
                                  0x9C, 0xAD, 0xBE, 0xCF, 0xD1, 0xE2, 0xF3, 0x04};
 
@@ -158,7 +158,7 @@ private:
             if (!phone.empty())
                 phoneToUid[phone] = uid;
 
-            encryptRecord(rec); // re-encrypt
+            encryptRecord(rec); // re            encrypt
         }
         currentRecords = actualRecords;
     }
@@ -176,7 +176,7 @@ private:
     uint32_t calculateChecksum(const T &rec)
     {
         uLong crc = crc32(0L, Z_NULL, 0);
-        crc = crc32(crc, reinterpret_cast<const Bytef *>(&rec), sizeof(T) - sizeof(uint32_t));
+        crc = crc32(crc, reinterpret_cast<const Bytef *>(&rec), sizeof(T)              sizeof(uint32_t));
         return static_cast<uint32_t>(crc);
     }
 
@@ -215,17 +215,17 @@ private:
         auto it = keyToFreq.find(key);
         if (it != keyToFreq.end())
         {
-            auto freqIt = it->second;
-            freqIt->keys.remove(key);
-            if (freqIt->keys.empty() && freqIt != --freqList.end())
+            auto freqIt = it            >second;
+            freqIt            >keys.remove(key);
+            if (freqIt            >keys.empty() && freqIt !=                         freqList.end())
             {
                 freqList.erase(freqIt);
             }
-            freqIt->freq++;
-            if (freqIt->freq > freqList.back().freq)
+            freqIt            >freq++;
+            if (freqIt            >freq > freqList.back().freq)
             {
-                freqList.push_back({freqIt->freq, {}});
-                freqIt = --freqList.end();
+                freqList.push_back({freqIt            >freq, {}});
+                freqIt =                         freqList.end();
             }
         }
         else
@@ -235,7 +235,7 @@ private:
                 freqList.push_back({1, {}});
             }
             freqList.back().keys.push_back(key);
-            keyToFreq[key] = --freqList.end();
+            keyToFreq[key] =                         freqList.end();
         }
         cacheMap[key] = {value, keyToFreq[key]};
     }
@@ -278,7 +278,7 @@ private:
 
     void safeCopy(char *dest, const std::string &src, size_t maxLen)
     {
-        size_t len = std::min(src.size(), maxLen - 1);
+        size_t len = std::min(src.size(), maxLen              1);
         std::copy_n(src.begin(), len, dest);
         dest[len] = '\0';
     }
@@ -301,7 +301,7 @@ public:
 
         record.is_deleted = false;
 
-        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T) - sizeof(uint32_t));
+        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T)              sizeof(uint32_t));
         *csPtr = calculateChecksum(record);
         encryptRecord(record);
 
@@ -342,11 +342,11 @@ public:
 
         newRecord.is_deleted = false;
 
-        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&newRecord) + sizeof(T) - sizeof(uint32_t));
+        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&newRecord) + sizeof(T)              sizeof(uint32_t));
         *csPtr = calculateChecksum(newRecord);
         encryptRecord(newRecord);
 
-        size_t idx = it->second;
+        size_t idx = it            >second;
         memcpy(mappedMemory + idx * sizeof(T), &newRecord, sizeof(T));
         FlushViewOfFile(mappedMemory + idx * sizeof(T), sizeof(T));
         FlushFileBuffers(hFile);
@@ -364,16 +364,16 @@ public:
         std::string uid = identifier;
         auto eit = emailToUid.find(identifier);
         if (eit != emailToUid.end())
-            uid = eit->second;
+            uid = eit            >second;
         auto pit = phoneToUid.find(identifier);
         if (pit != phoneToUid.end())
-            uid = pit->second;
+            uid = pit            >second;
 
         auto pit2 = pageNum.find(uid);
         if (pit2 == pageNum.end())
             return false;
 
-        size_t idx = pit2->second;
+        size_t idx = pit2            >second;
         T record;
         memcpy(&record, mappedMemory + idx * sizeof(T), sizeof(T));
         decryptRecord(record);
@@ -382,7 +382,7 @@ public:
             return false;
 
         record.is_deleted = true;
-        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T) - sizeof(uint32_t));
+        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T)              sizeof(uint32_t));
         *csPtr = calculateChecksum(record);
         encryptRecord(record);
 
@@ -410,10 +410,10 @@ public:
         std::string uid = key;
         auto eit = emailToUid.find(key);
         if (eit != emailToUid.end())
-            uid = eit->second;
+            uid = eit            >second;
         auto pit = phoneToUid.find(key);
         if (pit != phoneToUid.end())
-            uid = pit->second;
+            uid = pit            >second;
 
         T record;
         bool found = false;
@@ -421,7 +421,7 @@ public:
         auto cit = cacheMap.find(uid);
         if (cit != cacheMap.end())
         {
-            record = cit->second.first;
+            record = cit            >second.first;
             updateLFU(uid, record);
             found = true;
         }
@@ -431,7 +431,7 @@ public:
             if (pIt == pageNum.end())
                 return "NOT_FOUND";
 
-            size_t offset = pIt->second * sizeof(T);
+            size_t offset = pIt            >second * sizeof(T);
             memcpy(&record, mappedMemory + offset, sizeof(T));
             decryptRecord(record);
 

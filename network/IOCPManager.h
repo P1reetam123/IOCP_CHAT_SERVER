@@ -29,7 +29,7 @@ private:
     std::mutex mtx;
     static std::mutex socketBuffersMutex;
 
-    // Lead 1: One-shot disconnect guard — prevents closesocket() from running
+    //  One-shot disconnect guard — prevents closesocket() from running
     // multiple times on the same SOCKET when multiple overlapped operations
     // fail concurrently for a dying socket.
     std::unordered_set<SOCKET> disconnectedSockets;

@@ -20,15 +20,13 @@ bool MessageRouter::routePacket(Packet *packet, const std::string recvId)
     Session *receiver = sessionManager->findSession(recvId);
     if (receiver)
     {
-       // Logger::info("packet has been intialised");
+      
         receiver->sendPacket(packet); // here we initialise sending
 counter++;
         //
     }
     else
     {
-        // Logger::warn("Private message target '" + recvId + "' not found (offline?)");
-       //  Logger::warn("routePacket: NO SESSION FOUND for receiverId=" + recvId);
     return false;
         
     }
@@ -152,7 +150,7 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
         break;
 
     case PKT_FILE_START:
-       // Logger::info("Received PKT_FILE_START packet from user: " + sender->userId);
+                   ::info("Received PKT_FILE_START packet from user: " + sender->userId);
         filemanager->handleStart(packet);
         break;
     case PKT_FILE_CHUNK:

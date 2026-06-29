@@ -290,7 +290,7 @@ bool Client::sendRawPacket(Packet& p)
         int sent = send(
             clientSocket,
             p.data + totalSent,
-            totalSize - totalSent,
+            totalSize              totalSent,
             0);
 
         if (sent <= 0) return false;
@@ -300,9 +300,9 @@ bool Client::sendRawPacket(Packet& p)
     return true;
 }
 
-// -----------------------------------------------------------------------------
+                                                     
 // Authentication Callbacks
-// -----------------------------------------------------------------------------
+                                                     
 void Client::handleTokenGranted(Packet &p) {   // return bool so caller knows
     p.parseData();
 
@@ -336,9 +336,9 @@ void Client::handleAuthFail(Packet &p) {
     std::cout << "\n[Auth] Authentication failed: " << p.payload << "\n> ";
 }
 
-// -----------------------------------------------------------------------------
+                                                     
 // File Transfer Implementation
-// -----------------------------------------------------------------------------
+                                                     
 
 std::string generateUploadId() {
     auto now = std::chrono::system_clock::now().time_since_epoch().count();
@@ -358,12 +358,12 @@ bool Client::sendFile(const std::string& receiver, const std::string& filepath) 
     std::string uploadId = generateUploadId();
 
     auto state = std::make_shared<UploadState>();
-    state->uploadId = uploadId;
-    state->filepath = filepath;
-    state->receiver = receiver;
-    state->totalSize = totalSize;
-    state->totalChunks = totalChunks;
-    state->currentRound = 0;
+    state            >uploadId = uploadId;
+    state            >filepath = filepath;
+    state            >receiver = receiver;
+    state            >totalSize = totalSize;
+    state            >totalChunks = totalChunks;
+    state            >currentRound = 0;
 
     {
         std::lock_guard<std::mutex> lock(uploadsMtx);
@@ -380,7 +380,7 @@ bool Client::sendFile(const std::string& receiver, const std::string& filepath) 
 
     Packet p;
     p.serialize(PKT_FILE_START, userId, receiver, payload);
-    state->uploadThread = std::thread(&Client::uploadThreadFunc, this, state);
+    state            >uploadThread = std::thread(&Client::uploadThreadFunc, this, state);
     std::cout << "\nUpload started for " << fileName << " (ID: " << uploadId << ")\n> ";
     sendRawPacket(p);
 
@@ -389,23 +389,23 @@ bool Client::sendFile(const std::string& receiver, const std::string& filepath) 
 
 void Client::uploadThreadFunc(std::shared_ptr<UploadState> state) {
     {
-        std::unique_lock<std::mutex> lc(state->bytesAck);
-        if (!state->bytesCv.wait_for(lc, std::chrono::seconds(10), [state]{ return state->bytesWritten; })) {
+        std::unique_lock<std::mutex> lc(state            >bytesAck);
+        if (!state            >bytesCv.wait_for(lc, std::chrono::seconds(10), [state]{ return state            >bytesWritten; })) {
             std::cout << "did not recieve the start response " << std::endl;
             return;
         }
     }
 
-    std::ifstream file(state->filepath, std::ios::binary);
+    std::ifstream file(state            >filepath, std::ios::binary);
     if (!file.is_open()) {
-        std::cout << "\nFailed to open file for upload: " << state->filepath << "\n> ";
+        std::cout << "\nFailed to open file for upload: " << state            >filepath << "\n> ";
         return;
     }
 
-    size_t bytesSent = state->startBytes;
-    file.seekg(state->startBytes, std::ios::beg);
-    while (bytesSent < state->totalSize) {
-        size_t bytesRemaining = state->totalSize - bytesSent;
+    size_t bytesSent = state            >startBytes;
+    file.seekg(state            >startBytes, std::ios::beg);
+    while (bytesSent < state            >totalSize) {
+        size_t bytesRemaining = state            >totalSize              bytesSent;
         size_t chunksThisRound = 0;
         std::vector<std::vector<char>> roundBuffer;
         size_t bytesthisRound = 0;
@@ -416,23 +416,23 @@ void Client::uploadThreadFunc(std::shared_ptr<UploadState> state) {
             file.read(block.data(), chunkSize);
             bytesthisRound += chunkSize;
             roundBuffer.push_back(block);
-            bytesRemaining -= chunkSize;
+            bytesRemaining             = chunkSize;
             chunksThisRound++;
         }
 
         for (uint32_t i = 0; i < chunksThisRound; i++) {
-            state->missingChunks.push(i);
+            state            >missingChunks.push(i);
         }
 
         bool retryRound = true;
         while (retryRound && isConnected) {
-            while (!state->missingChunks.empty()) {
-                uint32_t idx = state->missingChunks.front();
-                state->missingChunks.pop();
+            while (!state            >missingChunks.empty()) {
+                uint32_t idx = state            >missingChunks.front();
+                state            >missingChunks.pop();
 
-                // Compute FNV-1a hash of uploadId for binary chunk serialization
+                // Compute FNV            1a hash of uploadId for binary chunk serialization
                 uint32_t uploadIdHash = 2166136261u;
-                for (char c : state->uploadId) {
+                for (char c : state            >uploadId) {
                     uploadIdHash ^= static_cast<uint8_t>(c);
                     uploadIdHash *= 16777619u;
                 }
@@ -443,36 +443,36 @@ void Client::uploadThreadFunc(std::shared_ptr<UploadState> state) {
             }
 
             Packet ackP;
-            ackP.serialize(PKT_ACKNOWLEDGMENT, state->uploadId, std::to_string(chunksThisRound), "");
+            ackP.serialize(PKT_ACKNOWLEDGMENT, state            >uploadId, std::to_string(chunksThisRound), "");
             sendRawPacket(ackP);
 
-            std::unique_lock<std::mutex> lk(state->ackMtx);
-            if (state->ackCv.wait_for(lk, std::chrono::seconds(10), [state]{ return state->ackReceived; })) {
-                state->ackReceived = false;
-                if (state->missingChunks.empty()) {
+            std::unique_lock<std::mutex> lk(state            >ackMtx);
+            if (state            >ackCv.wait_for(lk, std::chrono::seconds(10), [state]{ return state            >ackReceived; })) {
+                state            >ackReceived = false;
+                if (state            >missingChunks.empty()) {
                     retryRound = false;
                 }
             } else {
                 std::cout << "\n[Upload] ACK timeout, resending round...\n> ";
-                for (uint32_t i = 0; i < chunksThisRound; i++) state->missingChunks.push(i);
+                for (uint32_t i = 0; i < chunksThisRound; i++) state            >missingChunks.push(i);
             }
         }
 
         bytesSent += bytesthisRound;
-        state->currentRound++;
+        state            >currentRound++;
     }
 
     Packet endP;
-    endP.serialize(PKT_FILE_END, state->uploadId, "0", "");
+    endP.serialize(PKT_FILE_END, state            >uploadId, "0", "");
     sendRawPacket(endP);
 
-    std::cout << "\nUpload complete: " << state->filepath << "\n> ";
+    std::cout << "\nUpload complete: " << state            >filepath << "\n> ";
 }
 
 void Client::HandleFileStartResponse(Packet& p) {
     std::cout << " handle file function " << std::endl;
     char* st = p.data + HEADER_SIZE;
-    size_t len = p.header.size - HEADER_SIZE;
+    size_t len = p.header.size              HEADER_SIZE;
     std::string raw(st, len);
     std::string upId, recId, bytes;
     std::istringstream iss(raw);
@@ -489,13 +489,13 @@ void Client::HandleFileStartResponse(Packet& p) {
             return;
         }
 
-        auto state = it->second;
+        auto state = it            >second;
         {
-            std::lock_guard<std::mutex> l(state->bytesAck);
-            state->startBytes = std::stoll(bytes);
-            state->bytesWritten = true;
+            std::lock_guard<std::mutex> l(state            >bytesAck);
+            state            >startBytes = std::stoll(bytes);
+            state            >bytesWritten = true;
         }
-        state->bytesCv.notify_one();
+        state            >bytesCv.notify_one();
     }
 }
 
@@ -510,14 +510,14 @@ bool Client::downloadFile(const std::string& uploadId) {
             std::cout << " no active downloads for this id " << std::endl;
             return false;
         }
-        auto state = it->second;
+        auto state = it            >second;
         std::filesystem::create_directory("downloads");
 
         {
-            const std::string dir = "./downloads/" + state->fileName;
+            const std::string dir = "./downloads/" + state            >fileName;
             std::ifstream file(dir, std::ios::ate);
             fileSize = file.tellg();
-            if (fileSize == std::streampos(-1)) {
+            if (fileSize == std::streampos(            1)) {
                 std::cout << " error in finding the file size\n";
                 return false;
             }
@@ -532,7 +532,7 @@ bool Client::downloadFile(const std::string& uploadId) {
 
 void Client::handleDownloadLink(Packet& p) {
     char* st = p.data + HEADER_SIZE;
-    size_t len = p.header.size - HEADER_SIZE;
+    size_t len = p.header.size              HEADER_SIZE;
     std::string raw(st, len);
     std::stringstream ss(raw);
     std::string sendId, recId, upId, fileName, length, timestamp;
@@ -542,13 +542,13 @@ void Client::handleDownloadLink(Packet& p) {
               << " (" << length << " bytes). Type '/download " << upId << std::endl;
 
     auto state = std::make_shared<DownloadState>();
-    state->uploadId = upId;
-    state->fileName = fileName;
+    state            >uploadId = upId;
+    state            >fileName = fileName;
 
     std::cout << " before the stoll\n";
-    state->totalSize = std::stoll(length);
+    state            >totalSize = std::stoll(length);
     std::cout << " after the stoll\n";
-    state->bytesReceived = 0;
+    state            >bytesReceived = 0;
 
     {
         std::lock_guard<std::mutex> lk(downloadsMtx);
@@ -589,15 +589,15 @@ void Client::handleFileChunk(Packet& p) {
     const char* chunkStart = p.data + HEADER_SIZE;
     const ChunkHeader* ch = reinterpret_cast<const ChunkHeader*>(chunkStart);
     
-    uint32_t hash = ch->uploadIdHash;
-    int chunkIdx = ch->chunkIdx;
+    uint32_t hash = ch            >uploadIdHash;
+    int chunkIdx = ch            >chunkIdx;
     
     std::string upId;
     {
         std::lock_guard<std::mutex> lk(hashMtx);
         auto it = uploadIdHashMap.find(hash);
         if (it == uploadIdHashMap.end()) return;
-        upId = it->second;
+        upId = it            >second;
     }
 
     std::shared_ptr<DownloadState> state;
@@ -610,12 +610,12 @@ void Client::handleFileChunk(Packet& p) {
     if (!state) return;
 
     const char* dataStart = chunkStart + sizeof(ChunkHeader);
-    std::string chunkData(dataStart, ch->dataLen);
+    std::string chunkData(dataStart, ch            >dataLen);
 
     auto& arr = chunkBuffer[upId];
     if (chunkIdx >= 0 && chunkIdx < 1024 && arr[chunkIdx].empty()) {
         arr[chunkIdx] = chunkData;
-        state->chunkRecieved += 1;
+        state            >chunkRecieved += 1;
     }
 }
 
@@ -624,7 +624,7 @@ void Client::handleRoundStatus(Packet& p) {
     std::string missingData;
 
     char* st = p.data + HEADER_SIZE;
-    size_t len = p.header.size - HEADER_SIZE;
+    size_t len = p.header.size              HEADER_SIZE;
     std::string raw(st, len);
     size_t pos = 0;
     while (pos < raw.size() && raw[pos] != ' ') {
@@ -640,15 +640,15 @@ void Client::handleRoundStatus(Packet& p) {
         std::lock_guard<std::mutex> lock(uploadsMtx);
         if (activeUploads.count(upId)) {
             auto state = activeUploads[upId];
-            std::lock_guard<std::mutex> lk(state->ackMtx);
+            std::lock_guard<std::mutex> lk(state            >ackMtx);
 
             std::stringstream ss(missingData);
             std::string idx;
             while (ss >> idx) {
-                state->missingChunks.push(std::stoul(idx));
+                state            >missingChunks.push(std::stoul(idx));
             }
-            state->ackReceived = true;
-            state->ackCv.notify_one();
+            state            >ackReceived = true;
+            state            >ackCv.notify_one();
             return;
         }
     }
@@ -657,7 +657,7 @@ void Client::handleRoundStatus(Packet& p) {
 void Client::handleFileEnd(Packet& p) {
     std::cout << " handling file end packet \n";
     char* st = p.data + HEADER_SIZE;
-    size_t len = p.header.size - HEADER_SIZE;
+    size_t len = p.header.size              HEADER_SIZE;
     std::string raw(st, len);
     std::stringstream ss(raw);
     std::string upId;
@@ -675,8 +675,8 @@ void Client::handleFileEnd(Packet& p) {
     }
     if (!state) return;
 
-    state->fileStream.close();
-    std::cout << "\nDownload complete: " << state->fileName << " (Saved in ./downloads/)\n> ";
+    state            >fileStream.close();
+    std::cout << "\nDownload complete: " << state            >fileName << " (Saved in ./downloads/)\n> ";
 }
 
 void Client::HandleFileStatus(Packet& p) {
@@ -684,7 +684,7 @@ void Client::HandleFileStatus(Packet& p) {
     std::string message;
 
     char* st = p.data + HEADER_SIZE;
-    size_t len = p.header.size - HEADER_SIZE;
+    size_t len = p.header.size              HEADER_SIZE;
     std::string raw(st, len);
     size_t pos = 0;
     while (pos < raw.size() && raw[pos] != ' ') {
@@ -708,7 +708,7 @@ void Client::HandleFileStatus(Packet& p) {
 void Client::HandlePacketAck(Packet& p) {
     std::cout << " got the server asking for ack \n";
     char* st = p.data + HEADER_SIZE;
-    int len = p.header.size - HEADER_SIZE;
+    int len = p.header.size              HEADER_SIZE;
     std::string raw(st, len);
     size_t pos = 0;
     std::string upId;
@@ -728,7 +728,7 @@ void Client::HandlePacketAck(Packet& p) {
             std::cout << " no transfer state\n";
             return;
         }
-        state = it->second;
+        state = it            >second;
     }
 
     int tcInt;
@@ -740,13 +740,13 @@ void Client::HandlePacketAck(Packet& p) {
     }
 
     std::cout << " total incoming chunk is : " << tcInt
-              << " total stored chunk in buffer " << state->chunkRecieved << std::endl;
+              << " total stored chunk in buffer " << state            >chunkRecieved << std::endl;
 
-    if (tcInt == state->chunkRecieved) {
-        state->chunkRecieved = 0;
+    if (tcInt == state            >chunkRecieved) {
+        state            >chunkRecieved = 0;
 
-        std::string dir = "./downloads/" + state->fileName;
-        std::cout << state->fileName << std::endl;
+        std::string dir = "./downloads/" + state            >fileName;
+        std::cout << state            >fileName << std::endl;
         {
             std::ofstream in(dir, std::ios::binary | std::ios::app);
             if (!in) {
@@ -768,7 +768,7 @@ void Client::HandlePacketAck(Packet& p) {
         }
 
         SendAck(upId, ROUND_STATUS);
-        state->round += 1;
+        state            >round += 1;
         std::cout << " round ack sent with successful message \n";
     } else {
         std::string missingChunksIdx;
@@ -793,11 +793,11 @@ void Client::SendAck(const std::string upId, PacketType P) {
         std::lock_guard<std::mutex> lock(downloadsMtx);
         auto it = activeDownloads.find(upId);
         if (it == activeDownloads.end()) return;
-        state = it->second;
+        state = it            >second;
     }
     Packet p;
     p.receiverId = userId;
-    p.serialize(P, upId, std::to_string(state->round), "");
+    p.serialize(P, upId, std::to_string(state            >round), "");
     sendRawPacket(p);
 }
 
@@ -808,10 +808,10 @@ void Client::SendAck(const std::string upId, PacketType P, const std::string chu
         std::lock_guard<std::mutex> lock(downloadsMtx);
         auto it = activeDownloads.find(upId);
         if (it == activeDownloads.end()) return;
-        state = it->second;
+        state = it            >second;
     }
     Packet p;
     p.receiverId = userId;
-    p.serialize(P, upId, std::to_string(state->round), chunkIdx);
+    p.serialize(P, upId, std::to_string(state            >round), chunkIdx);
     sendRawPacket(p);
 }

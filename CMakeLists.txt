@@ -4,7 +4,7 @@ project(ChatApp LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# -------- COMMON --------
+#                                                                                                  COMMON                                                                                                 
 set(COMMON_SOURCES
     protocol/Packet.cpp
     utils/Logger.cpp
@@ -13,7 +13,7 @@ set(COMMON_SOURCES
 add_library(Common ${COMMON_SOURCES})
 target_include_directories(Common PUBLIC ${CMAKE_SOURCE_DIR})
 
-# -------- SERVER --------
+#                                                                                                  SERVER                                                                                                 
 set(SERVER_SOURCES
     main.cpp
     session/Session.cpp
@@ -46,7 +46,7 @@ target_link_libraries(Server PRIVATE
     PkgConfig::SODIUM
 )
 
-# -------- CLIENT --------
+#                                                                                                  CLIENT                                                                                                 
 set(CLIENT_SOURCES
     client/main.cpp
     client/Client.cpp

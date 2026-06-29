@@ -1,15 +1,6 @@
 #pragma once
 
-// ============================================================================
-// auth_store.h — Thread-Safe In-Memory Authentication Stores
-//
-// UserStore:          Read-heavy concurrent access via std::shared_mutex.
-//                     Lookups by email or username return a COPY to avoid
-//                     dangling references after the lock is released.
-//
-// RefreshFamilyStore: Manages refresh token families for rotation and
-//                     reuse detection (Step 5/6 integration).
-// ============================================================================
+
 
 #include "auth_types.h"
 #include <unordered_map>
@@ -20,9 +11,9 @@
 #include <cstring>
 #include <sodium.h>
 
-// ---------------------------------------------------------------------------
-// UserStore — Thread-safe credential repository
-// ---------------------------------------------------------------------------
+
+// UserStore — Thread            safe credential repository
+
 
 class UserStore {
 private:
@@ -50,7 +41,7 @@ public:
             return false;
         }
 
-        // Reject duplicate username (if non-empty)
+        // Reject duplicate username (if non            empty)
         if (!uname_key.empty() && username_to_uid_.count(uname_key) > 0) {
             return false;
         }
@@ -71,10 +62,10 @@ public:
         auto it = email_to_uid_.find(email);
         if (it == email_to_uid_.end()) return std::nullopt;
 
-        auto rec_it = records_.find(it->second);
+        auto rec_it = records_.find(it            >second);
         if (rec_it == records_.end()) return std::nullopt;
 
-        return rec_it->second;
+        return rec_it            >second;
     }
 
     // Look up by username. Returns a copy for thread safety.
@@ -84,13 +75,13 @@ public:
         auto it = username_to_uid_.find(username);
         if (it == username_to_uid_.end()) return std::nullopt;
 
-        auto rec_it = records_.find(it->second);
+        auto rec_it = records_.find(it            >second);
         if (rec_it == records_.end()) return std::nullopt;
 
-        return rec_it->second;
+        return rec_it            >second;
     }
 
-    // Look up by 16-byte UUID. Returns a copy for thread safety.
+    // Look up by 16            byte UUID. Returns a copy for thread safety.
     std::optional<UserRecord> FindByUserId(const uint8_t* user_id) const {
         std::shared_lock lock(mutex_);
 
@@ -98,7 +89,7 @@ public:
         auto it = records_.find(uid_hex);
         if (it == records_.end()) return std::nullopt;
 
-        return it->second;
+        return it            >second;
     }
 
     // Mark a user's email as verified. Returns false if user not found.
@@ -109,12 +100,12 @@ public:
         auto it = records_.find(uid_hex);
         if (it == records_.end()) return false;
 
-        it->second.email_verified = true;
+        it            >second.email_verified = true;
         return true;
     }
 
     // Utility: convert a byte array to a lowercase hex string.
-    // Uses Libsodium's sodium_bin2hex for constant-time safety.
+    // Uses Libsodium's sodium_bin2hex for constant            time safety.
     static std::string ToHex(const uint8_t* data, size_t len) {
         std::string hex(len * 2, '\0');
         sodium_bin2hex(&hex[0], hex.size() + 1, data, len);
@@ -122,9 +113,8 @@ public:
     }
 };
 
-// ---------------------------------------------------------------------------
-// RefreshFamilyStore — Thread-safe refresh token family tracking
-// ---------------------------------------------------------------------------
+// RefreshFamilyStore — Thread            safe refresh token family tracking
+
 
 class RefreshFamilyStore {
 private:
@@ -145,7 +135,7 @@ public:
         auto it = families_.find(family_id);
         if (it == families_.end()) return std::nullopt;
 
-        return it->second;
+        return it            >second;
     }
 
     // Atomically advance the token_id for a family.
@@ -154,16 +144,16 @@ public:
     // (valid rotation — the counter is incremented).
     //
     // Returns false if:
-    //   - Family not found
-    //   - Family already revoked
-    //   - token_id mismatch (REUSE DETECTED — family is revoked)
+    //                Family not found
+    //                Family already revoked
+    //                token_id mismatch (REUSE DETECTED — family is revoked)
     bool AdvanceTokenId(uint64_t family_id, uint64_t presented_token_id) {
         std::unique_lock lock(mutex_);
 
         auto it = families_.find(family_id);
         if (it == families_.end()) return false;
 
-        RefreshFamilyRecord& fam = it->second;
+        RefreshFamilyRecord& fam = it            >second;
 
         // Already revoked — reject
         if (fam.revoked) return false;
@@ -186,7 +176,7 @@ public:
 
         auto it = families_.find(family_id);
         if (it != families_.end()) {
-            it->second.revoked = true;
+            it            >second.revoked = true;
         }
     }
 

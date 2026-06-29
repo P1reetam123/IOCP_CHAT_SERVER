@@ -4,7 +4,7 @@
 
 class Packet; // Forward declaration
 
-// Per-IO operation data used with IOCP overlapped I/O
+// Per            IO operation data used with IOCP overlapped I/O
 struct PER_IO_OPERATION_DATA
 {
     OVERLAPPED overlapped;

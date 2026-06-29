@@ -2,9 +2,9 @@
 build/
 build*/
 out/
-cmake-build-*/
+cmake            build            */
 
-# CMake generated (in-source artifacts)
+# CMake generated (in            source artifacts)
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake

@@ -12,7 +12,6 @@
 #include"./pool/PacketPool.h"
 #include"./pool/SessionPool.h"
 #include"./pool/IOContextPool.h"
-// note--->> as for sessional ids there is no dedicated queue then it must be check whether its sessional id or not to handle it beacause it wll try to find it queue and push will return error , like sessional ids are email , actual sessions are userid so we can difference it like if its not userid formate then it must be sessional id 
 
 struct ConnectionBuffer
 {
@@ -126,10 +125,7 @@ void IOCPManager::acceptLoop()
             continue;
         }
 
-        // Lead 1: Windows may reuse the same numeric SOCKET value for this
-        // new connection. Clear any stale entry from the disconnect guard
-        // so handleDisconnect will work correctly when *this* connection
-        // eventually closes.
+      
         {
             std::lock_guard<std::mutex> lock(disconnectMtx);
             disconnectedSockets.erase(clientSocket);
@@ -171,7 +167,7 @@ void IOCPManager::workerThread()
         // socket closed during receving
         if ((!success || bytesTransferred == 0)) {
             // Connection closed or error
-            // Lead 2: If this was a pending send, recover the in-flight packet
+            //  If this was a pending send, recover the in-flight packet
             // so it can be retried instead of silently leaking from the pool.
             if (pData->operationType == 0 && pData->packet) {
                 pData->packet->isSending = false;
@@ -300,19 +296,10 @@ void IOCPManager::workerThread()
         }
         else if (pData->operationType == 0) { // send
             Packet* sentPacket = pData->packet;
-            Session* s = sessionManager->findBySocket(clientSocket);
-//-->> note as sender has send the data even if he goes offlin nothing matter with delliveru 
-            // if (!s) {
-            //     Logger::warn("Send completion: session not found for socket");
-            //     if (sentPacket) {
-            //         sentPacket->isSending = false;
-            //         sentPacket->isSentFail = true;
-            //         offlineManager->ManageCompletePacket(sentPacket,sentPacket->receiverId);
-            //     }
-            //     pio.returnIOPdata(pData);
-                
-            //     continue;
-            // }
+    
+                         sentPacket->isSending = false;
+                         sentPacket->isSentFail = true;
+         
 
             if (sentPacket) {
                 pData->bytesSent += bytesTransferred;
@@ -380,11 +367,7 @@ PER_IO_OPERATION_DATA* pData = pio.borrowIOPdata();
         Logger::warn("WSARecv failed on socket " + std::to_string(s) +
                      ", error: " + std::to_string(err));
         pio.returnIOPdata(pData);
-        // Lead 3: Do NOT call handleDisconnect here — a failed WSARecv
-        // (e.g. WSAENOBUFS) does not mean the socket is dead. If the
-        // socket truly died, the IOCP completion for the *previous*
-        // pending recv will fire with an error and trigger disconnect
-        // through the worker thread's error branch.
+       
         return false;
     }
     return true;
@@ -425,11 +408,7 @@ PER_IO_OPERATION_DATA* pData = pio.borrowIOPdata();
         p->isSending = false;
         p->isSentFail = true;
         pio.returnIOPdata(pData);
-        // Lead 3: Do NOT call handleDisconnect here — a failed WSASend
-        // (e.g. WSAENOBUFS) does not mean the socket is dead. The caller
-        // will see the failure return and re-queue the packet. If the
-        // socket is truly dead, the pending WSARecv will fail and trigger
-        // disconnect through the worker thread's error branch.
+    
         return false;
     }
     return true;
@@ -447,11 +426,6 @@ void IOCPManager::queueSend(SOCKET s,Packet* p)
 
 void IOCPManager::handleDisconnect(SOCKET s)
 {
-    // Lead 1: One-shot guard — when a socket dies, every outstanding
-    // overlapped operation completes with an error and each calls
-    // handleDisconnect. Without this guard, closesocket() would run
-    // multiple times on the same handle, potentially closing a
-    // *different* connection that reused the same numeric SOCKET value.
     {
         std::lock_guard<std::mutex> lock(disconnectMtx);
         if (disconnectedSockets.count(s)) return; // already handled

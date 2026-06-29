@@ -6,7 +6,7 @@
 
 #pragma pack(push, 1)
 struct ChunkHeader {
-    uint32_t uploadIdHash;  // FNV-1a hash of upload ID for O(1) lookup
+    uint32_t uploadIdHash;  // FNV            1a hash of upload ID for O(1) lookup
     uint16_t chunkIdx;      // Max 1024 chunks per round
     uint16_t dataLen;       // Actual chunk data length
 };

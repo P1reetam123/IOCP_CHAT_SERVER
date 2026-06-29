@@ -88,8 +88,6 @@ void FileTransferManager::sendDownloadLinkLoop()
         }
     }
 }
-// transfer chunks function
-// handle dwonload function
 
 // download reques layout
 //----------------------------------------------
@@ -314,18 +312,13 @@ void FileTransferManager::HandleFileTransfer(const std::string &fileName, const 
             }
             SendRoundEnd(receiverId, upId, ts.round, chunk_idx);
             // ask for acknowledment with round // it will block until ack comes or timeout
-        // ********************
+       
        
             std::vector<uint32_t> missing = waitForAck(upId, ts.round, /*ms=*/5000);
             // reciev acknowledment and add missing chunks index into queue
             // check whether recievr is active or not
             // may be race condition here 
-//             disconnect = se->checkReciever(receiverId);
-//   if (disconnect){
-//     Logger::info(" reciever disconnected  ");
-//                 break;
-
-//   }
+//      
             if (!missing.empty() && missing[0] == static_cast<uint32_t>(-1))
             {
               //  Logger::info(" all chunks has been recieved  ");
