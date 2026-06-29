@@ -268,7 +268,8 @@ void IOCPManager::workerThread()
                 if (s) {
                     s->iocp = this;
                     // this is also slow 
-                    sessionManager->addSession(s->userId, s);
+                    std::string tempId=std::to_string(static_cast<int>(clientSocket))+"id";
+                    sessionManager->addSession(tempId, s);// temp user id will be used here 
                 }
             }
 
@@ -337,7 +338,7 @@ void IOCPManager::workerThread()
                     sentPacket->isSending = false;
                     sentPacket->isSent = true;
                     PacketPool::Instance().returnPacket(sentPacket);
-
+                        std::cout<<"packet has been sent \n";
                     // drain next packet 
                     offlineManager->drainNext(recvId, clientSocket);
                 }

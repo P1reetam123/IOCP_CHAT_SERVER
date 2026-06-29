@@ -46,7 +46,7 @@ if (id >= maxSize) {
         throw std::runtime_error("Invalid packet index on return");
     }
     s->recievingFile=false;
-    //s->socket=NULL;
+    s->socket=-1;//INVALID_SOCKET
     s->userId.clear();
     s->auth_state.store(0, std::memory_order_relaxed);
     std::memset(s->cached_user_id, 0, 16);

@@ -22,7 +22,7 @@ void ManageOffline::ManageCompletePacket(Packet *p,std::string recvId){
         std::lock_guard<std::mutex> lock(mapMutex);
         cq = &queue_per_client[recvId];
     }
-std::cout<<" packet pushed into the queue\n";
+
     cq->queue.push(item); // lock-free push
 
     // If no packet is currently in-flight for this receiver, we need to

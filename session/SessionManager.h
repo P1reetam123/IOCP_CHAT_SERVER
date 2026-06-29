@@ -4,6 +4,7 @@
 #include <mutex>
 #include <winsock2.h>
 #include "Session.h"
+class IOCPManager ;
 
 class SessionManager
 {
@@ -23,6 +24,7 @@ public:
     bool checkReciever(const std:: string recId);
     void setRecievingFileTrue(const std:: string recId); // cal when reciever send download request
      void setRecievingFileFalse(const std:: string recId); // cal when reciever send disconnect  request
-
+ // to erase temporary userid p
+ void updateNewId(const std::string &id,Session* s);
     
 };

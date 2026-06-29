@@ -210,7 +210,7 @@ void SignUp::signupManager() {
             state = signUpQueue.front();
             signUpQueue.pop();
         }
-
+// use libsodium for random generation
         std::string userID = generateUserId();
         
         char hashed_password[crypto_pwhash_STRBYTES]{};

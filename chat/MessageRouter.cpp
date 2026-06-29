@@ -87,7 +87,12 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
     {
     case PKT_LOGIN:
         if (authManager) {
+            std::string tempId=sender->userId;
             authManager->HandleLoginPacket(packet, sender);
+            
+sessionManager->updateNewId(tempId,sender);
+
+
         } else {
             PacketPool::Instance().returnPacket(packet);
         }
@@ -95,7 +100,9 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
 
     case PKT_TOKEN: // for connecting 
         if (authManager) {
+            std::string tempId=sender->userId;
             authManager->HandleTokenPacket(packet, sender);
+            sessionManager->updateNewId(tempId,sender);
         } else {
             PacketPool::Instance().returnPacket(packet);
         }
@@ -103,7 +110,9 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
 
     case PKT_REFRESH:
         if (authManager) {
+             std::string tempId=sender->userId;
             authManager->HandleRefreshPacket(packet, sender);
+            sessionManager->updateNewId(tempId,sender);
         } else {
             PacketPool::Instance().returnPacket(packet);
         }
@@ -150,7 +159,7 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
         break;
 
     case PKT_FILE_START:
-                   ::info("Received PKT_FILE_START packet from user: " + sender->userId);
+                   
         filemanager->handleStart(packet);
         break;
     case PKT_FILE_CHUNK:

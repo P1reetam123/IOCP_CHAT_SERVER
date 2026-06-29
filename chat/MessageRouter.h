@@ -35,4 +35,5 @@ std::atomic<int>receivedPrivateMsg{0};
 
     // Main dispatch method: inspect packet type and route accordingly
  bool handlePacket(Packet*  packet, Session* sender);
+
 };

@@ -27,10 +27,10 @@ private:
     };
     std::unordered_map<std::string, std::pair<T, typename std::list<FreqNode>::iterator>> cacheMap;
     std::list<FreqNode> freqList;
-    std::unordered_map<std::string, typename std::list<FreqNode>::iterator>keyToFreq;
+    std::unordered_map<std::string, typename std::list<FreqNode>::iterator> keyToFreq;
 
     // Indexes
-    std::unordered_map<std::string, size_t> pageNum; // uid             > record index
+    std::unordered_map<std::string, size_t> pageNum; // uid                      -> record index
     std::unordered_map<std::string, std::string> emailToUid;
     std::unordered_map<std::string, std::string> phoneToUid;
 
@@ -72,19 +72,24 @@ private:
 
         LARGE_INTEGER fileSize{};
         GetFileSizeEx(hFile, &fileSize);
-        
-        if (fileSize.QuadPart > 0) {
+
+        if (fileSize.QuadPart > 0)
+        {
             hMap = CreateFileMappingA(hFile, nullptr, PAGE_READWRITE, 0, 0, nullptr);
-            if (hMap) {
+            if (hMap)
+            {
                 mappedMemory = static_cast<char *>(MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, 0));
-                if (mappedMemory) {
+                if (mappedMemory)
+                {
                     currentRecords = fileSize.QuadPart / sizeof(T);
                     loadIndex();
                     UnmapViewOfFile(mappedMemory);
                 }
                 CloseHandle(hMap);
             }
-        } else {
+        }
+        else
+        {
             currentRecords = 0;
         }
 
@@ -118,7 +123,7 @@ private:
             usedSize.QuadPart = currentRecords * sizeof(T);
             SetFilePointerEx(hFile, usedSize, nullptr, FILE_BEGIN);
             SetEndOfFile(hFile);
-            
+
             FlushFileBuffers(hFile);
             CloseHandle(hFile);
         }
@@ -140,10 +145,16 @@ private:
             decryptRecord(rec); // decrypt for index building
 
             bool isEmpty = true;
-            for (size_t j = 0; j < sizeof(rec.user_id); ++j) {
-                if (rec.user_id[j] != 0) { isEmpty = false; break; }
+            for (size_t j = 0; j < sizeof(rec.user_id); ++j)
+            {
+                if (rec.user_id[j] != 0)
+                {
+                    isEmpty = false;
+                    break;
+                }
             }
-            if (isEmpty) {
+            if (isEmpty)
+            {
                 break;
             }
             actualRecords++;
@@ -176,7 +187,7 @@ private:
     uint32_t calculateChecksum(const T &rec)
     {
         uLong crc = crc32(0L, Z_NULL, 0);
-        crc = crc32(crc, reinterpret_cast<const Bytef *>(&rec), sizeof(T)              sizeof(uint32_t));
+        crc = crc32(crc, reinterpret_cast<const Bytef *>(&rec), sizeof(T) - sizeof(uint32_t));
         return static_cast<uint32_t>(crc);
     }
 
@@ -215,17 +226,17 @@ private:
         auto it = keyToFreq.find(key);
         if (it != keyToFreq.end())
         {
-            auto freqIt = it            >second;
-            freqIt            >keys.remove(key);
-            if (freqIt            >keys.empty() && freqIt !=                         freqList.end())
+            auto freqIt = it->second;
+            freqIt->keys.remove(key);
+            if (freqIt->keys.empty() && freqIt != freqList.end())
             {
                 freqList.erase(freqIt);
             }
-            freqIt            >freq++;
-            if (freqIt            >freq > freqList.back().freq)
+            freqIt->freq++;
+            if (freqIt->freq > freqList.back().freq)
             {
-                freqList.push_back({freqIt            >freq, {}});
-                freqIt =                         freqList.end();
+                freqList.push_back({freqIt->freq, {}});
+                freqIt = freqList.end();
             }
         }
         else
@@ -235,7 +246,7 @@ private:
                 freqList.push_back({1, {}});
             }
             freqList.back().keys.push_back(key);
-            keyToFreq[key] =                         freqList.end();
+            keyToFreq[key] = freqList.end();
         }
         cacheMap[key] = {value, keyToFreq[key]};
     }
@@ -278,7 +289,7 @@ private:
 
     void safeCopy(char *dest, const std::string &src, size_t maxLen)
     {
-        size_t len = std::min(src.size(), maxLen              1);
+        size_t len = std::min(src.size(), maxLen- 1);
         std::copy_n(src.begin(), len, dest);
         dest[len] = '\0';
     }
@@ -301,7 +312,7 @@ public:
 
         record.is_deleted = false;
 
-        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T)              sizeof(uint32_t));
+        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T) - sizeof(uint32_t));
         *csPtr = calculateChecksum(record);
         encryptRecord(record);
 
@@ -342,11 +353,11 @@ public:
 
         newRecord.is_deleted = false;
 
-        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&newRecord) + sizeof(T)              sizeof(uint32_t));
+        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&newRecord) + sizeof(T) -sizeof(uint32_t));
         *csPtr = calculateChecksum(newRecord);
         encryptRecord(newRecord);
 
-        size_t idx = it            >second;
+        size_t idx = it->second;
         memcpy(mappedMemory + idx * sizeof(T), &newRecord, sizeof(T));
         FlushViewOfFile(mappedMemory + idx * sizeof(T), sizeof(T));
         FlushFileBuffers(hFile);
@@ -364,16 +375,16 @@ public:
         std::string uid = identifier;
         auto eit = emailToUid.find(identifier);
         if (eit != emailToUid.end())
-            uid = eit            >second;
+            uid = eit->second;
         auto pit = phoneToUid.find(identifier);
         if (pit != phoneToUid.end())
-            uid = pit            >second;
+            uid = pit->second;
 
         auto pit2 = pageNum.find(uid);
         if (pit2 == pageNum.end())
             return false;
 
-        size_t idx = pit2            >second;
+        size_t idx = pit2->second;
         T record;
         memcpy(&record, mappedMemory + idx * sizeof(T), sizeof(T));
         decryptRecord(record);
@@ -382,7 +393,7 @@ public:
             return false;
 
         record.is_deleted = true;
-        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T)              sizeof(uint32_t));
+        uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T)- sizeof(uint32_t));
         *csPtr = calculateChecksum(record);
         encryptRecord(record);
 
@@ -410,10 +421,10 @@ public:
         std::string uid = key;
         auto eit = emailToUid.find(key);
         if (eit != emailToUid.end())
-            uid = eit            >second;
+            uid = eit->second;
         auto pit = phoneToUid.find(key);
         if (pit != phoneToUid.end())
-            uid = pit            >second;
+            uid = pit->second;
 
         T record;
         bool found = false;
@@ -421,7 +432,7 @@ public:
         auto cit = cacheMap.find(uid);
         if (cit != cacheMap.end())
         {
-            record = cit            >second.first;
+            record = cit->second.first;
             updateLFU(uid, record);
             found = true;
         }
@@ -431,7 +442,7 @@ public:
             if (pIt == pageNum.end())
                 return "NOT_FOUND";
 
-            size_t offset = pIt            >second * sizeof(T);
+            size_t offset = pIt->second * sizeof(T);
             memcpy(&record, mappedMemory + offset, sizeof(T));
             decryptRecord(record);
 
@@ -488,37 +499,55 @@ private:
         std::istringstream iss(query);
         oss << toKey(rec.user_id, sizeof(rec.user_id)) << " ";
         std::string token;
-        
-        while (iss >> token) {
+
+        while (iss >> token)
+        {
             createOutput(oss, rec, token);
         }
-      
-        return oss.str(); 
+
+        return oss.str();
     }
 
-    void createOutput(std::ostringstream &oss, const T &rec, const std::string& req)
+    void createOutput(std::ostringstream &oss, const T &rec, const std::string &req)
     {
         if (req == "NULL")
             return;
 
-        if (req == "username") {
+        if (req == "username")
+        {
             oss << toKey(rec.username, sizeof(rec.username)) << " ";
-        } else if (req == "password_hash") {
+        }
+        else if (req == "password_hash")
+        {
             oss << toKey(rec.password_hash, sizeof(rec.password_hash)) << " ";
-        } else if (req == "email") {
+        }
+        else if (req == "email")
+        {
             oss << toKey(rec.email, sizeof(rec.email)) << " ";
-        } else if (req == "email_verified") {
-            if (rec.email_verified) {
+        }
+        else if (req == "email_verified")
+        {
+            if (rec.email_verified)
+            {
                 oss << "TRUE" << " ";
-            } else {
+            }
+            else
+            {
                 oss << "FALSE" << " ";
             }
-        } else if (req == "phone_hash") {
+        }
+        else if (req == "phone_hash")
+        {
             oss << toKey(rec.phone_hash, sizeof(rec.phone_hash)) << " ";
-        } else if (req == "phone_discoverable") {
-            if (rec.phone_discoverable) {
+        }
+        else if (req == "phone_discoverable")
+        {
+            if (rec.phone_discoverable)
+            {
                 oss << "TRUE" << " ";
-            } else {
+            }
+            else
+            {
                 oss << "FALSE" << " ";
             }
         }
