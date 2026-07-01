@@ -19,9 +19,10 @@ public:
     char data[4096];
     char* in = data;
     size_t id;
+    std::string user_name;// this is name taken by user , need not to be unique
     // Parsed fields (populated after parseHeader)
-    std::string senderId;
-    std::string receiverId;
+    std::string senderId;// this id issued by server
+    std::string receiverId;  // this is id issued by server 
     // for server side we do need payload we need only sender and reciever id
     std::string payload;
     bool parsedHeader=false;

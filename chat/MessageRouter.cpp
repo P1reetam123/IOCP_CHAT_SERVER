@@ -91,6 +91,7 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
             authManager->HandleLoginPacket(packet, sender);
             
 sessionManager->updateNewId(tempId,sender);
+offManager->notifySend(sender->userId);
 
 
         } else {
@@ -103,6 +104,7 @@ sessionManager->updateNewId(tempId,sender);
             std::string tempId=sender->userId;
             authManager->HandleTokenPacket(packet, sender);
             sessionManager->updateNewId(tempId,sender);
+            offManager->notifySend(sender->userId);
         } else {
             PacketPool::Instance().returnPacket(packet);
         }
@@ -113,6 +115,7 @@ sessionManager->updateNewId(tempId,sender);
              std::string tempId=sender->userId;
             authManager->HandleRefreshPacket(packet, sender);
             sessionManager->updateNewId(tempId,sender);
+            offManager->notifySend(sender->userId);
         } else {
             PacketPool::Instance().returnPacket(packet);
         }

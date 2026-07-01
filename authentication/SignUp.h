@@ -26,6 +26,7 @@ class SignUp{
     std::string number;
     std::string username;
     std::string password;
+    std::string sessionId;
  };
  bool stopThread;
 MpscQueue<std::string>otpQueue;
@@ -63,6 +64,7 @@ bool isValidE164Phone(const std::string num);
 bool sendMail(const std::string& message,const std::string &emailAddress);
 bool isVerified(const std::string email);
 void onOtpVerificationRequest(Packet *p);
+bool isAlreadySignup(const std::string email);
 std::string generateUserId();
 std::string hashStr(const std::string& input);
  static time_t timestamp(time_t delay)

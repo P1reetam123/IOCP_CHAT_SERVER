@@ -471,7 +471,7 @@ bool AuthManager::ValidateAccessToken(const uint8_t *token_data, size_t len,
 
     const AccessToken *token =
         reinterpret_cast<const AccessToken *>(token_data);
- std::cout<<token_data<<std::endl;
+
     // Verify the HMAC signature (constant-time comparison internally).
     // crypto_auth_verify returns 0 on success, -1 on failure.
     if (crypto_auth_verify(
@@ -638,7 +638,7 @@ void AuthManager::SendTokenGranted(Session *sender, const LoginResult &tokens)
     std::memcpy(&binary_payload[0],
                 &tokens.access_token,
                 sizeof(AccessToken));
-std::cout<<binary_payload<<std::endl; //acces toke payload
+
     std::memcpy(&binary_payload[sizeof(AccessToken)],
                 &tokens.refresh_token,
                 sizeof(RefreshToken));

@@ -283,6 +283,7 @@ void IOCPManager::workerThread()
                         s->iocp = this;
                         // this is also slow
                         std::string tempId = std::to_string(static_cast<int>(clientSocket)) + "id";
+                        p->senderId=tempId;
                         sessionManager->addSession(tempId, s); // temp user id will be used here
                     }
                 }

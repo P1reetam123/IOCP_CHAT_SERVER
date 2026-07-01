@@ -71,10 +71,23 @@ void SignUp::otpRequestHandler(Packet *p){
   if(!isValidEmail(email)){
     return;
   }
+if(!isAlreadySignup(email)){ 
 
   std::lock_guard<std::mutex> lock(omutex);
   otpQueue.push(email);
   ov.notify_one();
+  return ;
+}
+// already singed 
+ if (router) {
+        Packet* errPacket = PacketPool::Instance().borrowPacket();
+        errPacket->serialize( PKT_SIGNUP_ERROR, "SERVER", p->senderId, "already signed !/ login ");
+       
+        router->routePacket(errPacket, p->senderId);
+    }
+
+return ;
+
 }
 
 // this thread will keep the message into a signup queue
@@ -130,8 +143,8 @@ void SignUp::signUpRequestHandler(Packet *p){
   if(!verified){
     if (router) {
         Packet* errPacket = PacketPool::Instance().borrowPacket();
-        errPacket->serialize(PKT_FILE_ERROR, "SERVER", sessionId, "Signup Failed: Email not verified");
-        std::cout<<"email not verified \n";
+        errPacket->serialize( PKT_SIGNUP_ERROR, "SERVER", sessionId, "Signup Failed: Email not verified");
+       
         router->routePacket(errPacket, sessionId);
     }
     return ;
@@ -142,10 +155,10 @@ void SignUp::signUpRequestHandler(Packet *p){
   state.number = number;
   state.username = username;
   state.password = password;
+  state.sessionId=sessionId;
 
   std::lock_guard<std::mutex> lock(cmutex);
   signUpQueue.push(state);
-  std::cout<<"pushed into the queue \n";
   cv.notify_one();
 }
 bool SignUp::isVerified(const std::string email){
@@ -169,7 +182,7 @@ void SignUp::onOtpVerificationRequest(Packet* p){
     if (router) {
         Packet* errPacket = PacketPool::Instance().borrowPacket();
          std::cout<<" otp not generated \n";
-        errPacket->serialize(PKT_FILE_ERROR, "SERVER", sessionId, "OTP not generated");
+        errPacket->serialize( PKT_SIGNUP_ERROR, "SERVER", sessionId, "OTP not generated");
         router->routePacket(errPacket, sessionId);
     }
     return ;
@@ -179,7 +192,8 @@ void SignUp::onOtpVerificationRequest(Packet* p){
     if (router) {
         Packet* errPacket = PacketPool::Instance().borrowPacket();
          std::cout<<" otp verified failed \n";
-        errPacket->serialize(PKT_FILE_ERROR, "SERVER", sessionId, "OTP expired or limit reached");
+        errPacket->serialize( PKT_SIGNUP_ERROR, "SERVER", sessionId, "OTP expired or limit reached");
+        otpChecker.erase(it);
         router->routePacket(errPacket, sessionId);
     }
     return ;
@@ -192,7 +206,14 @@ void SignUp::onOtpVerificationRequest(Packet* p){
         Packet* okPacket = PacketPool::Instance().borrowPacket();
         std::cout<<" otp verified \n";
         okPacket->serialize(PKT_ACKNOWLEDGMENT, "SERVER", sessionId, "OTP Verified");
-        router->routePacket(okPacket, sessionId);
+      bool routed=  router->routePacket(okPacket, sessionId);
+      otpChecker.erase(it);
+      if(!routed){//means user got offline or initiate send failed 
+
+        emailVerified[email] = false; // client will again try to verify the otp
+        return ;
+
+      }
     }
     return ;
   }
@@ -246,9 +267,15 @@ void SignUp::signupManager() {
                 ur.phone_discoverable = true;
 
                 authManager->AddUserRecord(ur);
+                   
             }
         } else {
             std::cout << "[SIGNUP] DB Write failed for " << state.email << std::endl;
         }
     }
+}
+bool SignUp::isAlreadySignup(const std::string email){
+    auto it =db.emailToUid.find(email);
+    if(it==db.emailToUid.end())return false;
+    return true;
 }

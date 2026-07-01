@@ -31,7 +31,7 @@ private:
 
     // Indexes
     std::unordered_map<std::string, size_t> pageNum; // uid                      -> record index
-    std::unordered_map<std::string, std::string> emailToUid;
+  
     std::unordered_map<std::string, std::string> phoneToUid;
 
     // Storage
@@ -51,6 +51,7 @@ private:
                                  0x9C, 0xAD, 0xBE, 0xCF, 0xD1, 0xE2, 0xF3, 0x04};
 
 public:
+  std::unordered_map<std::string, std::string> emailToUid;
     table()
     {
         CreateDirectoryA("./userData", nullptr);

@@ -283,6 +283,9 @@ void Client::handleIncomingPacket(Packet &p)
     case PKT_AUTH_FAIL:
         handleAuthFail(p);
         break;
+        case PKT_SIGNUP_ERROR:
+        handleAuthFail(p);
+        break;
     default:
         std::cout << "[WARN] Unknown packet type: "
                   << static_cast<int>(p.header.type) << "\n";
