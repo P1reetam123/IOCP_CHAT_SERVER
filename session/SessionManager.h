@@ -26,5 +26,6 @@ public:
      void setRecievingFileFalse(const std:: string recId); // cal when reciever send disconnect  request
  // to erase temporary userid p
  void updateNewId(const std::string &id,Session* s);
+ 
     
 };

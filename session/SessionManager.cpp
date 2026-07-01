@@ -5,33 +5,38 @@
 
 void SessionManager::updateNewId(const std::string &id, Session *s)
 {
+    std::lock_guard<std::mutex> lock(mtx); // this lock  for whole update process so it ensuure no deadlock
+    // once login ---> socket -->mainid, mainId->>previous session
+    // this to update old id to new id ,
 
-    std::lock_guard<std::mutex> lock(mtx);
-    auto it = sessions.find(id); // temporary id
-    if (it != sessions.end())
-        sessions.erase(it);
-    socketToUserId[s->socket] = s->userId; // overwrite old temp id to new id
+    std::string newid = s->userId; // new id and currently not updated sesstions for this
+    auto newit = sessions.find(newid);
+    // to check whether there is any previous session on current id
+    if (newit != sessions.end())
+    {                                             // we got the old session
+        SOCKET oldSocket = newit->second->socket; /// got the socket of old user
 
-    { // removing duplicate user if connected sice they will have same id and different socket
-        std::string id = s->userId;
-        auto it = sessions.find(id);
-        if (it != sessions.end())
-        {                                          // we got the old session
-            SOCKET oldSocket = it->second->socket; /// got the socket of old user
-            sessions.erase(it);                    // erase the old session
-            SessionPool::Instance().returnSession(it->second);
-            socketToUserId.erase(oldSocket); // erase the old socket
-            s->iocp->handleDisconnect(oldSocket) ; // cleanup the socket
-        }
+        s->iocp->HandleDisconnectWithoutLock(oldSocket); // cleanup the socket this handle only socket cleanup
+        socketToUserId.erase(oldSocket);
+        SessionPool::Instance().returnSession(newit->second); // return the session
+        sessions.erase(newit);                                // this erase the session on new id , means old login
     }
 
-    sessions[s->userId] = s; // add current session on new id
+    // to delete temporary id
+    auto it = sessions.find(id); // temporary id
+    if (it != sessions.end())
+    {
+        sessions.erase(it); // erase the old id
+    }
+    // to update new id
+    socketToUserId[s->socket] = s->userId;
+    sessions[s->userId] = s; // add current session on new id // overwrite old temp id to new id
 }
 void SessionManager::addSession(const std::string &id, Session *session)
 {
     std::lock_guard<std::mutex> lock(mtx);
-    sessions[id] = session;
-    socketToUserId[session->socket] = id;
+    sessions[id] = session;               ////// old id ----> session
+    socketToUserId[session->socket] = id; // current socket --> old id
 }
 
 void SessionManager::removeSession(const std::string &id)

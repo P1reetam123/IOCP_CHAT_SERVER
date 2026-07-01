@@ -56,13 +56,14 @@ public:
     // Post an async send on a socket
     bool initiateSend(SOCKET socket, Packet* p);
 void handleDisconnect(SOCKET socket);
+ void HandleDisconnectWithoutLock(SOCKET s);
 private:
     // Worker thread function: processes IOCP completions
     void workerThread();
 
     // Post an async receive on a socket
     bool postRecv(SOCKET socket);
-
+   
     // Handle a disconnected client
     
 };
