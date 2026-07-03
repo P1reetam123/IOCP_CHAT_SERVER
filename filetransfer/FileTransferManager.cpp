@@ -1,26 +1,26 @@
-#pragma once
 #include "FileTransferManager.h"
 #include "../utils/Logger.h"
 #include <windows.h>
-#include<cstring>
-#include<fstream>
-#include"../chat/MessageRouter.h"
-#include<filesystem>
-#include"./pool/PacketPool.h"
-#include"./protocol/Packet.h"
+#include <fstream>
+#include <filesystem>
+#include "../chat/MessageRouter.h"
+#include "../pool/PacketPool.h"
+#include "../protocol/CRC32C.h"
+#include <chrono>
 
-#pragma pack(push, 1)
+namespace fs = std::filesystem;
 
-#pragma pack(pop)
-
-//activeTransfers
 FileTransferManager::FileTransferManager()
 {
-    // Ensure upload directory exists
     CreateDirectoryA(saveDirectory.c_str(), NULL);
 }
 
 FileTransferManager::~FileTransferManager()
+{
+    stopAllTransfers();
+}
+
+void FileTransferManager::stopAllTransfers()
 {
     {
         std::lock_guard<std::mutex> lk(downloadMtx);
@@ -29,352 +29,243 @@ FileTransferManager::~FileTransferManager()
     downloadCv.notify_all();
     if (downloadThread.joinable()) downloadThread.join();
 
-    {
-        std::lock_guard<std::mutex> lk(transferMtx_);
-        stopTransferPool_ = true;
-    }
-    transferCv_.notify_all();
-    for (auto& t : transferWorkers_) {
-        if (t.joinable()) t.join();
-    }
-
     std::lock_guard<std::mutex> lock(mtx);
     for (auto& pair : activeTransfers) {
-        if (pair.second->fileStream.is_open()) {
+        if (pair.second && pair.second->fileStream.is_open()) {
             pair.second->fileStream.close();
         }
         delete pair.second;
     }
     activeTransfers.clear();
-    uploadIdToTranserState.clear();
-    uploadIdHashMap.clear();
+    uploadIdToTransferState.clear();
 }
 
+void FileTransferManager::handleFileStart(Packet* p, const std::string& senderId)
+{
+    size_t pos = HEADER_SIZE;
+    uint64_t totalSize = p->readUint64(pos);
+    std::string fileName = p->readString(pos);
+    std::string uploadId = p->readString(pos);
+    uint32_t finalCrc = (pos + 4 <= p->header.size) ? p->readUint32(pos) : 0;
 
-// FOR START PACKET 
-// packet layout that server expect
-//------------------------------------------
-// length ||pkt||senderId|| receiverid||filesize||filename||uplaodId||totalChunks||timstamp|| length
-//--------------------------------------------
-// send ack in response for start packet to tell from which bytes you need to send 
-void FileTransferManager::handleStart(Packet *p){
-// extract the all info from this packet
-char* st=p->data;
-std::string sender,receiver,fileSize,fileName,uploadId,totalChunks,timestamp,length;
-st=st+HEADER_SIZE;
-int len=p->header.size-HEADER_SIZE;
-std::string raw(st,len);
- PacketPool::Instance().returnPacket(p);
+    PacketPool::Instance().returnPacket(p);
 
-    size_t pos=0;
-    while(pos<raw.size()&&raw[pos]!=' ') sender.push_back(raw[pos++]);
-    pos++;
-     while(pos<raw.size()&&raw[pos]!=' ') receiver.push_back(raw[pos++]);
-     pos++;
-      while(pos<raw.size()&&raw[pos]!=' ') fileSize.push_back(raw[pos++]);
-      pos++;
-       while(pos<raw.size()&&raw[pos]!=' ') fileName.push_back(raw[pos++]);
-       pos++;
-        while(pos<raw.size()&&raw[pos]!=' ') uploadId.push_back(raw[pos++]);
-        pos++;
-        while(pos<raw.size()&&raw[pos]!=' ') totalChunks.push_back(raw[pos++]);
-      pos++;
-       while(pos<raw.size()&&raw[pos]!=' ') timestamp.push_back(raw[pos++]);
-       pos++;
-       while(pos<raw.size()&&raw[pos]!=' ') length.push_back(raw[pos++]);
-    
-            
-    TransferState *state=new TransferState();
-    state->senderId=sender;
-    state->receiverId=receiver;
-    state->fileName=fileName;
-    try {
-        state->totalChunks=std::stoul(totalChunks);
-        state->totalLength=std::stoull(length);
-    } catch (...) {
-        Logger::error("Invalid numeric field in handleStart");
-        delete state;
+    TransferState* state = new TransferState();
+    state->senderId = senderId;
+    state->uploadId = uploadId;
+    state->fileName = fileName;
+    state->totalSize = totalSize;
+    state->finalCrc = finalCrc;
+    state->tempPath = saveDirectory + fileName + ".partial";
+    state->roundBuffer.resize(MAX_CHUNKS_PER_ROUND);
 
-        return;
-    }
-    state->timestamp=timestamp;
-    state->uploadId=uploadId;
-
-    std::lock_guard<std::mutex> lk(mtx);
-
-    state->filePath = saveDirectory + state->fileName;
-    // Open immediately for random-access binary write
-    state->fileStream.open(state->filePath, std::ios::binary | std::ios::out | std::ios::in | std::ios::trunc);
+    state->fileStream.open(state->tempPath, std::ios::binary | std::ios::out | std::ios::app);
     if (!state->fileStream.is_open()) {
-        // Fallback if file creation fails, try simple out
-        state->fileStream.open(state->filePath, std::ios::binary | std::ios::out);
-    }
-    
-    // Allocate chunk tracker bitset
-    if (state->totalChunks > 0) {
-        state->chunkReceived.resize(state->totalChunks, false);
-    }
-
-    uploadIdToTranserState[uploadId]=state;
-    activeTransfers[uploadId]=state;
-
-    // FNV-1a Hash for binary chunk lookup
-    uint32_t hash = 2166136261u;
-    for (char c : state->uploadId) {
-        hash ^= static_cast<uint8_t>(c);
-        hash *= 16777619u;
-    }
-    uploadIdHashMap[hash] = state;
-
-    startResponse(state->uploadId); 
-}
-// chunk layout 
-//---------------------------------------
-//length||p kt||upId|| cidx|| payload
-//----------------------------------------
-// TO HANDLE CHUNK PACKET
-void FileTransferManager::handleChunks(Packet *p) {
-    if (p->header.size < HEADER_SIZE + sizeof(ChunkHeader)) {
-        PacketPool::Instance().returnPacket(p);
+        Logger::error("Failed to create partial file: " + state->tempPath);
+        delete state;
         return;
     }
 
-    ChunkHeader* ch = reinterpret_cast<ChunkHeader*>(p->data + HEADER_SIZE);
-    uint32_t hash = ch->uploadIdHash;
-    uint16_t chunkIdx = ch->chunkIdx;
-    uint16_t dataLen = ch->dataLen;
-    const char* chunkData = p->data + HEADER_SIZE + sizeof(ChunkHeader);
+    uint64_t resumeOffset = 0;
+    if (fs::exists(state->tempPath)) {
+        resumeOffset = fs::file_size(state->tempPath);
+    }
+    state->receivedOffset = resumeOffset;
+    state->currentRound = static_cast<uint32_t>(resumeOffset / (static_cast<uint64_t>(MAX_CHUNK_SIZE) * MAX_CHUNKS_PER_ROUND));
 
-    // Validate bounds
-    if (HEADER_SIZE + sizeof(ChunkHeader) + dataLen > p->header.size) {
-        PacketPool::Instance().returnPacket(p);
-        return;
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        activeTransfers[uploadId] = state;
+        uploadIdToTransferState[uploadId] = state;
     }
 
-    std::lock_guard<std::mutex> lk(mtx);
-    auto it = uploadIdHashMap.find(hash);
-    if (it == uploadIdHashMap.end()) {
-        PacketPool::Instance().returnPacket(p);
-        return;
-    }
+    Logger::info("File transfer started: " + fileName + " resumeOffset=" + std::to_string(resumeOffset));
 
-    TransferState* state = it->second;
-    if (chunkIdx < state->chunkReceived.size() && !state->chunkReceived[chunkIdx]) {
-        // Direct-to-disk write at correct offset
-        // Assuming chunk size is 4000 bytes max based on download path
-        size_t offset = static_cast<size_t>(chunkIdx) * 4000ULL;
-        if (state->fileStream.is_open()) {
-            state->fileStream.seekp(offset, std::ios::beg);
-            state->fileStream.write(chunkData, dataLen);
-            state->chunkReceived[chunkIdx] = true;
-            state->chunkRecieved += 1;
-            state->totalChunksRecieved += 1;
-        }
-    }
-    
-    PacketPool::Instance().returnPacket(p);
+    Packet* resp = PacketPool::Instance().borrowPacket();
+    resp->serializeFileStartResponse(uploadId, resumeOffset);
+    off->ManageCompletePacket(resp, senderId);
 }
 
-// after sending one buffer receiver ask for acknowledgment
-// acknowledgment layout 
-//-------------------------------------
-//length|| pkt||upID|| lastRoundIdx||
-//------------------------------
-void FileTransferManager::acknowledgment(Packet *p) {
-    char *st = p->data + HEADER_SIZE;
-    int len = p->header.size - HEADER_SIZE;
-    std::string raw(st, len);
+void FileTransferManager::handleFileChunk(Packet* p)
+{
+    size_t pos = HEADER_SIZE;
+    std::string uploadId = p->readString(pos);
+    uint64_t byteOffset = p->readUint64(pos);
+    uint32_t chunkSize = p->readUint32(pos);
+    uint32_t crcReceived = p->readUint32(pos);
+    std::vector<uint8_t> chunkData = p->readBytes(pos, chunkSize);
     PacketPool::Instance().returnPacket(p);
 
-    size_t pos = 0;
-    std::string upId;
-    std::string tc; // totalChunk sent by one go
-    while (pos < raw.size() && raw[pos] != ' ') upId.push_back(raw[pos++]);
-    pos++;
-    while (pos < raw.size() && raw[pos] != ' ') tc.push_back(raw[pos++]);
-    
-    int tcInt;
-    try { tcInt = std::stoi(tc); } 
-    catch (...) { return; }
+    TransferState* state = getTransferState(uploadId);
+    if (!state) return;
 
-    std::lock_guard<std::mutex> lk(mtx);
-    auto it = uploadIdToTranserState.find(upId);
-    if (it == uploadIdToTranserState.end()) return;
-    
-    TransferState* state = it->second;
+    if (CRC32C::compute(chunkData) != crcReceived) {
+        Logger::warn("CRC mismatch at offset " + std::to_string(byteOffset));
+        return;
+    }
 
-    if (tcInt == state->chunkRecieved) {
-        state->chunkRecieved = 0;
-        // Data is already on disk. Just flush if necessary.
-        if (state->fileStream.is_open()) {
-            state->fileStream.flush();
+    size_t chunkIndex = (byteOffset / MAX_CHUNK_SIZE) % MAX_CHUNKS_PER_ROUND;
+
+    std::lock_guard<std::mutex> lock(state->mtx);
+    if (chunkIndex >= state->roundBuffer.size()) return;
+    if (!state->roundBuffer[chunkIndex].empty()) return;
+
+    state->roundBuffer[chunkIndex] = std::move(chunkData);
+    state->roundReceivedCount++;
+}
+
+void FileTransferManager::handleRoundEnd(Packet* p)
+{
+    size_t pos = HEADER_SIZE;
+    std::string uploadId = p->readString(pos);
+    uint32_t roundId = p->readUint32(pos);
+    uint32_t expectedChunkCount = p->readUint32(pos);
+    PacketPool::Instance().returnPacket(p);
+
+    TransferState* state = getTransferState(uploadId);
+    if (!state) return;
+
+    std::vector<uint32_t> missing;
+    bool roundComplete = false;
+
+    {
+        std::lock_guard<std::mutex> lock(state->mtx);
+        if (roundId != state->currentRound) {
+            Logger::warn("Round mismatch: expected " + std::to_string(state->currentRound) +
+                         " got " + std::to_string(roundId));
+            sendAck(uploadId, state->currentRound, {}, state->senderId);
+            return;
         }
-        state->round += 1;
-        SendAck(upId, ROUND_STATUS);
-    } else {
-        std::string missingChunksIdx;
-        // Find which chunks in this round's expected range are missing
-        // round * 1024 is the start index.
-        size_t startIdx = state->round * 1024;
-        for (size_t i = 0; i < static_cast<size_t>(tcInt) && (startIdx + i) < state->chunkReceived.size(); i++) {
-            if (!state->chunkReceived[startIdx + i]) {
-                missingChunksIdx += std::to_string(i); // Relies on client wanting relative idx or absolute. The protocol sends 0..1023
-                missingChunksIdx.push_back(' ');
+
+        for (uint32_t i = 0; i < expectedChunkCount; ++i) {
+            if (state->roundBuffer[i].empty()) {
+                missing.push_back(i);
             }
         }
-        if (!missingChunksIdx.empty()) missingChunksIdx.pop_back();
-        SendAck(upId, ROUND_STATUS, missingChunksIdx);
+
+        roundComplete = missing.empty();
+        if (roundComplete) {
+            writeRoundToDisk(state);
+            state->roundReceivedCount = 0;
+            state->roundBuffer.assign(state->roundBuffer.size(), std::vector<uint8_t>{});
+            state->currentRound++;
+        }
     }
-}
- // round ack layou
- //------------------------------------
- // length||pkt|| uid|| chunkIdx seprated by sapce 
- //-------------------------------------
-// acknowledgmet for correct buffer
-// acknowledgmet for correct buffer
-void FileTransferManager::SendAck(const std::string upId, PacketType P) {
-    Packet* p = PacketPool::Instance().borrowPacket();
-    std::string recId;
-    {
-        std::lock_guard<std::mutex> lk(mtx);
-        auto it = uploadIdToTranserState.find(upId);  
-        if (it != uploadIdToTranserState.end()) recId = it->second->senderId;
-    }
-    if(recId.empty()) { PacketPool::Instance().returnPacket(p); return; }
-    p->receiverId = recId;
-    p->serialize(P, upId, recId, "");
-    off->ManageCompletePacket(p, recId);
+
+    sendAck(uploadId, roundId, missing, state->senderId);
 }
 
-// acknowledgment for buffer 
-void FileTransferManager::SendAck(const std::string upId, PacketType P, const std::string chunkIdx) {
-    Packet* p = PacketPool::Instance().borrowPacket();
-    std::string recId;
-    {
-        std::lock_guard<std::mutex> lk(mtx);
-        auto it = uploadIdToTranserState.find(upId);  
-        if (it != uploadIdToTranserState.end()) recId = it->second->senderId;
+void FileTransferManager::handleFileEnd(Packet* p)
+{
+    size_t pos = HEADER_SIZE;
+    std::string uploadId = p->readString(pos);
+    uint32_t finalCrc = p->readUint32(pos);
+    PacketPool::Instance().returnPacket(p);
+
+    TransferState* state = getTransferState(uploadId);
+    if (!state) return;
+
+    bool success = (state->receivedOffset == state->totalSize);
+    if (success) {
+        uint32_t computed = computeFileCRC(state->tempPath);
+        success = (computed == finalCrc);
+        if (!success) {
+            Logger::error("CRC mismatch for " + state->fileName +
+                          " expected=" + std::to_string(finalCrc) +
+                          " got=" + std::to_string(computed));
+        }
     }
-    if(recId.empty()) { PacketPool::Instance().returnPacket(p); return; }
-    p->receiverId = recId;
-    p->serialize(P, upId, recId, chunkIdx);
-    off->ManageCompletePacket(p, recId);
-}
 
- // to hanlde disconnect pkt 
- // for disconnect remove user from active transfer
- void FileTransferManager::HandleDisconnect(Packet *p){
-    char *st=p->data+HEADER_SIZE;
-    int len=p->header.size-HEADER_SIZE;
-    std::string raw(st,len);
-    PacketPool::Instance().returnPacket(p);
-
-    size_t pos=0;
-    std::string upId;
-    while(pos<raw.size()&&raw[pos]!=' ')upId.push_back(raw[pos++]);
-
-    std::lock_guard<std::mutex> lk(mtx);
-    auto it = activeTransfers.find(upId);
-    if (it == activeTransfers.end()) return;
-    
-    TransferState *state = it->second;
-    state->totalChunksRecieved -= state->chunkRecieved;
-    state->chunkRecieved = 0;
-    activeTransfers.erase(upId);
- }
- // handle resume
- void FileTransferManager::HandleResume(Packet *p){
-    char *st=p->data+HEADER_SIZE;
-    std::string upId;
-    int l = p->header.size - HEADER_SIZE;
-    std::string raw(st, l);
-    PacketPool::Instance().returnPacket(p);
-
-    size_t pos = 0;
-    while (pos < l && raw[pos] != ' ') upId.push_back(raw[pos++]);
-    pos++;
-    std::string lsRound;
-    while (pos < l && raw[pos] != ' ') lsRound.push_back(raw[pos++]);
-    int round = 0;
-    try { round = std::stoi(lsRound); } 
-    catch (...) { return; }
-
-    std::lock_guard<std::mutex> lk(mtx);
-    auto it = uploadIdToTranserState.find(upId);
-    if (it == uploadIdToTranserState.end()) return;
-    
-    activeTransfers[upId] = it->second;
-
-    if (it->second->round == static_cast<size_t>(round)) {
-        SendAck(upId, ROUND_STATUS);
-    } else {
-        SendAck(upId, ROUND_STATUS, std::to_string(it->second->round + 1));
-    }
- }
- // handle end of file
- // end packet layout 
-//--------------------------------------
-//  upId || checksum
-//------------------------------------
-  void FileTransferManager::handleEnd(Packet *p) {
-    char *st = p->data + HEADER_SIZE;
-    int len = p->header.size - HEADER_SIZE;
-    std::string raw(st, len);
-    PacketPool::Instance().returnPacket(p);
-
-    std::string upId;
-    std::string finalCheckSum;
-    size_t pos = 0;
-    while (pos < len && raw[pos] != ' ') upId.push_back(raw[pos++]);
-    pos++;
-    while (pos < len && raw[pos] != ' ') finalCheckSum.push_back(raw[pos++]);
-
-    std::lock_guard<std::mutex> lk(mtx);
-    auto it = uploadIdToTranserState.find(upId);
-    if (it == uploadIdToTranserState.end()) return;
-    
-    TransferState *state = it->second;
-    
-    // Store checksum to pass to downloaders
-    try { state->checkSum = static_cast<uint32_t>(std::stoul(finalCheckSum)); }
-    catch (...) { state->checkSum = 0; }
-
-    if (state->fileStream.is_open()) {
+    if (success) {
+        std::string finalPath = saveDirectory + state->fileName;
         state->fileStream.close();
-    }
+        fs::rename(state->tempPath, finalPath);
+        Logger::info("File saved: " + state->fileName);
 
-    bool fileIsCorrect = (state->totalChunksRecieved == state->totalChunks);
+        auto now = std::chrono::system_clock::now();
+        state->timestamp = std::to_string(
+            std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count());
 
-    if (fileIsCorrect) {
-        SendAck(upId, FILE_STATUS, "");
         {
-            std::lock_guard<std::mutex> dlk(downloadMtx);
+            std::lock_guard<std::mutex> lk(downloadMtx);
             completedUpload.push(state);
         }
         downloadCv.notify_one();
     } else {
-        SendAck(upId, FILE_STATUS, "SENT FAILED");
+        Logger::error("File transfer failed: " + state->fileName);
+        if (state->fileStream.is_open()) state->fileStream.close();
+        cleanupTransfer(uploadId);
     }
 
-    activeTransfers.erase(upId);
-    uploadIdToTranserState.erase(upId);
-    // Hash removal
-    uint32_t hash = 2166136261u;
-    for (char c : upId) { hash ^= static_cast<uint8_t>(c); hash *= 16777619u; }
-    uploadIdHashMap.erase(hash);
-  }
- // this will tell the sender to send from which bytes of file 
-void FileTransferManager::startResponse(const std::string& upId) {
-    // No lock needed here as it's called synchronously from handleStart which already holds mtx
-    auto it = uploadIdToTranserState.find(upId);
-    if (it == uploadIdToTranserState.end()) return;
+    sendFileStatus(uploadId, success, state->senderId);
+    if (!success) return;
 
-    TransferState* state = it->second;
-    std::streampos fileSize = 0; // Fresh file
-    
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        uploadIdToTransferState.erase(uploadId);
+        activeTransfers.erase(uploadId);
+    }
+}
+
+void FileTransferManager::writeRoundToDisk(TransferState* state)
+{
+    for (const auto& chunk : state->roundBuffer) {
+        if (!chunk.empty()) {
+            state->fileStream.write(reinterpret_cast<const char*>(chunk.data()), chunk.size());
+            state->receivedOffset += chunk.size();
+        }
+    }
+    state->fileStream.flush();
+}
+
+void FileTransferManager::sendAck(const std::string& uploadId, uint32_t roundId,
+                                  const std::vector<uint32_t>& missingChunks,
+                                  const std::string& recId)
+{
     Packet* p = PacketPool::Instance().borrowPacket();
-    p->serialize(FILE_START_RESPONSE, upId, state->senderId, 
-                std::to_string(static_cast<std::streamoff>(fileSize)));
-    
-    off->ManageCompletePacket(p, state->senderId); 
+    p->serializeFileAck(uploadId, roundId, missingChunks);
+    std::cout<<" sendign round ack to :- "<<recId<<std::endl;
+    off->ManageCompletePacket(p, recId);
+}
+
+void FileTransferManager::sendFileStatus(const std::string& uploadId, bool success,
+                                         const std::string& recId)
+{
+    Packet* p = PacketPool::Instance().borrowPacket();
+    p->serialize(PKT_FILE_STATUS, "SERVER", uploadId, success ? "SUCCESS" : "FAILED");
+    off->ManageCompletePacket(p, recId);
+}
+
+TransferState* FileTransferManager::getTransferState(const std::string& uploadId)
+{
+    std::lock_guard<std::mutex> lock(mtx);
+    auto it = uploadIdToTransferState.find(uploadId);
+    return (it != uploadIdToTransferState.end()) ? it->second : nullptr;
+}
+
+void FileTransferManager::cleanupTransfer(const std::string& uploadId)
+{
+    std::lock_guard<std::mutex> lock(mtx);
+    auto it = uploadIdToTransferState.find(uploadId);
+    if (it != uploadIdToTransferState.end()) {
+        if (it->second->fileStream.is_open()) it->second->fileStream.close();
+        delete it->second;
+        uploadIdToTransferState.erase(it);
+        activeTransfers.erase(uploadId);
+    }
+}
+
+uint32_t FileTransferManager::computeFileCRC(const std::string& filepath)
+{
+    std::ifstream file(filepath, std::ios::binary);
+    if (!file) return 0;
+
+    std::vector<uint8_t> buffer(1024 * 1024);
+    uint32_t crc = 0;
+    while (file) {
+        file.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+        size_t read = file.gcount();
+        if (read > 0) crc = CRC32C::compute(buffer.data(), read, crc);
+    }
+    return crc;
 }

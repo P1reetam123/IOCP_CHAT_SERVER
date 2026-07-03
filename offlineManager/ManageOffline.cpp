@@ -40,12 +40,14 @@ void ManageOffline::ManageCompletePacket(Packet *p, std::string recvId)
         bool routed = router->routePacket(front.packet, recvId);
         if (!routed)
         {
+            std::cout<<" could not route the apcket \n";
             // routePacket failed (receiver offline) — clear the flag so
             // the next ManageCompletePacket call will retry.
             // The packet stays at the front of the queue.
             cq->flag.store(false, std::memory_order_release);
         }
     }
+    std::cout<<"packet routed succesfully\n";
     // else: a packet is already in-flight; when it completes,
     // drainNext() will pick up our newly-pushed item.
 }
@@ -56,7 +58,7 @@ void ManageOffline::drainNext(const std::string &recvId, SOCKET socket)
     {
         std::lock_guard<std::mutex> lock(mapMutex);
         auto it = queue_per_client.find(recvId);
-        if (it == queue_per_client.end()) // 36393839313839343400000000000000   // 500
+        if (it == queue_per_client.end()) 
             return;
         cq = &it->second;
     }

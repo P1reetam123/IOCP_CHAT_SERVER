@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #                                                                                                  COMMON                                                                                                 
 set(COMMON_SOURCES
     protocol/Packet.cpp
+    protocol/CRC32C.cpp
     utils/Logger.cpp
 )
 
@@ -22,7 +23,7 @@ set(SERVER_SOURCES
     chat/GroupManager.cpp
     chat/MessageRouter.cpp
     filetransfer/FileTransferManager.cpp
-    filetransfer/FileDownload.cpp
+    filetransfer/FIleDownload.cpp
     network/IOCPManager.cpp
     server/Server.cpp
     offlineManager/ManageOffline.cpp

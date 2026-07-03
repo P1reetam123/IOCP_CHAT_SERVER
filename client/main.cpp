@@ -60,6 +60,7 @@ int main() {
         if (cmd == "/quit") {
             break;
         } else if (cmd == "/help") {
+            
             printHelp();
         } else if (cmd == "/signup") {
             std::string email;

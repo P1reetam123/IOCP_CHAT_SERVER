@@ -4,36 +4,34 @@
 #include "../utils/Logger.h"
 #include "../network/IOCPManager.h"
 #include <cstring>
-#include"../pool/PacketPool.h"
-#include"../authentication/SignUp.h"
+#include "../pool/PacketPool.h"
+#include "../authentication/SignUp.h"
 #include "../authentication/AuthManager.h"
 
 MessageRouter::MessageRouter(SessionManager *sm, GroupManager *gm)
     : sessionManager(sm), groupManager(gm)
 {
-    
 }
 
 bool MessageRouter::routePacket(Packet *packet, const std::string recvId)
 {
-     // checking everytime of session is inefficient as it need locks 
+    // checking everytime of session is inefficient as it need locks
     Session *receiver = sessionManager->findSession(recvId);
     if (receiver)
     {
-      
+        packet->receiverId=recvId;
         receiver->sendPacket(packet); // here we initialise sending
-counter++;
+        counter++;
         //
     }
     else
     {
-    return false;
-        
+        return false;
     }
     return true;
 }
 
-void MessageRouter::routeGroupMessage( Packet *packet)
+void MessageRouter::routeGroupMessage(Packet *packet)
 {
     Group *group = groupManager->getGroup(packet->receiverId);
     if (!group)
@@ -47,10 +45,11 @@ void MessageRouter::routeGroupMessage( Packet *packet)
     {
         if (memberId == packet->senderId)
             continue;
-       Packet* outgoing = PacketPool::Instance().borrowPacket();
-       if(outgoing==nullptr){
-        return;
-       }
+        Packet *outgoing = PacketPool::Instance().borrowPacket();
+        if (outgoing == nullptr)
+        {
+            return;
+        }
         std::memcpy(outgoing->data, packet->data, packet->header.size);
         outgoing->header = packet->header;
         outgoing->in = outgoing->data + packet->header.size;
@@ -64,18 +63,21 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
 {
     PacketType ptype = static_cast<PacketType>(packet->header.type); // got packet type to process
 
-    bool bypassAuth = (ptype == PKT_LOGIN || 
-                        ptype == PKT_SIGN_UP || 
-                        ptype == PKT_OTP_REQ || 
-                        ptype == PKT_OTP_VERIFY || 
-                        ptype == PKT_TOKEN || 
-                        ptype == PKT_REFRESH);
+    bool bypassAuth = (ptype == PKT_LOGIN ||
+                       ptype == PKT_SIGN_UP ||
+                       ptype == PKT_OTP_REQ ||
+                       ptype == PKT_OTP_VERIFY ||
+                       ptype == PKT_TOKEN ||
+                       ptype == PKT_REFRESH);
 
-    if (!bypassAuth) {
-        if (!AuthManager::ValidateSessionHotPath(sender)) {
-            Logger::warn("Unauthenticated packet type " + std::to_string(ptype) + 
+    if (!bypassAuth)
+    {
+        if (!AuthManager::ValidateSessionHotPath(sender))
+        {
+            Logger::warn("Unauthenticated packet type " + std::to_string(ptype) +
                          " rejected from socket " + std::to_string(sender->socket));
-            if (authManager) {
+            if (authManager)
+            {
                 authManager->SendAuthFailure(sender, "Unauthorized access - please login");
             }
             PacketPool::Instance().returnPacket(packet);
@@ -86,37 +88,52 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
     switch (ptype)
     {
     case PKT_LOGIN:
-        if (authManager) {
-            std::string tempId=sender->userId;
+        if (authManager)
+        {
+            std::string tempId = sender->userId;
             authManager->HandleLoginPacket(packet, sender);
-            
-sessionManager->updateNewId(tempId,sender);
-offManager->notifySend(sender->userId);
+            sessionManager->updateNewId(tempId, sender);
+            {
+                const std::string id = sender->userId;
+                Packet *p = PacketPool::Instance().borrowPacket();
+                p->serialize(PKT_USER_ID, "server", id, id);
+                bool routed = routePacket(p, id);
+                if (routed)
+                    std::cout << "id send succesfully !\n";
+            }
 
-
-        } else {
+            offManager->notifySend(sender->userId);
+        }
+        else
+        {
             PacketPool::Instance().returnPacket(packet);
         }
         break;
 
-    case PKT_TOKEN: // for connecting 
-        if (authManager) {
-            std::string tempId=sender->userId;
+    case PKT_TOKEN: // for connecting
+        if (authManager)
+        {
+            std::string tempId = sender->userId;
             authManager->HandleTokenPacket(packet, sender);
-            sessionManager->updateNewId(tempId,sender);
+            sessionManager->updateNewId(tempId, sender);
             offManager->notifySend(sender->userId);
-        } else {
+        }
+        else
+        {
             PacketPool::Instance().returnPacket(packet);
         }
         break;
 
     case PKT_REFRESH:
-        if (authManager) {
-             std::string tempId=sender->userId;
+        if (authManager)
+        {
+            std::string tempId = sender->userId;
             authManager->HandleRefreshPacket(packet, sender);
-            sessionManager->updateNewId(tempId,sender);
+            sessionManager->updateNewId(tempId, sender);
             offManager->notifySend(sender->userId);
-        } else {
+        }
+        else
+        {
             PacketPool::Instance().returnPacket(packet);
         }
         break;
@@ -125,7 +142,7 @@ offManager->notifySend(sender->userId);
     case PKT_LOGOUT:
         Logger::info("User '" + sender->userId + "' logged out");
         sessionManager->removeSession(sender->userId);
-          PacketPool::Instance().returnPacket(packet);
+        PacketPool::Instance().returnPacket(packet);
         break;
 
     case PKT_PRIVATE_MESSAGE:
@@ -162,48 +179,50 @@ offManager->notifySend(sender->userId);
         break;
 
     case PKT_FILE_START:
-                   
-        filemanager->handleStart(packet);
+        filemanager->handleFileStart(packet, sender->userId);
         break;
     case PKT_FILE_CHUNK:
-      //  Logger::info("Received PKT_FILE_CHUNK packet");
-        filemanager->handleChunks(packet);
+        filemanager->handleFileChunk(packet);
+        break;
+    case PKT_ROUND_END:
+    std::cout<<" client asking for ack\n";
+        filemanager->handleRoundEnd(packet);
         break;
     case PKT_FILE_END:
-       // Logger::info("Received PKT_FILE_END packet");
-        filemanager->handleEnd(packet);
+        filemanager->handleFileEnd(packet);
+        break;
+    case PKT_FILE_ACK:
+    
+        filemanager->onAckReceived(packet);
         break;
     case PKT_ACKNOWLEDGMENT:
-      //  Logger::info("Received PKT_ACKNOWLEDGMENT packet");
-        filemanager->acknowledgment(packet);
+        PacketPool::Instance().returnPacket(packet);
         break;
     case PKT_RESUME:
-     //   Logger::info("Received PKT_RESUME packet");
-        filemanager->HandleResume(packet);
+        //   Logger::info("Received PKT_RESUME packet");
+        // filemanager->HandleResume(packet);
         break;
     case FILE_DWNLD_DISCONNECT_REQUEST:
-     //   Logger::info("Received FILE_DWNLD_DISCONNECT_REQUEST packet");
+        //   Logger::info("Received FILE_DWNLD_DISCONNECT_REQUEST packet");
         filemanager->HandleDisconnectRequest(packet);
         break;
     case DOWNLOAD_REQUEST:
-     //   Logger::info("Received DOWNLOAD_REQUEST packet");
         filemanager->HandleDownloadRequest(packet);
-        break;
-    case ROUND_STATUS:
-    //    Logger::info("Received ROUND_STATUS packet");
-        filemanager->onAckReceived(packet);
         break;
 
     case PKT_OTP_REQ:
-        if (signUpManager) signUpManager->otpRequestHandler(packet);
+        if (signUpManager)
+            signUpManager->otpRequestHandler(packet);
         break;
-        
+
     case PKT_OTP_VERIFY:
-        if (signUpManager) signUpManager->onOtpVerificationRequest(packet);
+        if (signUpManager)
+            signUpManager->onOtpVerificationRequest(packet);
         break;
-        
+
     case PKT_SIGN_UP:
-        if (signUpManager) signUpManager->signUpRequestHandler(packet);
+        if (signUpManager)
+            signUpManager->signUpRequestHandler(packet);
         break;
 
     default:
@@ -211,6 +230,5 @@ offManager->notifySend(sender->userId);
         break;
     }
 
-    
     return true;
 }

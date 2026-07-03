@@ -81,9 +81,9 @@ if(!isAlreadySignup(email)){
 // already singed 
  if (router) {
         Packet* errPacket = PacketPool::Instance().borrowPacket();
-        errPacket->serialize( PKT_SIGNUP_ERROR, "SERVER", p->senderId, "already signed !/ login ");
+        errPacket->serialize( PKT_SIGNUP_ERROR, "SERVER", p->tempSessionId, "already signed !/ login ");
        
-        router->routePacket(errPacket, p->senderId);
+        router->routePacket(errPacket, p->tempSessionId);
     }
 
 return ;
@@ -136,7 +136,7 @@ void SignUp::signUpRequestHandler(Packet *p){
   std::string email,number,username,password;
   iss>>email>>number>>username>>password;
   
-  std::string sessionId = p->senderId;
+  std::string sessionId = p->tempSessionId;
   PacketPool::Instance().returnPacket(p);
 
   bool verified = isVerified(email);
@@ -144,9 +144,9 @@ void SignUp::signUpRequestHandler(Packet *p){
     if (router) {
         Packet* errPacket = PacketPool::Instance().borrowPacket();
         errPacket->serialize( PKT_SIGNUP_ERROR, "SERVER", sessionId, "Signup Failed: Email not verified");
-       
         router->routePacket(errPacket, sessionId);
     }
+    std::cout<<"returning without pushign into the queue\n";
     return ;
   }
 
@@ -158,12 +158,15 @@ void SignUp::signUpRequestHandler(Packet *p){
   state.sessionId=sessionId;
 
   std::lock_guard<std::mutex> lock(cmutex);
+  std::cout<<" state pushed into the quwu\n";
   signUpQueue.push(state);
   cv.notify_one();
 }
 bool SignUp::isVerified(const std::string email){
 auto it =emailVerified.find(email);
+std::cout<<"verifying the email\n";
 if(it==emailVerified.end()) return false;
+std::cout<<"email verified\n";
 return it->second;
 }
 // email || otp 
@@ -172,7 +175,7 @@ void SignUp::onOtpVerificationRequest(Packet* p){
   std::istringstream iss(p->payload);
   std::string email, otp;
   iss>>email>>otp;
-  std::string sessionId = p->senderId;
+  std::string sessionId = p->tempSessionId;
   PacketPool::Instance().returnPacket(p);
   
   std::string hashedOtp = hashStr(otp);
@@ -224,6 +227,7 @@ void SignUp::signupManager() {
     while(true) {
         signupState state;
         {
+          std::cout<<"got the state\n";
             std::unique_lock<std::mutex> lk(cmutex);
             cv.wait(lk, [this]{ return stopThread || !signUpQueue.empty(); });
             if (stopThread && signUpQueue.empty()) break;

@@ -16,7 +16,7 @@ void SessionManager::updateNewId(const std::string &id, Session *s)
     {                                             // we got the old session
         SOCKET oldSocket = newit->second->socket; /// got the socket of old user
 
-        s->iocp->HandleDisconnectWithoutLock(oldSocket); // cleanup the socket this handle only socket cleanup
+        s->iocp->HandleDisconnectWithoutLock(oldSocket);
         socketToUserId.erase(oldSocket);
         SessionPool::Instance().returnSession(newit->second); // return the session
         sessions.erase(newit);                                // this erase the session on new id , means old login

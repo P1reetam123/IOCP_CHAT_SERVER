@@ -4,14 +4,6 @@
 #include "PacketHeader.h"
 #include "PacketTypes.h"
 
-#pragma pack(push, 1)
-struct ChunkHeader {
-    uint32_t uploadIdHash;  // FNV            1a hash of upload ID for O(1) lookup
-    uint16_t chunkIdx;      // Max 1024 chunks per round
-    uint16_t dataLen;       // Actual chunk data length
-};
-#pragma pack(pop)
-
 class Packet
 {
 public:
@@ -19,37 +11,65 @@ public:
     char data[4096];
     char* in = data;
     size_t id;
-    std::string user_name;// this is name taken by user , need not to be unique
-    // Parsed fields (populated after parseHeader)
-    std::string senderId;// this id issued by server
-    std::string receiverId;  // this is id issued by server 
-    // for server side we do need payload we need only sender and reciever id
+    std::string tempSessionId;
+    std::string user_name;
+    std::string senderId;
+    std::string receiverId;
     std::string payload;
     bool parsedHeader=false;
     bool parsedData=false;
-    bool isSent=false; // to check whether data is sent or not
+    bool isSent=false;
     bool isSending =false;
     bool isSentFail=false;
-    
-    // Reset the write pointer back to the start of the buffer
+
     void clearInPointer();
-    // Parse the raw buffer to extract senderId, receiverId, payload
-    // Wire payload format: "senderId receiverId payload_data"
     bool parseHeader();
     bool parseData();
-    // Build a complete packet from fields into the data buffer
-    // Returns the total size written
     int serialize(PacketType type,
                   const std::string& sender,
                   const std::string& receiver,
                   const std::string& payloadData);
 
-    // Get the total number of bytes received so far
     int bytesReceived() const;
-
-    // Check if a complete packet has been received
     bool isHeaderComplete() const;
     bool isComplete() const;
-    void serializeChunk(const std::string &upId, const std::string &chunkIdx,const std::vector<char>&memeblock);
-    void serializeChunkBinary(uint32_t uploadIdHash, uint16_t chunkIdx, const char* chunkData, uint16_t dataLen);
+
+    void serializeFileStart(const std::string& uploadId,
+                           const std::string& fileName,
+                           uint64_t totalSize,
+                           uint32_t finalCrc = 0);
+
+    void serializeFileStartResponse(const std::string& uploadId,
+                                   uint64_t resumeOffset);
+
+    void serializeFileChunk(const std::string& uploadId,
+                           uint64_t byteOffset,
+                           const std::vector<uint8_t>& chunkData);
+
+    void serializeRoundEnd(const std::string& uploadId,
+                          uint32_t roundId,
+                          uint32_t chunkCount);
+
+    void serializeFileAck(const std::string& uploadId,
+                         uint32_t roundId,
+                         const std::vector<uint32_t>& missingChunks = {});
+
+    void serializeFileEnd(const std::string& uploadId, uint32_t finalCrc);
+
+    void writeUint8(uint8_t v);
+    void writeUint32(uint32_t v);
+    void writeUint64(uint64_t v);
+    void writeString(const std::string& str);
+    void writeBytes(const uint8_t* data, uint32_t len);
+
+    uint8_t readUint8(size_t& pos) const;
+    uint32_t readUint32(size_t& pos) const;
+    uint64_t readUint64(size_t& pos) const;
+    std::string readString(size_t& pos) const;
+    std::vector<uint8_t> readBytes(size_t& pos, uint32_t len) const;
+
+private:
+    size_t writePos = HEADER_SIZE;
+    void resetWritePos();
+    void finalizeBinaryPacket(PacketType type);
 };

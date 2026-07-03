@@ -2,6 +2,8 @@
 #include <cstring>
 #include <winsock2.h>
 #include <limits>
+#include <stdexcept>
+#include "CRC32C.h"
 
 void Packet::clearInPointer()
 {
@@ -16,22 +18,26 @@ void Packet::clearInPointer()
     isSent = false;
     isSending = false;
     isSentFail = false;
+    writePos = HEADER_SIZE;
 }
 
 int Packet::bytesReceived() const
 {
     return static_cast<int>(in - data);
 }
+
 bool Packet::isComplete() const
 {
-     return bytesReceived() >= static_cast<int>(header.size);
+    return bytesReceived() >= static_cast<int>(header.size);
 }
+
 bool Packet::isHeaderComplete() const
 {
     return bytesReceived() >= HEADER_SIZE;
 }
 
-bool Packet::parseData() {
+bool Packet::parseData()
+{
     size_t received = static_cast<size_t>(bytesReceived());
     if (received < header.size) return false;
 
@@ -42,66 +48,60 @@ bool Packet::parseData() {
     }
 
     const uint8_t* body = reinterpret_cast<const uint8_t*>(data + HEADER_SIZE);
-    
-    // Find first space
+
     const uint8_t* sp1 = static_cast<const uint8_t*>(memchr(body, ' ', bodyLen));
     if (!sp1) return false;
-    
-    // Calculate remaining length after first space
+
     size_t remaining = bodyLen - (sp1 - body) - 1;
     if (remaining == 0) return false;
-    
-    // Find second space in remaining portion
+
     const uint8_t* sp2 = static_cast<const uint8_t*>(memchr(sp1 + 1, ' ', remaining));
     if (!sp2) return false;
-    
+
     const uint8_t* payloadStart = sp2 + 1;
     size_t clen = bodyLen - (payloadStart - body);
-    
+
     if (clen == 0) {
         parsedData = true;
         return true;
     }
-    
+
     payload.assign(payloadStart, payloadStart + clen);
     parsedData = true;
     return true;
-}   
+}
+
 bool Packet::parseHeader()
 {
     int received = bytesReceived();
     if (received < HEADER_SIZE) return false;
 
-    // Extract header fields (network byte order)
     header.size = ntohl(*(uint32_t*)data);
     header.type = *(uint8_t*)(data + 4);
-   
+
     if (received < static_cast<int>(header.size)) return false;
-    
-    // Parse payload: "senderId receiverId actual_payload"
+
     const char* payloadStart = data + HEADER_SIZE;
     int payloadLen = header.size - HEADER_SIZE;
     if (payloadLen <= 0) return true;
+
     std::string raw(payloadStart, payloadLen);
     senderId.clear();
     receiverId.clear();
     size_t pos = 0;
-    // Extract senderId
     while (pos < raw.size() && raw[pos] != ' ')
         senderId.push_back(raw[pos++]);
-    pos++; // skip space
-    // Extract receiverId
+    pos++;
     while (pos < raw.size() && raw[pos] != ' ')
         receiverId.push_back(raw[pos++]);
-    pos++; // skip space
-// we can skip payload in serevr because we need only need header
-    // Rest is payload
+    pos++;
     if (pos < raw.size()) {
         payload = raw.substr(pos);
     }
     parsedHeader = true;
     return true;
 }
+
 int Packet::serialize(PacketType type,
                       const std::string& sender,
                       const std::string& receiver,
@@ -113,7 +113,6 @@ int Packet::serialize(PacketType type,
 
     const size_t total = HEADER_SIZE + senderSize + 1 + receiverSize + 1 + payloadSize;
 
-    // Guard BOTH the buffer capacity and the uint32_t range before any write.
     if (total > 4096 || total > std::numeric_limits<uint32_t>::max()) {
         return -1;
     }
@@ -135,79 +134,175 @@ int Packet::serialize(PacketType type,
     in = data + totalSize;
     return static_cast<int>(totalSize);
 }
-void Packet::serializeChunk(const std::string& upId, const std::string& chunkIdx, const std::vector<char>& memeblock) {
-    // 1. Calculate sizes
-    size_t idSize = upId.size();
-    size_t idxSize = chunkIdx.size();
-    size_t blockSize = memeblock.size();
-    
-    // Total payload = id + space + idx + space + block
-    size_t payloadSize = idSize + 1 + idxSize + 1 + blockSize;
-    uint32_t totalSize = HEADER_SIZE + static_cast<uint32_t>(payloadSize);
 
-    
-    uint32_t netSize = htonl(totalSize);
-    std::memcpy(data, &netSize, 4);
-    data[4] = static_cast<uint8_t>(PKT_FILE_CHUNK);
-
-  
-  // Correct: Explicitly tell the compiler to treat this address as uint8_t*
-
-  // this reads bytes by bytes
-uint8_t* ptr = reinterpret_cast<uint8_t*>(data + HEADER_SIZE); 
-
-   
-    if (idSize > 0) {
-        std::memcpy(ptr, upId.c_str(), idSize);
-    }
-    ptr += idSize;
-    
-   
-    *ptr++ = ' ';
-
-    // Copy chunkIdx
-    if (idxSize > 0) {
-        std::memcpy(ptr, chunkIdx.c_str(), idxSize);
-    }
-    ptr += idxSize;
-
-    // Add space
-    *ptr++ = ' ';
-
-    if (blockSize > 0) {
-        std::memcpy(ptr, memeblock.data(), blockSize);
-    }
-
-    // 4. Update State
-    header.size = totalSize;
-    header.type = static_cast<uint8_t>(PKT_FILE_CHUNK);
-    in = data + totalSize;
+void Packet::resetWritePos()
+{
+    writePos = HEADER_SIZE;
 }
 
-void Packet::serializeChunkBinary(uint32_t uploadIdHash, uint16_t chunkIdx, const char* chunkData, uint16_t dataLen) {
-    // Total size = Header + ChunkHeader + dataLen
-    // ChunkHeader is 8 bytes
-    uint32_t totalSize = HEADER_SIZE + sizeof(ChunkHeader) + dataLen;
-
-    uint32_t netSize = htonl(totalSize);
+void Packet::finalizeBinaryPacket(PacketType type)
+{
+    uint32_t netSize = htonl(static_cast<uint32_t>(writePos));
     std::memcpy(data, &netSize, 4);
-    data[4] = static_cast<uint8_t>(PKT_FILE_CHUNK);
+    data[4] = static_cast<uint8_t>(type);
+    header.size = static_cast<uint32_t>(writePos);
+    header.type = static_cast<uint8_t>(type);
+    in = data + writePos;
+}
 
-    ChunkHeader chunkHeader;
-    chunkHeader.uploadIdHash = uploadIdHash; // Stored in little-endian/native is fine if client matches, but usually htonl/htons should be used.
-    // For now keeping it native endian as assuming same architecture for simplicity, or we can use htonl/htons
-    chunkHeader.chunkIdx = chunkIdx;
-    chunkHeader.dataLen = dataLen;
+void Packet::writeUint8(uint8_t v)
+{
+    if (writePos + 1 > sizeof(data)) return;
+    std::memcpy(data + writePos, &v, 1);
+    writePos += 1;
+}
 
-    uint8_t* ptr = reinterpret_cast<uint8_t*>(data + HEADER_SIZE);
-    std::memcpy(ptr, &chunkHeader, sizeof(ChunkHeader));
-    ptr += sizeof(ChunkHeader);
+void Packet::writeUint32(uint32_t v)
+{
+    if (writePos + 4 > sizeof(data)) return;
+    uint32_t net = htonl(v);
+    std::memcpy(data + writePos, &net, 4);
+    writePos += 4;
+}
 
-    if (dataLen > 0) {
-        std::memcpy(ptr, chunkData, dataLen);
+void Packet::writeUint64(uint64_t v)
+{
+    if (writePos + 8 > sizeof(data)) return;
+    uint64_t net = htonll(v);
+    std::memcpy(data + writePos, &net, 8);
+    writePos += 8;
+}
+
+void Packet::writeString(const std::string& str)
+{
+    uint32_t len = static_cast<uint32_t>(str.length());
+    writeUint32(len);
+    if (writePos + len > sizeof(data)) return;
+    std::memcpy(data + writePos, str.data(), len);
+    writePos += len;
+}
+
+void Packet::writeBytes(const uint8_t* bytes, uint32_t len)
+{
+    if (writePos + len > sizeof(data)) return;
+    std::memcpy(data + writePos, bytes, len);
+    writePos += len;
+}
+
+void Packet::serializeFileStart(const std::string& uploadId,
+                               const std::string& fileName,
+                               uint64_t totalSize,
+                               uint32_t finalCrc)
+{
+    resetWritePos();
+    writeUint64(totalSize);
+    writeString(fileName);
+    writeString(uploadId);
+    writeUint32(finalCrc);
+    finalizeBinaryPacket(PKT_FILE_START);
+}
+
+void Packet::serializeFileStartResponse(const std::string& uploadId,
+                                       uint64_t resumeOffset)
+{
+    resetWritePos();
+    writeString(uploadId);
+    writeUint64(resumeOffset);
+    finalizeBinaryPacket(FILE_START_RESPONSE);
+}
+
+void Packet::serializeFileChunk(const std::string& uploadId,
+                               uint64_t byteOffset,
+                               const std::vector<uint8_t>& chunkData)
+{
+    resetWritePos();
+
+    uint32_t chunkSize = static_cast<uint32_t>(chunkData.size());
+    uint32_t crc = CRC32C::compute(chunkData);
+
+    writeString(uploadId);
+    writeUint64(byteOffset);
+    writeUint32(chunkSize);
+    writeUint32(crc);
+    writeBytes(chunkData.data(), chunkSize);
+
+    finalizeBinaryPacket(PKT_FILE_CHUNK);
+}
+
+void Packet::serializeRoundEnd(const std::string& uploadId,
+                              uint32_t roundId,
+                              uint32_t chunkCount)
+{
+    resetWritePos();
+    writeString(uploadId);
+    writeUint32(roundId);
+    writeUint32(chunkCount);
+    finalizeBinaryPacket(PKT_ROUND_END);
+}
+
+void Packet::serializeFileAck(const std::string& uploadId,
+                             uint32_t roundId,
+                             const std::vector<uint32_t>& missingChunks)
+{
+    resetWritePos();
+    writeString(uploadId);
+    writeUint32(roundId);
+    writeUint32(static_cast<uint32_t>(missingChunks.size()));
+    for (uint32_t idx : missingChunks) {
+        writeUint32(idx);
     }
+    finalizeBinaryPacket(PKT_FILE_ACK);
+}
 
-    header.size = totalSize;
-    header.type = static_cast<uint8_t>(PKT_FILE_CHUNK);
-    in = data + totalSize;
+void Packet::serializeFileEnd(const std::string& uploadId, uint32_t finalCrc)
+{
+    resetWritePos();
+    writeString(uploadId);
+    writeUint32(finalCrc);
+    finalizeBinaryPacket(PKT_FILE_END);
+}
+
+uint8_t Packet::readUint8(size_t& pos) const
+{
+    if (pos + 1 > header.size) throw std::runtime_error("readUint8 bounds");
+    uint8_t v;
+    std::memcpy(&v, data + pos, 1);
+    pos += 1;
+    return v;
+}
+
+uint32_t Packet::readUint32(size_t& pos) const
+{
+    if (pos + 4 > header.size) throw std::runtime_error("readUint32 bounds");
+    uint32_t net;
+    std::memcpy(&net, data + pos, 4);
+    pos += 4;
+    return ntohl(net);
+}
+
+uint64_t Packet::readUint64(size_t& pos) const
+{
+    if (pos + 8 > header.size) throw std::runtime_error("readUint64 bounds");
+    uint64_t net;
+    std::memcpy(&net, data + pos, 8);
+    pos += 8;
+    return ntohll(net);
+}
+
+std::string Packet::readString(size_t& pos) const
+{
+    uint32_t len = readUint32(pos);
+    if (pos + len > header.size) throw std::runtime_error("readString bounds");
+    std::string str(reinterpret_cast<const char*>(data + pos), len);
+    pos += len;
+    return str;
+}
+
+std::vector<uint8_t> Packet::readBytes(size_t& pos, uint32_t len) const
+{
+    if (pos + len > header.size) throw std::runtime_error("readBytes bounds");
+    std::vector<uint8_t> result(len);
+    std::memcpy(result.data(), data + pos, len);
+    pos += len;
+    return result;
 }

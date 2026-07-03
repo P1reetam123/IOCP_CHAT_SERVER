@@ -111,6 +111,9 @@ void AuthManager::HandleLoginPacket(Packet *packet, Session *sender)
     // ProcessLogin already sent the appropriate response packet
     // (PKT_TOKEN_GRANTED on success, PKT_AUTH_FAIL on any failure).
     // The result is used here only for logging at the call site if needed.
+
+    // send the user id to client afterward client will use this to send the packet
+   
     (void)result;
 }
 
@@ -393,7 +396,6 @@ AuthResult AuthManager::ProcessLogin(const std::string &identifier,
                  " (identifier=" + identifier + ")");
 
     // Step 9: Send the token pair to the client
-
     SendTokenGranted(session, tokens);
 
     return AuthResult::SUCCESS;

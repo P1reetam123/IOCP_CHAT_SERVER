@@ -358,7 +358,7 @@ void IOCPManager::workerThread()
                     sentPacket->isSending = false;
                     sentPacket->isSent = true;
                     PacketPool::Instance().returnPacket(sentPacket);
-                    std::cout << "packet has been sent \n";
+                     std::cout<<"packet sent succesfully\n";
                     // drain next packet
                     offlineManager->drainNext(recvId, clientSocket);
                 }
