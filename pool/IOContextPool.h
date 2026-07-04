@@ -1,3 +1,5 @@
+
+#pragma once
 #include"./network/IOContext.h"
 #include<array>
 #include"./datastructure/fixedQueue.h"

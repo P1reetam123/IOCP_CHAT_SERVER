@@ -34,7 +34,7 @@ public:
     bool isHeaderComplete() const;
     bool isComplete() const;
 
-    void serializeFileStart(const std::string& uploadId,
+    void serializeFileStart(const std::string& recid,const std::string& uploadId,
                            const std::string& fileName,
                            uint64_t totalSize,
                            uint32_t finalCrc = 0);
@@ -67,7 +67,8 @@ public:
     uint64_t readUint64(size_t& pos) const;
     std::string readString(size_t& pos) const;
     std::vector<uint8_t> readBytes(size_t& pos, uint32_t len) const;
-
+void serializeLink(const std::string senderId,const std::string &uploadId,const std::string filename,const std::uint32_t &totalsize,const std::string& timestamp);
+void serializeDownloadReq(const std::string& userId,const std::string &upId,const uint32_t &bytes);
 private:
     size_t writePos = HEADER_SIZE;
     void resetWritePos();

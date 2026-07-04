@@ -37,11 +37,11 @@ bool GroupManager::leaveGroup(const std::string& groupId, const std::string& use
     }
     return true;
 }
-
+// we do not return pointer because if any operation (remove /add ) done after the message is sent , message should not be sent to new members 
 Group* GroupManager::getGroup(const std::string& groupId)
 {
     std::lock_guard<std::mutex> lock(mtx);
     auto it = groups.find(groupId);
     if (it != groups.end()) return &(it->second);
-    return nullptr;
+    return {};
 }

@@ -39,8 +39,9 @@ std::mutex cmutex; // mutex for cv
 
 std::condition_variable cv;
 std::unordered_map<std::string,otpData >otpChecker;// to check the otp  by number
-
+std::mutex otmtx;
 std::unordered_map<std::string ,bool>emailVerified;
+std::mutex emtx;
 std::unordered_map<std::string, size_t> requestCounter;
 
 table<userInfo> db;

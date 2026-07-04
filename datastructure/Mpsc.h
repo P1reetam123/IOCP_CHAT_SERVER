@@ -16,7 +16,7 @@ private:
 
     std::atomic<Node*> head{nullptr};
     std::atomic<Node*> tail{nullptr};
-   std::atomic<size_t>s;
+  // std::atomic<size_t>s;
 
 public:
     MpscQueue();
@@ -43,7 +43,7 @@ public:
 template <typename T>
 MpscQueue<T>::MpscQueue()
 {
-    s.store(0,std::memory_order_relaxed);
+   // s.store(0,std::memory_order_relaxed);
     Node* stub = new Node();
     head.store(stub, std::memory_order_relaxed);
     tail.store(stub, std::memory_order_relaxed);
@@ -66,7 +66,7 @@ void MpscQueue<T>::push(T value)
     // Swap head and link previous node to new one
     Node* prev = head.exchange(new_node, std::memory_order_acq_rel);
     prev->next.store(new_node, std::memory_order_release);
-   s++;
+  // s++;
 }
 
 template <typename T>
@@ -92,7 +92,7 @@ bool MpscQueue<T>::pop()
     // Clean up old stub
     delete tail_->data;   // Free the stored object
     delete tail_;         // Free the old node
-s--;
+//s--;
     return true;
 }
 
@@ -124,7 +124,7 @@ bool MpscQueue<T>::empty() const
 }
 
 
-template <typename T>
-size_t MpscQueue<T>::size(){
-    return s;
-}
+// template <typename T>
+// size_t MpscQueue<T>::size(){
+//     return s;
+// }

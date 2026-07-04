@@ -12,7 +12,7 @@ void signalHandler(int signum)
     if (g_server) {
         g_server->stop();
     }
-    exit(signum);
+    _exit(signum);
 }
 
 int main()

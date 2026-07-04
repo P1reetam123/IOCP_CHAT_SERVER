@@ -1,4 +1,4 @@
-#pragma once
+
 #include "Client.h"
 #include <iostream>
 #include <ws2tcpip.h>
@@ -188,7 +188,11 @@ void Client::receiveLoop()
             if (streamBuffer.size() < HEADER_SIZE) break;
 
             uint32_t packetSize = ntohl(*reinterpret_cast<uint32_t*>(streamBuffer.data()));
-            if (streamBuffer.size() < packetSize) break;
+            if (streamBuffer.size() < packetSize || packetSize>sizeof(Packet::data)){
+                    std::cout<<" pacekt overflow\n";
+                     streamBuffer.erase(streamBuffer.begin(), streamBuffer.begin() + packetSize); // erase that much data
+                    break;
+            } 
 
             Packet p;
             std::memcpy(p.data, streamBuffer.data(), packetSize);
@@ -341,15 +345,14 @@ bool Client::sendFile(const std::string &receiver, const std::string &filepath)
         std::lock_guard<std::mutex> lock(uploadsMtx);
         activeUploads[state->uploadId] = state;
     }
-
+    state->uploadThread = std::jthread(&Client::uploadWorker, this, state);
+// first launch the thread then send the packet 
     Packet p;
-    p.serializeFileStart(state->uploadId,
-                         std::filesystem::path(filepath).filename().string(),
+    p.serializeFileStart(state->receiver,state->uploadId,std::filesystem::path(filepath).filename().string(),
                          state->totalSize,
                          state->finalCrc);
     sendRawPacket(p);
 
-    state->uploadThread = std::jthread(&Client::uploadWorker, this, state);
     return true;
 }
 
@@ -447,12 +450,19 @@ void Client::uploadWorker(std::shared_ptr<UploadState> state)
     std::cout << "Upload completed: " << state->filepath << std::endl;
 }
 
+std::string Client::sanitize(const std::string& name){
+    std::string result = std::filesystem::path(name).filename().string();
+    if (result.empty() || result == "." || result == "..") 
+        return "unnamed_" + std::to_string(std::time(nullptr));
+    return result;
+}
 // ====================== DOWNLOAD ======================
 void Client::handleFileStart(Packet &p)
 {
     size_t pos = HEADER_SIZE;
     uint64_t totalSize = p.readUint64(pos);
-    std::string fileName = p.readString(pos);
+    std::string senderId=p.readString(pos);
+    std::string fileName =sanitize( p.readString(pos));
     std::string uploadId = p.readString(pos);
     uint32_t finalCrc = (pos + 4 <= p.header.size) ? p.readUint32(pos) : 0;
 
@@ -660,37 +670,35 @@ void Client::handleFileAck(Packet &p)
 
 bool Client::downloadFile(const std::string &uploadId)
 {
+    std::cout<<"enter into download request\n";
     if (!isConnected) return false;
 
     std::streampos fileSize = 0;
-    {
-        std::lock_guard<std::mutex> lk(downloadsMtx);
-        auto it = activeDownloads.find(uploadId);
-        if (it == activeDownloads.end()) return false;
-        auto state = it->second;
-
-        std::filesystem::create_directory("downloads");
-        std::string dir = "./downloads/" + state->fileName;
-        std::ifstream file(dir, std::ios::ate);
-        if (file.is_open()) fileSize = file.tellg();
-    }
-
+    // {
+    //     std::filesystem::create_directory("downloads");
+    //     std::string dir = "./downloads/" + 
+    //     std::ifstream file(dir, std::ios::ate);
+    //     if (file.is_open()) fileSize = file.tellg();
+    // }
+// recid||updi||bytes ||
     Packet p;
-    p.serialize(DOWNLOAD_REQUEST, userId, uploadId, std::to_string(static_cast<std::streamoff>(fileSize)));
+    p.serializeDownloadReq(userId,uploadId,(static_cast<uint32_t>(fileSize)));
     return sendRawPacket(p);
 }
 
 void Client::handleDownloadLink(Packet &p)
 {
     // Existing logic
-    char *st = p.data + HEADER_SIZE;
-    size_t len = p.header.size - HEADER_SIZE;
-    std::string raw(st, len);
-    std::stringstream ss(raw);
-    std::string sendId, recId, upId, fileName, length, timestamp;
-    ss >> sendId >> recId >> upId >> fileName >> length >> timestamp;
-
-    std::cout << "\n[File Transfer] User " << sendId << " sent: " << fileName << "\n";
+    std::string senderid, upId,filename,timestamp;
+    uint32_t totalsize;
+  size_t pos=HEADER_SIZE;
+  senderid=p.readString(pos);
+  upId=p.readString(pos);
+  filename=p.readString(pos);
+  totalsize=p.readUint32(pos);
+  timestamp=p.readString(pos);
+   
+    std::cout << "\n[File Transfer] User " << senderid << " sent: " << filename<<" of size : "<<totalsize<<" at time : "<<timestamp<<" with upload id : - "<<upId << "\n";
 }
 
 void Client::HandleFileStatus(Packet &p)

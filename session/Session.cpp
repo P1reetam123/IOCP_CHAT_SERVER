@@ -1,5 +1,5 @@
+#include<iostream>
 
- #pragma once
 #include "Session.h"
 #include "../network/IOCPManager.h"
 #include <cstring>
@@ -64,7 +64,8 @@ void Session::close()
 bool Session::sendPacket(Packet* p){
     // Kick off IOCP send if we have a reference
     if (iocp) {
-        iocp->queueSend(this->socket, p);
+std::cout<<" sending in the socket"<<this->socket<<std::endl;
+        return iocp->initiateSend(this->socket, p);
     }
     return true;
 }

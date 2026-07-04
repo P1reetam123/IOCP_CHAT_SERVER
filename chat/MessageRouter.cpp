@@ -1,4 +1,3 @@
-#pragma once
 
 #include "MessageRouter.h"
 #include "../utils/Logger.h"
@@ -20,12 +19,14 @@ bool MessageRouter::routePacket(Packet *packet, const std::string recvId)
     if (receiver)
     {
         packet->receiverId=recvId;
-        receiver->sendPacket(packet); // here we initialise sending
-        counter++;
+        std::cout<<" sending initialised to :- "<<recvId<<std::endl;
+        return receiver->sendPacket(packet); // here we initialise sending
+    
         //
     }
     else
     {
+        std::cout<<" id not found in the session "<<recvId<<std::endl;
         return false;
     }
     return true;
@@ -39,7 +40,7 @@ void MessageRouter::routeGroupMessage(Packet *packet)
         Logger::warn("Group '" + packet->receiverId + "' not found");
         return;
     }
-
+std::lock_guard<std::mutex>lk(groupManager->mtx);
     // Send to all group members except the sender
     for (const auto &memberId : group->members)
     {

@@ -233,12 +233,13 @@ private:
             {
                 freqList.erase(freqIt);
             }
-            freqIt->freq++;
+             else{ freqIt->freq++;
             if (freqIt->freq > freqList.back().freq)
             {
                 freqList.push_back({freqIt->freq, {}});
                 freqIt = freqList.end();
             }
+        }
         }
         else
         {

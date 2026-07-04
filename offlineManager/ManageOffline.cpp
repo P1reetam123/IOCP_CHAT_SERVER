@@ -40,14 +40,17 @@ void ManageOffline::ManageCompletePacket(Packet *p, std::string recvId)
         bool routed = router->routePacket(front.packet, recvId);
         if (!routed)
         {
-            std::cout<<" could not route the apcket \n";
+            std::cout<<" could not route the apcket to - "<<recvId<<std::endl;
             // routePacket failed (receiver offline) — clear the flag so
             // the next ManageCompletePacket call will retry.
             // The packet stays at the front of the queue.
             cq->flag.store(false, std::memory_order_release);
         }
+        else{
+std::cout<<"packet routed succesfully to "<<recvId<<std::endl;
+        }
     }
-    std::cout<<"packet routed succesfully\n";
+    
     // else: a packet is already in-flight; when it completes,
     // drainNext() will pick up our newly-pushed item.
 }

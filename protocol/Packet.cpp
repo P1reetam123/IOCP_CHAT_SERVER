@@ -113,7 +113,7 @@ int Packet::serialize(PacketType type,
 
     const size_t total = HEADER_SIZE + senderSize + 1 + receiverSize + 1 + payloadSize;
 
-    if (total > 4096 || total > std::numeric_limits<uint32_t>::max()) {
+    if (total >= 4096 || total > std::numeric_limits<uint32_t>::max()) {
         return -1;
     }
     const uint32_t totalSize = static_cast<uint32_t>(total);
@@ -189,13 +189,14 @@ void Packet::writeBytes(const uint8_t* bytes, uint32_t len)
     writePos += len;
 }
 
-void Packet::serializeFileStart(const std::string& uploadId,
+void Packet::serializeFileStart(const std::string & recid,const std::string& uploadId,
                                const std::string& fileName,
                                uint64_t totalSize,
                                uint32_t finalCrc)
 {
     resetWritePos();
     writeUint64(totalSize);
+    writeString(recid);
     writeString(fileName);
     writeString(uploadId);
     writeUint32(finalCrc);
@@ -305,4 +306,22 @@ std::vector<uint8_t> Packet::readBytes(size_t& pos, uint32_t len) const
     std::memcpy(result.data(), data + pos, len);
     pos += len;
     return result;
+}
+void Packet::serializeLink(const std::string senderId,const std::string &uploadId,const std::string filename,const std::uint32_t &totalsize,const std::string& timestamp){
+
+    resetWritePos();
+    writeString(senderId);
+    writeString(uploadId);
+    writeString(filename);
+    writeUint32(totalsize);
+    writeString(timestamp);
+    finalizeBinaryPacket(DOWNLOAD_LINK);
+
+}
+void Packet::serializeDownloadReq(const std::string& userId,const std::string &upId,const uint32_t &bytes){
+    resetWritePos();
+    writeString(userId);
+    writeString(upId);
+    writeUint32(bytes);
+    finalizeBinaryPacket(DOWNLOAD_REQUEST);
 }

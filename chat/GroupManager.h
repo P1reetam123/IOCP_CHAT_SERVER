@@ -7,9 +7,10 @@ class GroupManager
 {
 private:
     std::unordered_map<std::string, Group> groups;
-    std::mutex mtx;
-
+    
 public:
+std::mutex mtx;
+
     bool createGroup(const std::string& groupId, const std::string& adminId);
     bool joinGroup(const std::string& groupId, const std::string& userId);
     bool leaveGroup(const std::string& groupId, const std::string& userId);

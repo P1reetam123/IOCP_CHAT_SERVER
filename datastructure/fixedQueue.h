@@ -42,6 +42,7 @@ public:
     Fqueue& operator=(const Fqueue&) = delete;
 
     void push(T val) {
+        
         size_t pos = head.load(std::memory_order_relaxed);
         while (true) {
             Slot& slot = pool[pos & (capacity_ - 1)];
@@ -59,6 +60,9 @@ public:
             } else if (diff < 0) {
                 // Queue full: spin or yield
                 pos = head.load(std::memory_order_relaxed);
+                std::cout<<" queue is full\n";
+                // make it bool to check whether pushed success or not
+                return ;
             } else {
                 pos = head.load(std::memory_order_relaxed);
             }

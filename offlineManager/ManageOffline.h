@@ -26,7 +26,7 @@ private:
 
 public:
 
-std::thread intitiateSend;// this thread initialise send when offline client come back
+//std::thread intitiateSend;// this thread initialise send when offline client come back
 struct WorkItem {
     std::string recId;
     Packet* packet;

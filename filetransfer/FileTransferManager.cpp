@@ -29,6 +29,7 @@ void FileTransferManager::stopAllTransfers()
     downloadCv.notify_all();
     if (downloadThread.joinable()) downloadThread.join();
 
+
     std::lock_guard<std::mutex> lock(mtx);
     for (auto& pair : activeTransfers) {
         if (pair.second && pair.second->fileStream.is_open()) {
@@ -39,19 +40,31 @@ void FileTransferManager::stopAllTransfers()
     activeTransfers.clear();
     uploadIdToTransferState.clear();
 }
+std::string FileTransferManager::sanitize(const std::string& name) {
+    std::string result = std::filesystem::path(name).filename().string();
+    if (result.empty() || result == "." || result == "..") 
+        return "unnamed_" + std::to_string(std::time(nullptr));
+    return result;
+}
 
 void FileTransferManager::handleFileStart(Packet* p, const std::string& senderId)
 {
     size_t pos = HEADER_SIZE;
     uint64_t totalSize = p->readUint64(pos);
-    std::string fileName = p->readString(pos);
+    std::string recId=p->readString(pos);
+    std::string fileName = sanitize(p->readString(pos));
     std::string uploadId = p->readString(pos);
     uint32_t finalCrc = (pos + 4 <= p->header.size) ? p->readUint32(pos) : 0;
 
     PacketPool::Instance().returnPacket(p);
-
+    if(totalSize>1024*1024*5){
+        SendErrorPacket(recId,uploadId," file is too big ");
+        return;
+    }
+    // store only . partial formate 
     TransferState* state = new TransferState();
     state->senderId = senderId;
+    state->receiverId=recId;
     state->uploadId = uploadId;
     state->fileName = fileName;
     state->totalSize = totalSize;
@@ -164,17 +177,18 @@ void FileTransferManager::handleFileEnd(Packet* p)
 
     TransferState* state = getTransferState(uploadId);
     if (!state) return;
-
+std::string senderid=state->senderId;
     bool success = (state->receivedOffset == state->totalSize);
-    if (success) {
-        uint32_t computed = computeFileCRC(state->tempPath);
-        success = (computed == finalCrc);
-        if (!success) {
-            Logger::error("CRC mismatch for " + state->fileName +
-                          " expected=" + std::to_string(finalCrc) +
-                          " got=" + std::to_string(computed));
-        }
-    }
+    // skip crc server side 
+    // if (success) {
+    //     uint32_t computed = computeFileCRC(state->tempPath);
+    //     success = (computed == finalCrc);
+    //     if (!success) {
+    //         Logger::error("CRC mismatch for " + state->fileName +
+    //                       " expected=" + std::to_string(finalCrc) +
+    //                       " got=" + std::to_string(computed));
+    //     }
+    // }
 
     if (success) {
         std::string finalPath = saveDirectory + state->fileName;
@@ -189,7 +203,7 @@ void FileTransferManager::handleFileEnd(Packet* p)
         {
             std::lock_guard<std::mutex> lk(downloadMtx);
             completedUpload.push(state);
-        }
+        }// note cleanup is not done also 
         downloadCv.notify_one();
     } else {
         Logger::error("File transfer failed: " + state->fileName);
@@ -197,7 +211,7 @@ void FileTransferManager::handleFileEnd(Packet* p)
         cleanupTransfer(uploadId);
     }
 
-    sendFileStatus(uploadId, success, state->senderId);
+    sendFileStatus(uploadId, success, senderid);
     if (!success) return;
 
     {

@@ -1,4 +1,4 @@
-#pragma once
+
 #include "AuthManager.h"
 #include "../protocol/Packet.h"
 #include "../protocol/PacketTypes.h"

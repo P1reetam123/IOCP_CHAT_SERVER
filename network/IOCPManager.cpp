@@ -12,12 +12,12 @@
 #include "./pool/PacketPool.h"
 #include "./pool/SessionPool.h"
 #include "./pool/IOContextPool.h"
-
+IOContextPool pio;
 struct ConnectionBuffer
 {
     std::vector<char> buffer;
 };
-IOContextPool pio;
+
 
 std::unordered_map<SOCKET, ConnectionBuffer> socketBuffers;
 std::mutex IOCPManager::socketBuffersMutex;
@@ -39,12 +39,12 @@ bool IOCPManager::initialize(int port, SessionManager *sm, MessageRouter *mr, Ma
     messageRouter = mr;
     WSADATA wsa;
 
-    int res = WSAStartup(MAKEWORD(2, 2), &wsa);
-    if (res != 0)
-    {
-        std::cout << " conection failed\n";
-        return 1;
-    }
+    // int res = WSAStartup(MAKEWORD(2, 2), &wsa);
+    // if (res != 0)
+    // {
+    //     std::cout << " conection failed\n";
+    //     return false;
+    // }
     // Create listen socket
     listenSocket = WSASocketW(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
     if (listenSocket == INVALID_SOCKET)
@@ -247,8 +247,11 @@ void IOCPManager::workerThread()
                     }
 
                     // Full packet not yet received
-                    if (recvBuffer.size() < packetSize)
+                    if (recvBuffer.size() < packetSize || packetSize>sizeof(Packet::data))
+                       {
+                       handleDisconnect(clientSocket);
                         break;
+                       }
 
                     // Extract packet data
                     /// directly extract into the packet
@@ -274,6 +277,7 @@ void IOCPManager::workerThread()
                 p->parseHeader();
                 // this is slow
                 Session *s = sessionManager->findBySocket(clientSocket);
+                  std::string tempId = std::to_string(static_cast<int>(clientSocket)) + "id";
 
                 if (!s)
                 {
@@ -282,8 +286,9 @@ void IOCPManager::workerThread()
                     {
                         s->iocp = this;
                         // this is also slow
-                        std::string tempId = std::to_string(static_cast<int>(clientSocket)) + "id";
+                      
                         p->senderId=tempId;
+                        p->tempSessionId=tempId;
                         sessionManager->addSession(tempId, s); // temp user id will be used here
                     }
                 }
@@ -296,7 +301,9 @@ void IOCPManager::workerThread()
                     break;
                     // goto cleanup_recv;
                 }
-
+                
+                 p->senderId=s->userId;
+                 p->tempSessionId=tempId;
                 bool handled =
                     messageRouter->handlePacket(p, s);
                 totalPacketRecieved++;
@@ -315,7 +322,7 @@ void IOCPManager::workerThread()
             Packet *sentPacket = pData->packet;
 
             sentPacket->isSending = false;
-            sentPacket->isSentFail = true;
+           // sentPacket->isSentFail = true;
 
             if (sentPacket)
             {
@@ -358,7 +365,7 @@ void IOCPManager::workerThread()
                     sentPacket->isSending = false;
                     sentPacket->isSent = true;
                     PacketPool::Instance().returnPacket(sentPacket);
-                     std::cout<<"packet sent succesfully\n";
+                     std::cout<<"packet sent succesfully to \n" << recvId;
                     // drain next packet
                     offlineManager->drainNext(recvId, clientSocket);
                 }
@@ -436,17 +443,17 @@ bool IOCPManager::initiateSend(SOCKET s, Packet *p)
     }
     return true;
 }
-// Dequeue the next outgoing packet from the session and start sending it
-void IOCPManager::queueSend(SOCKET s, Packet *p)
-{
+// // Dequeue the next outgoing packet from the session and start sending it
+// void IOCPManager::queueSend(SOCKET s, Packet *p)
+// {
 
-    if (p)
-    {
-        initiateSend(s, p);
-        // Note: p is NOT deleted here — it stays alive until send completes
-        // and its status (isSent/isSentFail) is updated by the completion handler
-    }
-}
+//     if (p)
+//     {
+//         initiateSend(s, p);
+//         // Note: p is NOT deleted here — it stays alive until send completes
+//         // and its status (isSent/isSentFail) is updated by the completion handler
+//     }
+// }
 
 void IOCPManager::handleDisconnect(SOCKET s)
 {

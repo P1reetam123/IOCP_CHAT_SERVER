@@ -21,13 +21,13 @@ SessionPool& SessionPool::Instance() {
  size_t idx;
  {
        std::lock_guard<std::mutex> lk(fmx);
-       if(freeIndices.empty()){
-    throw std::runtime_error("No packet available"); // instead of throwing error 
+       if(freeIndices.empty()){ return nullptr;
+    //throw std::runtime_error("No packet available"); // instead of throwing error 
 }
     idx=freeIndices.front(); freeIndices.pop();
  }
 
- if(idx>pool.size()){
+ if(idx>=pool.size()){
     //
  }
  Session * se=&(pool[idx]);

@@ -27,9 +27,19 @@ struct TransferState {
     uint32_t roundReceivedCount = 0;
     uint32_t finalCrc = 0;
 
+      std::mutex ackMtx;
+        std::condition_variable ackCv;
+bool ackReceived=false;
     std::vector<std::vector<uint8_t>> roundBuffer;
+     std::vector<uint64_t> roundOffsets;
+      std::vector<uint32_t> missingChunks;
     std::ofstream fileStream;
     std::mutex mtx;
+    TransferState(){
+        roundBuffer.assign(MAX_CHUNKS_PER_ROUND, {});
+roundOffsets.assign(MAX_CHUNKS_PER_ROUND, 0);
+missingChunks.clear();
+    }
 };
 
 class FileTransferManager
@@ -96,6 +106,6 @@ private:
     std::mutex downloadMtx;
     bool stopLoop = false;
     std::mutex downloadableFilesMtx;
-
+        std::string sanitize(const std::string& name);
     std::string saveDirectory = "./uploads/";
 };

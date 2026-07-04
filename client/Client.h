@@ -129,6 +129,6 @@ private:
     void handleUserIdPacket(Packet &p);
     void handleTokenGranted(Packet &p);
     void handleAuthFail(Packet &p);
-
+  std::string sanitize(const std::string& name);
     uint32_t computeFileCRC(const std::string& filepath);
 };
