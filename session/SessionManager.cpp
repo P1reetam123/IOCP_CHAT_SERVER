@@ -10,9 +10,10 @@ void SessionManager::updateNewId(const std::string &id, Session *s)
     // this to update old id to new id ,
 
     std::string newid = s->userId; // new id and currently not updated sesstions for this
+    SOCKET newSocket=s->socket;
     auto newit = sessions.find(newid);
-    // to check whether there is any previous session on current id
-    if (newit != sessions.end())
+    // to check whether there is any previous session on current id on different socket 
+    if (newit != sessions.end()&&newSocket!=newit->second->socket)
     {                                             // we got the old session
         SOCKET oldSocket = newit->second->socket; /// got the socket of old user
 

@@ -239,6 +239,7 @@ void Client::handleIncomingPacket(Packet &p)
         case PKT_TOKEN_GRANTED:     handleTokenGranted(p); break;
         case PKT_AUTH_FAIL:
         case PKT_SIGNUP_ERROR:      handleAuthFail(p); break;
+        case PKT_FILE_ERROR : p.parseData(); std::cout<<p.payload<<std::endl; break;
         default:
             std::cout << "[WARN] Unknown packet type: " << static_cast<int>(p.header.type) << "\n";
             break;
@@ -580,6 +581,7 @@ void Client::sendRoundAck(const std::string& uploadId, uint32_t roundId,
 {
     Packet p;
     p.serializeFileAck(uploadId, roundId, missing);
+    std::cout<<"sending round end  with upload id :- "<<uploadId<<std::endl;
     sendRawPacket(p);
 }
 

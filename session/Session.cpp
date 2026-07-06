@@ -61,11 +61,11 @@ void Session::close()
    
 }
 
-bool Session::sendPacket(Packet* p){
+bool Session::sendPacket(Packet* p,SOCKET sock){
     // Kick off IOCP send if we have a reference
     if (iocp) {
-std::cout<<" sending in the socket"<<this->socket<<std::endl;
-        return iocp->initiateSend(this->socket, p);
+std::cout<<" sending in the socket"<<sock<<std::endl;
+        return iocp->initiateSend(sock, p);
     }
     return true;
 }

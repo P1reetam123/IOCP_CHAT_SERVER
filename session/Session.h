@@ -29,7 +29,7 @@ public:
     ~Session();
     Session(Session&& other) noexcept;
     Session& operator=(Session&& other) noexcept;
-     bool sendPacket(Packet* p);
+     bool sendPacket(Packet* p,SOCKET sock);
     void setSocket(SOCKET s);
     // Close the socket
     void close();

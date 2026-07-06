@@ -387,7 +387,7 @@ AuthResult AuthManager::ProcessLogin(const std::string &identifier,
     // After this point, every subsequent packet on this session will be
     // validated by ValidateSessionHotPath — a pure integer compare with
     // no locks, no crypto, and no database lookups.
-
+std::cout<<" login failed if :- "<<UserIdToHexString(record.user_id)<<std::endl;
     CacheAuthOnSession(session, record.user_id,
                        tokens.access_token.payload.expiry);
 
@@ -613,7 +613,7 @@ void AuthManager::SendAuthFailure(Session *sender, const std::string &reason)
         receiver_id,
         reason);
 
-    sender->sendPacket(response);
+    sender->sendPacket(response,sender->socket);
 }
 
 void AuthManager::SendTokenGranted(Session *sender, const LoginResult &tokens)
@@ -651,7 +651,7 @@ void AuthManager::SendTokenGranted(Session *sender, const LoginResult &tokens)
         "",
         binary_payload);
 
-    sender->sendPacket(response); // it is boolfunction  so check whether it has been sent or not
+    sender->sendPacket(response,sender->socket); // it is boolfunction  so check whether it has been sent or not
 }
 
 // utility

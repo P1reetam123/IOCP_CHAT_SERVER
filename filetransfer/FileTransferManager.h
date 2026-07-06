@@ -36,9 +36,18 @@ bool ackReceived=false;
     std::ofstream fileStream;
     std::mutex mtx;
     TransferState(){
-        roundBuffer.assign(MAX_CHUNKS_PER_ROUND, {});
+ roundBuffer.assign(MAX_CHUNKS_PER_ROUND, {});
 roundOffsets.assign(MAX_CHUNKS_PER_ROUND, 0);
 missingChunks.clear();
+    }
+    void clearState(){
+        roundReceivedCount=0;
+        currentRound=0;
+        receivedOffset=0;
+        roundBuffer.clear();
+        roundOffsets.clear();
+        missingChunks.clear();
+
     }
 };
 
@@ -93,7 +102,7 @@ private:
     std::unordered_map<std::string, TransferState*> activeTransfers;
     std::unordered_map<std::string, TransferState*> uploadIdToTransferState;
     std::unordered_map<std::string, TransferState*> downloadableFiles;
-    std::queue<TransferState*> completedUpload;
+    MpscQueue<TransferState*> completedUpload;
     std::mutex mtx;
 
     struct AckPayload { uint32_t round; std::vector<uint32_t> missing; };

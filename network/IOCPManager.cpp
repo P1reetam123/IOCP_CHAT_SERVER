@@ -286,7 +286,7 @@ void IOCPManager::workerThread()
                     {
                         s->iocp = this;
                         // this is also slow
-                      
+                      s->socket=clientSocket;
                         p->senderId=tempId;
                         p->tempSessionId=tempId;
                         sessionManager->addSession(tempId, s); // temp user id will be used here

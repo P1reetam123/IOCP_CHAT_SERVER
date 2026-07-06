@@ -69,7 +69,7 @@ void FileTransferManager::handleFileStart(Packet* p, const std::string& senderId
     state->fileName = fileName;
     state->totalSize = totalSize;
     state->finalCrc = finalCrc;
-    state->tempPath = saveDirectory + fileName + ".partial";
+    state->tempPath = saveDirectory + fileName+"_"+uploadId.substr(0,10)  + ".partial";
     state->roundBuffer.resize(MAX_CHUNKS_PER_ROUND);
 
     state->fileStream.open(state->tempPath, std::ios::binary | std::ios::out | std::ios::app);
@@ -108,9 +108,12 @@ void FileTransferManager::handleFileChunk(Packet* p)
     uint32_t crcReceived = p->readUint32(pos);
     std::vector<uint8_t> chunkData = p->readBytes(pos, chunkSize);
     PacketPool::Instance().returnPacket(p);
-
+    Logger::debug(" got the file chunk");
     TransferState* state = getTransferState(uploadId);
-    if (!state) return;
+    if (!state) {
+        Logger::debug("114 did not have state");
+        return ;
+    }
 
     if (CRC32C::compute(chunkData) != crcReceived) {
         Logger::warn("CRC mismatch at offset " + std::to_string(byteOffset));
@@ -193,7 +196,8 @@ std::string senderid=state->senderId;
     if (success) {
         std::string finalPath = saveDirectory + state->fileName;
         state->fileStream.close();
-        fs::rename(state->tempPath, finalPath);
+        // do not rename server will tore it as its own extension
+     //   fs::rename(state->tempPath, finalPath);
         Logger::info("File saved: " + state->fileName);
 
         auto now = std::chrono::system_clock::now();
@@ -202,6 +206,7 @@ std::string senderid=state->senderId;
 
         {
             std::lock_guard<std::mutex> lk(downloadMtx);
+            state->clearState();
             completedUpload.push(state);
         }// note cleanup is not done also 
         downloadCv.notify_one();
@@ -209,10 +214,11 @@ std::string senderid=state->senderId;
         Logger::error("File transfer failed: " + state->fileName);
         if (state->fileStream.is_open()) state->fileStream.close();
         cleanupTransfer(uploadId);
+        // delete the file and ask for reupload
     }
 
     sendFileStatus(uploadId, success, senderid);
-    if (!success) return;
+   
 
     {
         std::lock_guard<std::mutex> lock(mtx);
@@ -263,9 +269,10 @@ void FileTransferManager::cleanupTransfer(const std::string& uploadId)
     auto it = uploadIdToTransferState.find(uploadId);
     if (it != uploadIdToTransferState.end()) {
         if (it->second->fileStream.is_open()) it->second->fileStream.close();
-        delete it->second;
+        
         uploadIdToTransferState.erase(it);
         activeTransfers.erase(uploadId);
+        delete it->second;
     }
 }
 
