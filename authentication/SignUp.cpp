@@ -78,7 +78,11 @@ bool SignUp::isValidEmail(const std::string email)
 // number formate wiil be also checked on client side
 void SignUp::otpRequestHandler(Packet *p)
 {
-  p->parseHeader();
+ bool parsed= p->parseHeader();
+ if(!parsed){
+  std::cout<<" failed to parse the header\n";
+  return ;
+ }
   std::string email = p->senderId;
   PacketPool::Instance().returnPacket(p);
 
@@ -98,9 +102,11 @@ void SignUp::otpRequestHandler(Packet *p)
   if (router)
   {
     Packet *errPacket = PacketPool::Instance().borrowPacket();
+    errPacket->bypassQueue =true;
     errPacket->serialize(PKT_SIGNUP_ERROR, "SERVER", p->tempSessionId, "already signed !/ login ");
   std::cout<<"signup(101) routing to id :- "<<p->tempSessionId<<std::endl;
-    router->routePacket(errPacket, p->tempSessionId);
+   bool routed= router->routePacket(errPacket, p->tempSessionId);
+   if(!routed) PacketPool::Instance().returnPacket(errPacket);
   }
 
   return;
@@ -168,9 +174,11 @@ void SignUp::signUpRequestHandler(Packet *p)
     if (router)
     {
       Packet *errPacket = PacketPool::Instance().borrowPacket();
+      errPacket->bypassQueue=true;
       errPacket->serialize(PKT_SIGNUP_ERROR, "SERVER", sessionId, "Signup Failed: Email not verified");
         std::cout<<"signup(172) routing to id :- "<<sessionId<<std::endl;
-      router->routePacket(errPacket, sessionId);
+    bool routed =  router->routePacket(errPacket, sessionId);
+       if(!routed) PacketPool::Instance().returnPacket(errPacket);
      
     }
     std::cout << "returning without pushign into the queue\n";
@@ -232,10 +240,12 @@ if (!found)
     if (router)
     {
         Packet *errPacket = PacketPool::Instance().borrowPacket();
+        errPacket->bypassQueue=true;
         std::cout << " otp not generated \n";
         errPacket->serialize(PKT_SIGNUP_ERROR, "SERVER", sessionId, "OTP not generated");
          std::cout<<"signup(236) routing to id :- "<<sessionId<<std::endl;
-        router->routePacket(errPacket, sessionId);
+      bool routed =  router->routePacket(errPacket, sessionId);
+       if(!routed) PacketPool::Instance().returnPacket(errPacket);
         
     }
     return;
@@ -247,6 +257,7 @@ if (otCopy.count >= 5 || otCopy.expiry < timestamp(0))
     if (router)
     {
         Packet *errPacket = PacketPool::Instance().borrowPacket();
+        errPacket->bypassQueue=true;
         std::cout << " otp verified failed \n";
         errPacket->serialize(PKT_SIGNUP_ERROR, "SERVER", sessionId, "OTP expired or limit reached");
         
@@ -254,7 +265,8 @@ if (otCopy.count >= 5 || otCopy.expiry < timestamp(0))
         std::lock_guard<std::mutex> lk(otmtx);
         otpChecker.erase(key);
           std::cout<<"signup(254) routing to id :- "<<sessionId<<std::endl;
-        router->routePacket(errPacket, sessionId);
+      bool routed=  router->routePacket(errPacket, sessionId);
+       if(!routed) PacketPool::Instance().returnPacket(errPacket);
        
     }
     return;
@@ -271,6 +283,7 @@ if (otCopy.otp == hashedOtp)
     if (router)
     {
         Packet *okPacket = PacketPool::Instance().borrowPacket();
+        okPacket->bypassQueue=true;
         std::cout << " otp verified \n";
         okPacket->serialize(PKT_ACKNOWLEDGMENT, "SERVER", sessionId, "OTP Verified");
         
@@ -284,8 +297,10 @@ if (otCopy.otp == hashedOtp)
      
         if (!routed)
         {
+           if(!routed) PacketPool::Instance().returnPacket(okPacket);
             std::lock_guard<std::mutex> lk(emtx);
             emailVerified[email] = false;
+
         }
     }
     return;

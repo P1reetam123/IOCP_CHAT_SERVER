@@ -18,6 +18,7 @@ void Packet::clearInPointer()
     isSent = false;
     isSending = false;
     isSentFail = false;
+    bypassQueue = false;
     writePos = HEADER_SIZE;
 }
 
@@ -131,6 +132,8 @@ int Packet::serialize(PacketType type,
 
     header.size = totalSize;
     header.type = static_cast<uint8_t>(type);
+    senderId = sender;
+    receiverId = receiver;
     in = data + totalSize;
     return static_cast<int>(totalSize);
 }

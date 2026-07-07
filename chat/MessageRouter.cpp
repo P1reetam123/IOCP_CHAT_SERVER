@@ -14,6 +14,7 @@ MessageRouter::MessageRouter(SessionManager *sm, GroupManager *gm)
 
 bool MessageRouter::routePacket(Packet *packet, const std::string recvId)
 {
+    if(recvId.empty())return false;
     // checking everytime of session is inefficient as it need locks
     Session *receiver = sessionManager->findSession(recvId);
     if (receiver)
@@ -92,19 +93,26 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
         if (authManager)
         {
             std::string tempId = sender->userId;
-            authManager->HandleLoginPacket(packet, sender);
+         bool succes=   authManager->HandleLoginPacket(packet, sender);
+         if(succes&&!sender->updated.load(std::memory_order_acquire)){
             sessionManager->updateNewId(tempId, sender);
             {
                 const std::string id = sender->userId;
                 Packet *p = PacketPool::Instance().borrowPacket();
                 p->serialize(PKT_USER_ID, "server", id, id);
+                p->bypassQueue = true;
                 bool routed = routePacket(p, id);
-                if (routed)
+                if (routed) {
                     std::cout << "id send succesfully !\n";
+                } else {
+                    PacketPool::Instance().returnPacket(p);
+                }
             }
 
-            offManager->notifySend(sender->userId);
+           
         }
+        if(succes) offManager->notifySend(sender->userId);
+    }
         else
         {
             PacketPool::Instance().returnPacket(packet);
@@ -115,9 +123,11 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
         if (authManager)
         {
             std::string tempId = sender->userId;
-            authManager->HandleTokenPacket(packet, sender);
-            sessionManager->updateNewId(tempId, sender);
+           bool succes= authManager->HandleTokenPacket(packet, sender);
+          if(succes){
+             if(!sender->updated.load(std::memory_order_acquire) )sessionManager->updateNewId(tempId, sender);
             offManager->notifySend(sender->userId);
+          }
         }
         else
         {
@@ -129,9 +139,12 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
         if (authManager)
         {
             std::string tempId = sender->userId;
-            authManager->HandleRefreshPacket(packet, sender);
-            sessionManager->updateNewId(tempId, sender);
-            offManager->notifySend(sender->userId);
+           bool succes= authManager->HandleRefreshPacket(packet, sender);
+          if(succes){
+             if(!sender->updated.load(std::memory_order_acquire) )
+              sessionManager->updateNewId(tempId, sender);
+              offManager->notifySend(sender->userId);
+          }
         }
         else
         {
@@ -180,6 +193,7 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
         break;
 
     case PKT_FILE_START:
+Logger::info(" messagerouter for file start recid ; - "+sender->userId);
         filemanager->handleFileStart(packet, sender->userId);
         break;
     case PKT_FILE_CHUNK:

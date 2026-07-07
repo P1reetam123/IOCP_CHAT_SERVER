@@ -32,6 +32,7 @@ void SessionManager::updateNewId(const std::string &id, Session *s)
     // to update new id
     socketToUserId[s->socket] = s->userId;
     sessions[s->userId] = s; // add current session on new id // overwrite old temp id to new id
+    s->updated.store(true,std::memory_order_release);
 }
 void SessionManager::addSession(const std::string &id, Session *session)
 {

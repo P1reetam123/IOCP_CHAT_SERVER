@@ -18,7 +18,7 @@ public:
     bool recievingFile = false; // set it false when user send disconnect packet and set true when user send sownload request 
     IOCPManager* iocp = nullptr; // Set when session is created, used by sendPacket
     size_t id;
-
+    std::atomic<bool>updated{false};
     // --- Auth hot-path cache (written once at login, read per-packet) ---
     std::atomic<int> auth_state{0};         // AuthSessionState enum value
     uint8_t cached_user_id[16]{};           // Copied from UserRecord on login

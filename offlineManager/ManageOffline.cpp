@@ -67,7 +67,10 @@ void ManageOffline::drainNext(const std::string &recvId, SOCKET socket)
     }
 
     // Pop the completed front item
-    cq->queue.pop();
+    if(!cq->queue.empty()){
+ cq->queue.pop(); // removig the sent packet 
+    }
+   
 
     // Check if there are more packets to send
     if (!cq->queue.empty())

@@ -49,6 +49,7 @@ std::string FileTransferManager::sanitize(const std::string& name) {
 
 void FileTransferManager::handleFileStart(Packet* p, const std::string& senderId)
 {
+    Logger::info("got request from sender id :- "+ senderId);
     size_t pos = HEADER_SIZE;
     uint64_t totalSize = p->readUint64(pos);
     std::string recId=p->readString(pos);
@@ -93,7 +94,6 @@ void FileTransferManager::handleFileStart(Packet* p, const std::string& senderId
     }
 
     Logger::info("File transfer started: " + fileName + " resumeOffset=" + std::to_string(resumeOffset));
-
     Packet* resp = PacketPool::Instance().borrowPacket();
     resp->serializeFileStartResponse(uploadId, resumeOffset);
     off->ManageCompletePacket(resp, senderId);

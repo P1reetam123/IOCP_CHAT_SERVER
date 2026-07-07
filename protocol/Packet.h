@@ -21,6 +21,7 @@ public:
     bool isSent=false;
     bool isSending =false;
     bool isSentFail=false;
+    bool bypassQueue = false;
 
     void clearInPointer();
     bool parseHeader();

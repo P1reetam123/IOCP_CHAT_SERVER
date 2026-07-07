@@ -83,7 +83,7 @@ AuthManager::~AuthManager()
 // Packet Handlers — Called from MessageRouter 
 
 
-void AuthManager::HandleLoginPacket(Packet *packet, Session *sender)
+bool AuthManager::HandleLoginPacket(Packet *packet, Session *sender)
 {
     // Parse the packet payload.
     // Wire format: "senderId receiverId email password"
@@ -102,7 +102,7 @@ void AuthManager::HandleLoginPacket(Packet *packet, Session *sender)
     {
         Logger::debug("[AUTH] Login rejected: missing credentials");
         SendAuthFailure(sender, "Missing credentials");
-        return;
+        return false;
     }
 
     // Execute the full login pipeline (timing-safe, with dummy hash on miss)
@@ -114,10 +114,14 @@ void AuthManager::HandleLoginPacket(Packet *packet, Session *sender)
 
     // send the user id to client afterward client will use this to send the packet
    
-    (void)result;
+    if (result == AuthResult::SUCCESS)
+    {
+        return true;
+    }
+    return false;
 }
 
-void AuthManager::HandleTokenPacket(Packet *packet, Session *sender)
+bool AuthManager::HandleTokenPacket(Packet *packet, Session *sender)
 {
     // PKT_TOKEN: Client reconnecting with a saved access token.
     // The payload contains the raw binary AccessToken bytes.
@@ -134,7 +138,7 @@ void AuthManager::HandleTokenPacket(Packet *packet, Session *sender)
     if (!valid)
     {
         SendAuthFailure(sender, "Invalid or expired access token");
-        return;
+        return false;
     }
 
     // Token signature and expiry verified — cache the auth state on the session.
@@ -148,14 +152,17 @@ void AuthManager::HandleTokenPacket(Packet *packet, Session *sender)
     if (tokens.valid)
     {
         SendTokenGranted(sender, tokens);
+        return true;
     }
     else
     {
         SendAuthFailure(sender, "Token generation failed");
+        return false;
     }
+    return false;
 }
 
-void AuthManager::HandleRefreshPacket(Packet *packet, Session *sender)
+bool AuthManager::HandleRefreshPacket(Packet *packet, Session *sender)
 {
     // PKT_REFRESH: Client requesting new tokens using their refresh token.
     // This is the primary integration point for Step 5 (rotation + reuse detection).
@@ -172,7 +179,7 @@ void AuthManager::HandleRefreshPacket(Packet *packet, Session *sender)
     if (!valid)
     {
         SendAuthFailure(sender, "Invalid or expired refresh token");
-        return;
+        return false;
     }
 
     // Verify the family record and atomically advance the token counter.
@@ -194,7 +201,7 @@ void AuthManager::HandleRefreshPacket(Packet *packet, Session *sender)
         sender->cached_expiry.store(0, std::memory_order_release);
 
         SendAuthFailure(sender, "Refresh token revoked — re-login required");
-        return;
+        return false;
     }
 
     // Valid rotation — issue a fresh token pair
@@ -202,7 +209,7 @@ void AuthManager::HandleRefreshPacket(Packet *packet, Session *sender)
     if (!tokens.valid)
     {
         SendAuthFailure(sender, "Token generation failed");
-        return;
+        return false;
     }
 
     // Update the session cache with the new access token's expiry
@@ -212,6 +219,7 @@ void AuthManager::HandleRefreshPacket(Packet *packet, Session *sender)
     
     Logger::info("[AUTH] Token refresh successful for user " + sender->userId);
     SendTokenGranted(sender, tokens);
+    return true;
 }
 
 // User Registration
@@ -613,7 +621,10 @@ void AuthManager::SendAuthFailure(Session *sender, const std::string &reason)
         receiver_id,
         reason);
 
-    sender->sendPacket(response,sender->socket);
+    response->bypassQueue = true;
+    if (!sender->sendPacket(response, sender->socket)) {
+        PacketPool::Instance().returnPacket(response);
+    }
 }
 
 void AuthManager::SendTokenGranted(Session *sender, const LoginResult &tokens)
@@ -644,14 +655,18 @@ void AuthManager::SendTokenGranted(Session *sender, const LoginResult &tokens)
     std::memcpy(&binary_payload[sizeof(AccessToken)],
                 &tokens.refresh_token,
                 sizeof(RefreshToken));
+    std::string receiver_id = sender->userId.empty() ? "PENDING" : sender->userId;
     // send the acces token and refresh token
     response->serialize(
         PKT_TOKEN_GRANTED,
-        "",
-        "",
+        "SERVER",
+        receiver_id,
         binary_payload);
 
-    sender->sendPacket(response,sender->socket); // it is boolfunction  so check whether it has been sent or not
+    response->bypassQueue = true;
+    if (!sender->sendPacket(response,sender->socket)) {
+        PacketPool::Instance().returnPacket(response);
+    }
 }
 
 // utility

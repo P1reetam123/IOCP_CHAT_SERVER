@@ -68,13 +68,13 @@ public:
     // -------------------------------------------------------------------
 
     // Handle PKT_LOGIN: email/username + password → verify → issue tokens
-    void HandleLoginPacket(Packet* packet, Session* sender);
+    bool HandleLoginPacket(Packet* packet, Session* sender);
 
     // Handle PKT_TOKEN: reconnect with a saved access token
-    void HandleTokenPacket(Packet* packet, Session* sender);
+    bool HandleTokenPacket(Packet* packet, Session* sender);
 
     // Handle PKT_REFRESH: refresh token rotation (Step 5 integration point)
-    void HandleRefreshPacket(Packet* packet, Session* sender);
+    bool HandleRefreshPacket(Packet* packet, Session* sender);
 
     // -------------------------------------------------------------------
     // User registration — called from the signup flow
@@ -103,10 +103,6 @@ public:
 
     // Zero-Lock Hot-Path Validator (declaration)
     // -------------------------------------------------------------------
-    //
-    // Full implementation is below, outside the class body, to allow
-    // force-inlining with platform-specific attributes.
-    //
     // This is the ONLY auth check that runs on every inbound packet after
     // the initial login. It performs:
     //   1. Atomic load of auth_state   → integer compare

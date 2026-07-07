@@ -181,7 +181,11 @@ void IOCPManager::workerThread()
             {
                 pData->packet->isSending = false;
                 pData->packet->isSentFail = true;
-                offlineManager->ManageCompletePacket(pData->packet, pData->packet->receiverId);
+                if (!pData->packet->bypassQueue) {
+                    offlineManager->ManageCompletePacket(pData->packet, pData->packet->receiverId);
+                } else {
+                    PacketPool::Instance().returnPacket(pData->packet);
+                }
             }
             pio.returnIOPdata(pData);
             handleDisconnect(clientSocket);
@@ -225,7 +229,7 @@ void IOCPManager::workerThread()
                     {
                         // Socket already cleaned up — stop parsing.
                         // Note: pData was already deleted before this loop,
-                        // so do NOT delete it again here.
+                        // so we  do NOT delete it again here.
                         break;
                     }
 
@@ -274,21 +278,28 @@ void IOCPManager::workerThread()
                 }
                 std::memcpy(p->data, packetData.data(), packetData.size());
                 p->in = p->data + packetData.size();
-                p->parseHeader();
+             bool parsed=   p->parseHeader();
+             if(!parsed){
+                Logger::info("failed to parse the header\n");
+                break;
+             }
+
                 // this is slow
                 Session *s = sessionManager->findBySocket(clientSocket);
                   std::string tempId = std::to_string(static_cast<int>(clientSocket)) + "id";
 
                 if (!s)
                 {
+                    // means no session has been for this socket
                     s = SessionPool::Instance().borrowSession(clientSocket);
                     if (s)
                     {
                         s->iocp = this;
                         // this is also slow
-                      s->socket=clientSocket;
+                       s->socket=clientSocket;
                         p->senderId=tempId;
                         p->tempSessionId=tempId;
+                          s->userId =tempId; 
                         sessionManager->addSession(tempId, s); // temp user id will be used here
                     }
                 }
@@ -303,11 +314,11 @@ void IOCPManager::workerThread()
                 }
                 
                  p->senderId=s->userId;
+            
                  p->tempSessionId=tempId;
                 bool handled =
                     messageRouter->handlePacket(p, s);
-                totalPacketRecieved++;
-
+               
                 if (!handled)
                 {
                     PacketPool::Instance().returnPacket(p);
@@ -362,12 +373,15 @@ void IOCPManager::workerThread()
                     // Fully sent — save receiverId BEFORE returning the
                     // packet to the pool (Bug 1: use-after-free fix).
                     std::string recvId = sentPacket->receiverId;
+                    bool bypassQ = sentPacket->bypassQueue;
                     sentPacket->isSending = false;
                     sentPacket->isSent = true;
                     PacketPool::Instance().returnPacket(sentPacket);
                      std::cout<<"packet sent succesfully to \n" << recvId;
                     // drain next packet
-                    offlineManager->drainNext(recvId, clientSocket);
+                    if (!bypassQ) {
+                        offlineManager->drainNext(recvId, clientSocket);
+                    }
                 }
             }
 
