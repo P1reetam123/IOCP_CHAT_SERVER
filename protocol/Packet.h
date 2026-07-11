@@ -3,75 +3,102 @@
 #include <vector>
 #include "PacketHeader.h"
 #include "PacketTypes.h"
+#include "ProtocolStructs.h"
 
 class Packet
 {
 public:
     PacketHeader header;
-    char data[4096];
-    char* in = data;
-    size_t id;
-    std::string tempSessionId;
-    std::string user_name;
-    std::string senderId;
-    std::string receiverId;
-    std::string payload;
-    bool parsedHeader=false;
-    bool parsedData=false;
-    bool isSent=false;
-    bool isSending =false;
-    bool isSentFail=false;
+    uint8_t data[4096];
+    uint8_t* in = data;
+    
+    // Legacy fields removed: std::string senderId, etc.
+    // Instead we interact with the raw byte buffer directly.
+
+    size_t writePos = HEADER_SIZE;
+    
+    bool parsedHeader = false;
+    bool parsedData = false;
+    bool isSent = false;
+    bool isSending = false;
+    bool isSentFail = false;
     bool bypassQueue = false;
 
+    size_t id = 0; // Needed by PacketPool
+
     void clearInPointer();
+    
     bool parseHeader();
-    bool parseData();
-    int serialize(PacketType type,
-                  const std::string& sender,
-                  const std::string& receiver,
-                  const std::string& payloadData);
+    bool parseData(); // Kept for backwards compatibility structure, but simplified
+
+    // Direct payload access
+    template<typename T>
+    const T* getPayload() const {
+        return reinterpret_cast<const T*>(data + HEADER_SIZE);
+    }
+    
+    template<typename T>
+    T* getPayload() {
+        return reinterpret_cast<T*>(data + HEADER_SIZE);
+    }
+
+    const uint8_t* getPayloadRaw() const {
+        return data + HEADER_SIZE;
+    }
 
     int bytesReceived() const;
     bool isHeaderComplete() const;
     bool isComplete() const;
+    bool checkPacketVersion();
 
-    void serializeFileStart(const std::string& recid,const std::string& uploadId,
-                           const std::string& fileName,
-                           uint64_t totalSize,
-                           uint32_t finalCrc = 0);
+    // Serializers
+    bool serialize(PacketType type,
+                   const uint8_t *sender,
+                   const uint8_t *receiver,
+                   const uint8_t *number,
+                   const std::string &username,
+                   const std::string& payloadData);
 
-    void serializeFileStartResponse(const std::string& uploadId,
-                                   uint64_t resumeOffset);
+    bool serializeFileStart(const uint8_t* recid, const uint8_t* uploadId,
+                            const std::string& fileName,
+                            uint64_t totalSize,
+                            uint32_t finalCrc = 0);
 
-    void serializeFileChunk(const std::string& uploadId,
-                           uint64_t byteOffset,
-                           const std::vector<uint8_t>& chunkData);
+    bool serializeFileStartResponse(const uint8_t* uploadId,
+                                    uint64_t resumeOffset);
 
-    void serializeRoundEnd(const std::string& uploadId,
+    bool serializeFileChunk(const uint8_t* uploadId,
+                            uint64_t byteOffset,
+                            const std::vector<uint8_t>& chunkData);
+
+    bool serializeRoundEnd(const uint8_t* uploadId,
+                           uint32_t roundId,
+                           uint32_t chunkCount);
+
+    bool serializeFileAck(const uint8_t* uploadId,
                           uint32_t roundId,
-                          uint32_t chunkCount);
+                          const std::vector<uint32_t>& missingChunks = {});
 
-    void serializeFileAck(const std::string& uploadId,
-                         uint32_t roundId,
-                         const std::vector<uint32_t>& missingChunks = {});
+    bool serializeFileEnd(const uint8_t* uploadId, uint32_t finalCrc);
 
-    void serializeFileEnd(const std::string& uploadId, uint32_t finalCrc);
+    bool serializeLink(const uint8_t* senderId, const uint8_t* uploadId, 
+                       const std::string& filename, uint32_t totalsize, const std::string& timestamp);
+                       
+    bool serializeDownloadReq(const uint8_t* userId, const uint8_t* upId, uint32_t bytes);
+    
+    bool serializeLogin(const std::string &identifier, const std::string &password);
+    bool serializeOtpRequest(const std::string &email);
+    bool serializeOtpVerification(const std::string &email, const std::string &otp);
+    bool serializeSignup(const std::string &email, const std::string &number, 
+                         const std::string &username, const std::string &password);
+    bool serializeUserId(const uint8_t *userId, const uint8_t* serverTempId);
+    
+    // For Token passing
+    bool serializeToken(PacketType type, const std::vector<uint8_t>& accessToken, const std::vector<uint8_t>& refreshToken);
+    bool serializeString(PacketType type, const std::string& str);
+    bool serializeRaw(PacketType type, const std::string& rawPayload);
 
-    void writeUint8(uint8_t v);
-    void writeUint32(uint32_t v);
-    void writeUint64(uint64_t v);
-    void writeString(const std::string& str);
-    void writeBytes(const uint8_t* data, uint32_t len);
-
-    uint8_t readUint8(size_t& pos) const;
-    uint32_t readUint32(size_t& pos) const;
-    uint64_t readUint64(size_t& pos) const;
-    std::string readString(size_t& pos) const;
-    std::vector<uint8_t> readBytes(size_t& pos, uint32_t len) const;
-void serializeLink(const std::string senderId,const std::string &uploadId,const std::string filename,const std::uint32_t &totalsize,const std::string& timestamp);
-void serializeDownloadReq(const std::string& userId,const std::string &upId,const uint32_t &bytes);
 private:
-    size_t writePos = HEADER_SIZE;
     void resetWritePos();
-    void finalizeBinaryPacket(PacketType type);
+    bool finalizePacket(PacketType type); // computes length and crc, sets header
 };

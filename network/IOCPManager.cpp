@@ -176,13 +176,13 @@ void IOCPManager::workerThread()
         {
             // Connection closed or error
             //  If this was a pending send, recover the in-flight packet
-            // so it can be retried instead of silently leaking from the pool.
             if (pData->operationType == 0 && pData->packet)
             {
                 pData->packet->isSending = false;
                 pData->packet->isSentFail = true;
                 if (!pData->packet->bypassQueue) {
-                    offlineManager->ManageCompletePacket(pData->packet, pData->packet->receiverId);
+                    std::string recvId = sessionManager->getUserIdBySocket(clientSocket);
+                    offlineManager->ManageCompletePacket(pData->packet, recvId);
                 } else {
                     PacketPool::Instance().returnPacket(pData->packet);
                 }
@@ -239,22 +239,30 @@ void IOCPManager::workerThread()
                     if (recvBuffer.size() < HEADER_SIZE)
                         break;
 
-                    uint32_t packetSize =
-                        ntohl(*reinterpret_cast<uint32_t *>(recvBuffer.data()));
+                    PacketHeader* hdr = reinterpret_cast<PacketHeader*>(recvBuffer.data());
+                    if (hdr->magic != START_BYTE) {
+                        Logger::warn("Invalid magic byte");
+                        handleDisconnect(clientSocket);
+                        break;
+                    }
 
-                    if (packetSize < HEADER_SIZE)
+                    uint32_t payloadSize = ntohl(hdr->payload_length);
+                    uint32_t packetSize = HEADER_SIZE + payloadSize;
+
+                    if (packetSize < HEADER_SIZE) // Overflow check
                     {
                         Logger::warn("Invalid packet size");
                         handleDisconnect(clientSocket);
-                        // goto cleanup_recv;
                         break;
                     }
 
                     // Full packet not yet received
                     if (recvBuffer.size() < packetSize || packetSize>sizeof(Packet::data))
                        {
-                       handleDisconnect(clientSocket);
-                        break;
+                           if (packetSize > sizeof(Packet::data)) {
+                               handleDisconnect(clientSocket);
+                           }
+                           break;
                        }
 
                     // Extract packet data
@@ -295,11 +303,9 @@ void IOCPManager::workerThread()
                     if (s)
                     {
                         s->iocp = this;
-                        // this is also slow
-                       s->socket=clientSocket;
-                        p->senderId=tempId;
-                        p->tempSessionId=tempId;
-                          s->userId =tempId; 
+                        // s->socket=clientSocket;
+                        s->socket = clientSocket;
+                        s->userId = tempId; 
                         sessionManager->addSession(tempId, s); // temp user id will be used here
                     }
                 }
@@ -310,12 +316,8 @@ void IOCPManager::workerThread()
                     Logger::warn("Failed to get or create session for socket");
                     handleDisconnect(clientSocket);
                     break;
-                    // goto cleanup_recv;
                 }
                 
-                 p->senderId=s->userId;
-            
-                 p->tempSessionId=tempId;
                 bool handled =
                     messageRouter->handlePacket(p, s);
                
@@ -343,7 +345,7 @@ void IOCPManager::workerThread()
                 {
                     // Partial send: re-post WSASend for remaining bytes
                     int remaining = pData->totalToSend - pData->bytesSent;
-                    pData->buffer.buf = pData->data + pData->bytesSent;
+                    pData->buffer.buf =reinterpret_cast<char*>( pData->data) + pData->bytesSent;
                     pData->buffer.len = remaining;
 
                     DWORD sent = 0;
@@ -358,7 +360,7 @@ void IOCPManager::workerThread()
                         sentPacket->isSentFail = true;
                         // Save receiverId before returning pData — after returnIOPdata,
                         // pData (and its pointers) may be reused by another thread.
-                        std::string recvId = sentPacket->receiverId;
+                        std::string recvId = sessionManager->getUserIdBySocket(clientSocket);
                         pio.returnIOPdata(pData);
                         // Clear the in-flight flag so the packet (still at front of
                         // queue) can be retried when the receiver reconnects.
@@ -372,7 +374,7 @@ void IOCPManager::workerThread()
                 {
                     // Fully sent — save receiverId BEFORE returning the
                     // packet to the pool (Bug 1: use-after-free fix).
-                    std::string recvId = sentPacket->receiverId;
+                    std::string recvId = sessionManager->getUserIdBySocket(clientSocket);
                     bool bypassQ = sentPacket->bypassQueue;
                     sentPacket->isSending = false;
                     sentPacket->isSent = true;
@@ -396,7 +398,7 @@ bool IOCPManager::postRecv(SOCKET s)
     size_t savedId = pData->id;
     ZeroMemory(pData, sizeof(PER_IO_OPERATION_DATA));
     pData->id = savedId;
-    pData->buffer.buf = pData->data;
+    pData->buffer.buf =reinterpret_cast<char*>( pData->data);
     pData->buffer.len = sizeof(pData->data);
     pData->operationType = 1; // recv
 
@@ -423,14 +425,16 @@ bool IOCPManager::initiateSend(SOCKET s, Packet *p)
     pData->id = savedId;
 
     // For a fully built packet, we just send header.size bytes from `data`
-    int toCopy = p->header.size;
+    p->isSending = true;
+    p->isSentFail = false;
+    int toCopy = p->header.payload_length + HEADER_SIZE;
     if (toCopy > static_cast<int>(sizeof(pData->data)))
     {
         toCopy = static_cast<int>(sizeof(pData->data)); // Safety clamp
     }
 
     std::memcpy(pData->data, p->data, toCopy);
-    pData->buffer.buf = pData->data;
+    pData->buffer.buf =reinterpret_cast<char*>( pData->data);
     pData->buffer.len = toCopy;
     pData->operationType = 0; // send
 

@@ -32,7 +32,7 @@ set(SERVER_SOURCES
     authentication/SignUp.cpp
     authentication/AuthManager.cpp
 )
-
+add_subdirectory(abseil-cpp)
 add_executable(Server ${SERVER_SOURCES})
 find_package(ZLIB REQUIRED)
 
@@ -45,6 +45,7 @@ target_link_libraries(Server PRIVATE
     mswsock
     ZLIB::ZLIB 
     PkgConfig::SODIUM
+     absl::flat_hash_map
 )
 
 #                                                                                                  CLIENT                                                                                                 

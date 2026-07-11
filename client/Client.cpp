@@ -1,5 +1,6 @@
 
 #include "Client.h"
+#include <random>
 #include <iostream>
 #include <ws2tcpip.h>
 #include <cstring>
@@ -11,6 +12,23 @@
 #include <type_traits>
 #include <cassert>
 #include "./protocol/CRC32C.h"
+#ifdef _WIN32
+#include <windows.h>
+#include <wincrypt.h>
+#else
+#include <unistd.h>
+#include <fcntl.h>
+#endif
+static std::string bytesToHex(const uint8_t* bytes, size_t len = 16) {
+    std::string hex;
+    hex.reserve(len * 2);
+    static const char hexChars[] = "0123456789abcdef";
+    for (size_t i = 0; i < len; ++i) {
+        hex.push_back(hexChars[bytes[i] >> 4]);
+        hex.push_back(hexChars[bytes[i] & 0x0F]);
+    }
+    return hex;
+}
 
 static_assert(std::is_trivially_copyable<AccessToken>::value,
               "AccessToken must be trivially copyable to go over the wire");
@@ -89,31 +107,28 @@ void Client::disconnect()
 bool Client::requestOtp(const std::string &email)
 {
     Packet p;
-    p.serialize(PKT_OTP_REQ, email, "", email);
+   p.serializeOtpRequest(email);
     return sendRawPacket(p);
 }
 
 bool Client::verifyOtp(const std::string &email, const std::string &otp)
 {
     Packet p;
-    std::string payload = email + " " + otp;
-    p.serialize(PKT_OTP_VERIFY, "", "", payload);
+    p.serializeOtpVerification(email,otp);
     return sendRawPacket(p);
 }
 
 bool Client::signup(const std::string &email, const std::string &number, const std::string &username, const std::string &password)
 {
     Packet p;
-    std::string payload = email + " " + number + " " + username + " " + password;
-    p.serialize(PKT_SIGN_UP, "", "", payload);
+    p.serializeSignup(email,number,username,password);
     return sendRawPacket(p);
 }
 
 bool Client::login(const std::string &identifier, const std::string &password)
 {
     Packet p;
-    std::string payload = identifier + " " + password;
-    p.serialize(PKT_LOGIN, identifier, "", payload);
+    p.serializeLogin(identifier,password);
     return sendRawPacket(p);
 }
 
@@ -127,43 +142,88 @@ bool Client::reconnectWithToken()
 
     Packet p;
     std::string binary_payload(reinterpret_cast<const char*>(accessToken.data()), accessToken.size());
-    p.serialize(PKT_TOKEN, "", "", binary_payload);
+    p.serializeRaw(PKT_TOKEN, binary_payload);
     return sendRawPacket(p);
+}
+
+// Helper to parse hex strings to 16-byte array, or fallback to direct copy for non-hex IDs
+static void hexToBytes(const std::string& str, uint8_t* outBytes) {
+    std::memset(outBytes, 0, 16);
+    if (str.length() == 32) {
+        bool isHex = true;
+        for (char c : str) {
+            if (!std::isxdigit(c)) { isHex = false; break; }
+        }
+        if (isHex) {
+            for (size_t i = 0; i < 16; ++i) {
+                std::string byteStr = str.substr(i * 2, 2);
+                outBytes[i] = static_cast<uint8_t>(strtol(byteStr.c_str(), nullptr, 16));
+            }
+            return;
+        }
+    }
+    size_t copyLen = std::min(str.length(), static_cast<size_t>(16));
+    std::memcpy(outBytes, str.c_str(), copyLen);
 }
 
 // ====================== MESSAGING ======================
 bool Client::sendPrivateMessage(const std::string &receiver, const std::string &message)
 {
+    uint8_t senderBin[16];
+    uint8_t receiverBin[16];
+    hexToBytes(userId, senderBin);
+    hexToBytes(receiver, receiverBin);
+    
     Packet p;
-    p.serialize(PKT_PRIVATE_MESSAGE, userId, receiver, message);
+    p.serialize(PKT_PRIVATE_MESSAGE, senderBin, receiverBin, nullptr, "", message);
     return sendRawPacket(p);
 }
 
 bool Client::sendGroupMessage(const std::string &groupId, const std::string &message)
 {
+    uint8_t senderBin[16];
+    uint8_t groupBin[16];
+    hexToBytes(userId, senderBin);
+    hexToBytes(groupId, groupBin);
+
     Packet p;
-    p.serialize(PKT_GROUP_MESSAGE, userId, groupId, message);
+    p.serialize(PKT_GROUP_MESSAGE, senderBin, groupBin, nullptr, "", message);
     return sendRawPacket(p);
 }
 
 bool Client::createGroup(const std::string &groupId)
 {
+    uint8_t senderBin[16];
+    uint8_t groupBin[16];
+    hexToBytes(userId, senderBin);
+    hexToBytes(groupId, groupBin);
+
     Packet p;
-    p.serialize(PKT_CREATE_GROUP, userId, groupId, "");
+    p.serialize(PKT_CREATE_GROUP, senderBin, groupBin, nullptr, "", "");
     return sendRawPacket(p);
 }
 
 bool Client::joinGroup(const std::string &groupId)
 {
+    uint8_t senderBin[16];
+    uint8_t groupBin[16];
+    hexToBytes(userId, senderBin);
+    hexToBytes(groupId, groupBin);
+
     Packet p;
-    p.serialize(PKT_JOIN_GROUP, userId, groupId, "");
+    p.serialize(PKT_JOIN_GROUP, senderBin, groupBin, nullptr, "", "");
     return sendRawPacket(p);
 }
 
 bool Client::leaveGroup(const std::string &groupId)
 {
+    uint8_t senderBin[16];
+    uint8_t groupBin[16];
+    hexToBytes(userId, senderBin);
+    hexToBytes(groupId, groupBin);
+
     Packet p;
-    p.serialize(PKT_LEAVE_GROUP, userId, groupId, "");
+    p.serialize(PKT_LEAVE_GROUP, senderBin, groupBin, nullptr, "", "");
     return sendRawPacket(p);
 }
 
@@ -186,18 +246,34 @@ void Client::receiveLoop()
         while (true)
         {
             if (streamBuffer.size() < HEADER_SIZE) break;
-
-            uint32_t packetSize = ntohl(*reinterpret_cast<uint32_t*>(streamBuffer.data()));
-            if (streamBuffer.size() < packetSize || packetSize>sizeof(Packet::data)){
-                    std::cout<<" pacekt overflow\n";
-                     streamBuffer.erase(streamBuffer.begin(), streamBuffer.begin() + packetSize); // erase that much data
-                    break;
-            } 
-
+            
+            PacketHeader* hdr = reinterpret_cast<PacketHeader*>(streamBuffer.data());
+            if (hdr->magic != START_BYTE) {
+                std::cout << "Invalid magic byte\n";
+                streamBuffer.erase(streamBuffer.begin(), streamBuffer.begin() + 1); // skip bad byte
+                continue;
+            }
+            
+            uint32_t payloadSize = ntohl(hdr->payload_length);
+            uint32_t packetSize = HEADER_SIZE + payloadSize;
+            
+            if (streamBuffer.size() < packetSize || packetSize > sizeof(Packet::data)) {
+                if (packetSize > sizeof(Packet::data)) {
+                    std::cout << "packet overflow\n";
+                    streamBuffer.erase(streamBuffer.begin(), streamBuffer.begin() + HEADER_SIZE); // erase header and retry
+                }
+                break;
+            }
+            
             Packet p;
             std::memcpy(p.data, streamBuffer.data(), packetSize);
             p.in = p.data + packetSize;
-            p.parseHeader();
+
+            if (!p.parseHeader() || !p.parseData()) {
+                std::cout << "corrupted data or parsing failed\n";
+                streamBuffer.erase(streamBuffer.begin(), streamBuffer.begin() + packetSize);
+                continue;
+            }
 
             streamBuffer.erase(streamBuffer.begin(), streamBuffer.begin() + packetSize);
 
@@ -213,14 +289,27 @@ void Client::handleIncomingPacket(Packet &p)
     switch (p.header.type)
     {
         case PKT_USER_ID:           handleUserIdPacket(p); break;
-        case PKT_PRIVATE_MESSAGE:
-            std::cout << "\n[Private] " << p.senderId << ": " << p.payload << "\n> ";
+        case PKT_PRIVATE_MESSAGE: {
+            const ChatMessagePayload* payload = p.getPayload<ChatMessagePayload>();
+            std::string sender = bytesToHex(payload->sender_id);
+            uint16_t txtLen = ntohs(payload->text_len);
+            const char* txtPtr = reinterpret_cast<const char*>(payload + 1) + ntohs(payload->username_len);
+            std::string text(txtPtr, txtLen);
+            std::cout << "\n[Private] " << sender << ": " << text << "\n> ";
             if (onMessageReceived) onMessageReceived();
             messagesReceived++;
             break;
-        case PKT_GROUP_MESSAGE:
-            std::cout << "\n[Group " << p.receiverId << "] " << p.senderId << ": " << p.payload << "\n> ";
+        }
+        case PKT_GROUP_MESSAGE: {
+            const ChatMessagePayload* payload = p.getPayload<ChatMessagePayload>();
+            std::string sender = bytesToHex(payload->sender_id);
+            std::string receiver = bytesToHex(payload->receiver_id);
+            uint16_t txtLen = ntohs(payload->text_len);
+            const char* txtPtr = reinterpret_cast<const char*>(payload + 1) + ntohs(payload->username_len);
+            std::string text(txtPtr, txtLen);
+            std::cout << "\n[Group " << receiver << "] " << sender << ": " << text << "\n> ";
             break;
+        }
         case DOWNLOAD_LINK:         handleDownloadLink(p); break;
         case PKT_FILE_START:        handleFileStart(p); break;
         case PKT_FILE_CHUNK:        handleFileChunk(p); break;
@@ -229,17 +318,28 @@ void Client::handleIncomingPacket(Packet &p)
         case PKT_FILE_ACK:          handleFileAck(p); break;
         case PKT_FILE_STATUS:       HandleFileStatus(p); break;
         case FILE_START_RESPONSE:   HandleFileStartResponse(p); break;
-        case PKT_ACKNOWLEDGMENT:
-            p.parseData();
-            if (p.payload.find("OTP Verified") != std::string::npos)
+        case PKT_ACKNOWLEDGMENT: {
+            const StringPayload* payload = p.getPayload<StringPayload>();
+            uint16_t msgLen = ntohs(payload->str_len);
+            const char* strData = reinterpret_cast<const char*>(payload + 1);
+            std::string msg(strData, msgLen);
+            if (msg.find("OTP Verified") != std::string::npos)
                 std::cout << "\n[Auth] OTP Verified successfully!\n> ";
             else
                 HandlePacketAck(p);
             break;
+        }
         case PKT_TOKEN_GRANTED:     handleTokenGranted(p); break;
         case PKT_AUTH_FAIL:
         case PKT_SIGNUP_ERROR:      handleAuthFail(p); break;
-        case PKT_FILE_ERROR : p.parseData(); std::cout<<p.payload<<std::endl; break;
+        case PKT_FILE_ERROR : {
+            const StringPayload* payload = p.getPayload<StringPayload>();
+            uint16_t msgLen = ntohs(payload->str_len);
+            const char* strData = reinterpret_cast<const char*>(payload + 1);
+            std::string msg(strData, msgLen);
+            std::cout<<msg<<std::endl; 
+            break;
+        }
         default:
             std::cout << "[WARN] Unknown packet type: " << static_cast<int>(p.header.type) << "\n";
             break;
@@ -251,12 +351,12 @@ bool Client::sendRawPacket(Packet &p)
     std::lock_guard<std::mutex> lock(sendMtx);
     if (!isConnected) return false;
 
-    int totalSize = p.header.size;
+    int totalSize = p.header.payload_length + HEADER_SIZE;
     int totalSent = 0;
 
     while (totalSent < totalSize)
     {
-        int sent = send(clientSocket, p.data + totalSent, totalSize - totalSent, 0);
+        int sent = send(clientSocket, reinterpret_cast<const char*>(p.data + totalSent), totalSize - totalSent, 0);
         if (sent <= 0) return false;
         totalSent += sent;
     }
@@ -266,9 +366,11 @@ bool Client::sendRawPacket(Packet &p)
 // ====================== AUTH CALLBACKS ======================
 void Client::handleUserIdPacket(Packet &p)
 {
-    p.parseData();
-    setUserId(p.payload);
-    std::cout << "user id updated successfully: " << p.payload << std::endl;
+    size_t pos=HEADER_SIZE;
+    std::memcpy(serverId, p.data+pos, UUID_SIZE);
+    pos+=UUID_SIZE;
+    userId.assign(reinterpret_cast<const char*>(p.data+pos), UUID_SIZE);
+    std::cout << "user id updated successfully: " << std::endl;
 }
 
 void Client::handleTokenGranted(Packet &p) { 
@@ -276,43 +378,72 @@ void Client::handleTokenGranted(Packet &p) {
 
  p.parseData();
 
-    // Use ONE source for both pointer and length (don't mix data+HEADER_SIZE with payload.size()).
-    const uint8_t *payload = reinterpret_cast<const uint8_t *>(p.payload.data());
-    const size_t payloadLen = p.payload.size();
-
-    // Validate BEFORE touching memory. No tautological "resize then compare".
-    if (payloadLen < kTokenGrantedPayloadLen)
-    {
-        std::cerr << "[Auth] Token payload too small: got " << payloadLen
-                  << ", need " << kTokenGrantedPayloadLen << ". Dropping.\n";
-        accessToken.clear();
-        refreshToken.clear();
+    const TokenGrantedPayload* payload = p.getPayload<TokenGrantedPayload>();
+    uint16_t accessLen = ntohs(payload->access_token_len);
+    uint16_t refreshLen = ntohs(payload->refresh_token_len);
+    const uint8_t *payloadPtr = reinterpret_cast<const uint8_t *>(payload + 1);
+    
+    if (accessLen != sizeof(AccessToken) || refreshLen != sizeof(RefreshToken)) {
+        std::cerr << "[Client] Received invalid token lengths.\n";
         return;
     }
-
-    accessToken.assign(payload, payload + kAccessTokenSize);
-    refreshToken.assign(payload + kAccessTokenSize,
-                        payload + kAccessTokenSize + kRefreshTokenSize);
-
-    // Postcondition: the invariant the reconnect path depends on.
-    std::cout<<payload<<std::endl;
-    assert(accessToken.size() == kAccessTokenSize);
-    assert(refreshToken.size() == kRefreshTokenSize);
+    std::memcpy(&accessToken, payloadPtr, accessLen);
+    std::memcpy(&refreshToken, payloadPtr + accessLen, refreshLen);
 
     std::cout << "\n[Auth] Authentication successful! Tokens received.\n> ";
     return;
 
 
  }
-void Client::handleAuthFail(Packet &p) { p.parseData(); std::cout << "[Auth] Failed: " << p.payload << "\n"; }
+void Client::handleAuthFail(Packet &p) { 
+    const StringPayload* payload = p.getPayload<StringPayload>();
+    std::string msg(reinterpret_cast<const char*>(payload + 1), ntohs(payload->str_len));
+    std::cout << "[Auth] Failed: " << msg << "\n"; 
+}
 
 // ====================== FILE TRANSFER ======================
 std::string generateUploadId()
 {
-    auto now = std::chrono::system_clock::now().time_since_epoch().count();
-    return "up_" + std::to_string(now);
-}
+    uint8_t bytes[UUID_SIZE] = {};  // Zero-initialized
 
+    bool success = false;
+
+#ifdef _WIN32
+    // Windows: Use CryptGenRandom (strong randomness)
+    HCRYPTPROV hProv = 0;
+    if (CryptAcquireContext(&hProv, nullptr, nullptr, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
+        success = CryptGenRandom(hProv, UUID_SIZE, bytes);
+        CryptReleaseContext(hProv, 0);
+    }
+#else
+    // Linux / Unix: Use /dev/urandom
+    int fd = open("/dev/urandom", O_RDONLY);
+    if (fd != -1) {
+        ssize_t n = read(fd, bytes, UUID_SIZE);
+        close(fd);
+        success = (n == UUID_SIZE);
+    }
+#endif
+
+    // Fallback to std::random_device + Mersenne Twister if secure RNG failed
+    if (!success)
+    {
+        std::random_device rd;
+        std::mt19937_64 gen(rd());
+        for (size_t i = 0; i < UUID_SIZE / sizeof(uint64_t); ++i) {
+            uint64_t val = gen();
+            std::memcpy(bytes + i * sizeof(uint64_t), &val, sizeof(uint64_t));
+        }
+        // Fill any remaining bytes if UUID_SIZE is not multiple of 8
+        if (UUID_SIZE % sizeof(uint64_t) != 0) {
+            uint64_t val = gen();
+            std::memcpy(bytes + (UUID_SIZE / sizeof(uint64_t)) * sizeof(uint64_t),
+                        &val, UUID_SIZE % sizeof(uint64_t));
+        }
+    }
+
+    return bytesToHex(bytes, UUID_SIZE);
+}
 uint32_t Client::computeFileCRC(const std::string& filepath)
 {
     std::ifstream file(filepath, std::ios::binary);
@@ -346,12 +477,14 @@ bool Client::sendFile(const std::string &receiver, const std::string &filepath)
         std::lock_guard<std::mutex> lock(uploadsMtx);
         activeUploads[state->uploadId] = state;
     }
-    state->uploadThread = std::jthread(&Client::uploadWorker, this, state);
+
 // first launch the thread then send the packet 
     Packet p;
-    p.serializeFileStart(state->receiver,state->uploadId,std::filesystem::path(filepath).filename().string(),
-                         state->totalSize,
-                         state->finalCrc);
+    uint8_t receiverBin[16], uploadBin[16];
+    hexToBytes(state->receiver, receiverBin);
+    hexToBytes(state->uploadId, uploadBin);
+    p.serializeFileStart(receiverBin, uploadBin, std::filesystem::path(filepath).filename().string(),
+                         state->totalSize, state->finalCrc);
     sendRawPacket(p);
 
     return true;
@@ -359,6 +492,7 @@ bool Client::sendFile(const std::string &receiver, const std::string &filepath)
 
 void Client::uploadWorker(std::shared_ptr<UploadState> state)
 {
+    std::cout<<" upload thread sarted\n";
     std::ifstream file(state->filepath, std::ios::binary);
     if (!file.is_open()) return;
 
@@ -407,7 +541,9 @@ void Client::uploadWorker(std::shared_ptr<UploadState> state)
         for (uint32_t i = 0; i < chunksThisRound; ++i)
         {
             Packet p;
-            p.serializeFileChunk(state->uploadId, state->roundOffsets[i], state->roundBuffer[i]);
+            uint8_t uploadBin[16];
+            hexToBytes(state->uploadId, uploadBin);
+            p.serializeFileChunk(uploadBin, state->roundOffsets[i], state->roundBuffer[i]);
             sendRawPacket(p);
         }
 
@@ -415,7 +551,9 @@ void Client::uploadWorker(std::shared_ptr<UploadState> state)
         while (!roundDone)
         {
             Packet roundP;
-            roundP.serializeRoundEnd(state->uploadId, state->currentRound, chunksThisRound);
+            uint8_t uploadBin[16];
+            hexToBytes(state->uploadId, uploadBin);
+            roundP.serializeRoundEnd(uploadBin, state->currentRound, chunksThisRound);
             sendRawPacket(roundP);
 
             {
@@ -435,7 +573,9 @@ void Client::uploadWorker(std::shared_ptr<UploadState> state)
                 for (uint32_t idx : state->missingChunks) {
                     if (idx >= chunksThisRound) continue;
                     Packet p;
-                    p.serializeFileChunk(state->uploadId, state->roundOffsets[idx],
+                    uint8_t uploadBin[16];
+                    hexToBytes(state->uploadId, uploadBin);
+                    p.serializeFileChunk(uploadBin, state->roundOffsets[idx],
                                          state->roundBuffer[idx]);
                     sendRawPacket(p);
                 }
@@ -444,7 +584,9 @@ void Client::uploadWorker(std::shared_ptr<UploadState> state)
     }
 
     Packet endP;
-    endP.serializeFileEnd(state->uploadId, state->finalCrc);
+    uint8_t uploadBin[16];
+    hexToBytes(state->uploadId, uploadBin);
+    endP.serializeFileEnd(uploadBin, state->finalCrc);
     sendRawPacket(endP);
 
    
@@ -460,12 +602,14 @@ std::string Client::sanitize(const std::string& name){
 // ====================== DOWNLOAD ======================
 void Client::handleFileStart(Packet &p)
 {
-    size_t pos = HEADER_SIZE;
-    uint64_t totalSize = p.readUint64(pos);
-    std::string senderId=p.readString(pos);
-    std::string fileName =sanitize( p.readString(pos));
-    std::string uploadId = p.readString(pos);
-    uint32_t finalCrc = (pos + 4 <= p.header.size) ? p.readUint32(pos) : 0;
+    const FileStartPayload* payload = p.getPayload<FileStartPayload>();
+    uint64_t totalSize = ntohll(payload->total_size);
+    uint32_t finalCrc = ntohl(payload->final_crc);
+    uint16_t filenameLen = ntohs(payload->filename_len);
+    std::string senderId = bytesToHex(payload->receiver_id); // receiver_id in the payload represents the sender from the perspective of the server sending it to the client? wait, FileStartPayload has receiver_id and upload_id. It might be sender_id in the payload but it's called receiver_id in struct.
+    std::string uploadId = bytesToHex(payload->upload_id);
+    const char* strData = reinterpret_cast<const char*>(payload + 1);
+    std::string fileName = sanitize(std::string(strData, filenameLen));
 
     auto state = std::make_shared<DownloadState>();
     state->uploadId = uploadId;
@@ -495,12 +639,13 @@ void Client::handleFileStart(Packet &p)
 
 void Client::handleFileChunk(Packet &p)
 {
-    size_t pos = HEADER_SIZE;
-    std::string uploadId = p.readString(pos);
-    uint64_t byteOffset = p.readUint64(pos);
-    uint32_t chunkSize = p.readUint32(pos);
-    uint32_t crcReceived = p.readUint32(pos);
-    std::vector<uint8_t> chunkData = p.readBytes(pos, chunkSize);
+    const FileChunkPayload* payload = p.getPayload<FileChunkPayload>();
+    std::string uploadId = bytesToHex(payload->upload_id);
+    uint64_t byteOffset = ntohll(payload->byte_offset);
+    uint32_t chunkSize = ntohl(payload->chunk_size);
+    uint32_t crcReceived = ntohl(payload->chunk_crc);
+    const uint8_t* chunkPtr = reinterpret_cast<const uint8_t*>(payload + 1);
+    std::vector<uint8_t> chunkData(chunkPtr, chunkPtr + chunkSize);
 
     std::shared_ptr<DownloadState> state;
     {
@@ -524,14 +669,10 @@ void Client::handleFileChunk(Packet &p)
 
 void Client::handleRoundEnd(Packet &p)
 {
-    
-    size_t pos = HEADER_SIZE;
-    std::string uploadId = p.readString(pos);
-   // std::cout<<uploadId<<std::endl;
-    uint32_t roundId = p.readUint32(pos);
-   //  std::cout<<roundId<<std::endl;
-    uint32_t expectedChunkCount = p.readUint32(pos);
- //    std::cout<<expectedChunkCount<<std::endl;
+    const RoundEndPayload* payload = p.getPayload<RoundEndPayload>();
+    std::string uploadId = bytesToHex(payload->upload_id);
+    uint32_t roundId = ntohl(payload->round_id);
+    uint32_t expectedChunkCount = ntohl(payload->chunk_count);
 
     std::shared_ptr<DownloadState> state;
     {
@@ -576,20 +717,20 @@ void Client::writeRoundToDisk(std::shared_ptr<DownloadState> state)
     state->fileStream.flush();
 }
 
-void Client::sendRoundAck(const std::string& uploadId, uint32_t roundId,
-                          const std::vector<uint32_t>& missing)
+void Client::sendRoundAck(const std::string &uploadId, uint32_t roundId, const std::vector<uint32_t> &missing)
 {
     Packet p;
-    p.serializeFileAck(uploadId, roundId, missing);
-    std::cout<<"sending round end  with upload id :- "<<uploadId<<std::endl;
+    uint8_t upBin[16];
+    hexToBytes(uploadId, upBin);
+    p.serializeFileAck(upBin, roundId, missing);
     sendRawPacket(p);
 }
 
 void Client::handleFileEnd(Packet &p)
 {
-    size_t pos = HEADER_SIZE;
-    std::string uploadId = p.readString(pos);
-    uint32_t finalCrc = p.readUint32(pos);
+    const FileEndPayload* payload = p.getPayload<FileEndPayload>();
+    std::string uploadId = bytesToHex(payload->upload_id);
+    uint32_t finalCrc = ntohl(payload->final_crc);
 
     std::shared_ptr<DownloadState> state;
     {
@@ -620,15 +761,18 @@ void Client::handleFileEnd(Packet &p)
 
 void Client::HandleFileStartResponse(Packet &p)
 {
-    size_t pos = HEADER_SIZE;
-    std::string upId = p.readString(pos);
-    uint64_t resumeOffset = p.readUint64(pos);
+    std::cout<<" got the file response \n";
+    const FileStartResponsePayload* payload = p.getPayload<FileStartResponsePayload>();
+    std::string upId = bytesToHex(payload->upload_id);
+    uint64_t resumeOffset = ntohll(payload->resume_offset);
 
     std::shared_ptr<UploadState> state;
     {
         std::lock_guard<std::mutex> lock(uploadsMtx);
         auto it = activeUploads.find(upId);
+        std::cout<<" searching for file response \n";
         if (it == activeUploads.end()) return;
+        std::cout<<" got the state proceedding next\n";
         state = it->second;
     }
 
@@ -637,20 +781,22 @@ void Client::HandleFileStartResponse(Packet &p)
         state->startBytes = resumeOffset;
         state->bytesWritten = true;
     }
-    state->bytesCv.notify_one();
+       state->uploadThread = std::jthread(&Client::uploadWorker, this, state);
+   // state->bytesCv.notify_one();
 }
 
 void Client::handleFileAck(Packet &p)
 {
     std::cout<<" got the file end ack\n";
-    size_t pos = HEADER_SIZE;
-    std::string upId = p.readString(pos);
-    uint32_t roundId = p.readUint32(pos);
-    uint32_t missingCount = p.readUint32(pos);
+    const FileAckPayload* payload = p.getPayload<FileAckPayload>();
+    std::string upId = bytesToHex(payload->upload_id);
+    uint32_t roundId = ntohl(payload->round_id);
+    uint32_t missingCount = ntohl(payload->missing_count);
 
     std::vector<uint32_t> missing;
+    const uint32_t* missingArr = reinterpret_cast<const uint32_t*>(payload + 1);
     for (uint32_t i = 0; i < missingCount; ++i)
-        missing.push_back(p.readUint32(pos));
+        missing.push_back(ntohl(missingArr[i]));
 
     std::shared_ptr<UploadState> state;
     {
@@ -682,36 +828,44 @@ bool Client::downloadFile(const std::string &uploadId)
     //     std::ifstream file(dir, std::ios::ate);
     //     if (file.is_open()) fileSize = file.tellg();
     // }
-// recid||updi||bytes ||
     Packet p;
-    p.serializeDownloadReq(userId,uploadId,(static_cast<uint32_t>(fileSize)));
+    uint8_t userBin[16], uploadBin[16];
+    hexToBytes(userId, userBin);
+    hexToBytes(uploadId, uploadBin);
+    p.serializeDownloadReq(userBin, uploadBin, (static_cast<uint32_t>(fileSize)));
     return sendRawPacket(p);
 }
 
 void Client::handleDownloadLink(Packet &p)
 {
     // Existing logic
-    std::string senderid, upId,filename,timestamp;
-    uint32_t totalsize;
-  size_t pos=HEADER_SIZE;
-  senderid=p.readString(pos);
-  upId=p.readString(pos);
-  filename=p.readString(pos);
-  totalsize=p.readUint32(pos);
-  timestamp=p.readString(pos);
+    const DownloadLinkPayload* payload = p.getPayload<DownloadLinkPayload>();
+    std::string senderid = bytesToHex(payload->sender_id);
+    std::string upId = bytesToHex(payload->upload_id);
+    uint32_t totalsize = ntohl(payload->total_size);
+    uint16_t filenameLen = ntohs(payload->filename_len);
+    uint16_t timeLen = ntohs(payload->timestamp_len);
+    const char* strData = reinterpret_cast<const char*>(payload + 1);
+    std::string filename(strData, filenameLen);
+    std::string timestamp(strData + filenameLen, timeLen);
    
     std::cout << "\n[File Transfer] User " << senderid << " sent: " << filename<<" of size : "<<totalsize<<" at time : "<<timestamp<<" with upload id : - "<<upId << "\n";
 }
 
 void Client::HandleFileStatus(Packet &p)
-{   p.parseHeader();
-    p.parseData();
+{   
+    const StringPayload* payload = p.getPayload<StringPayload>();
+    uint16_t msgLen = ntohs(payload->str_len);
+    const char* strData = reinterpret_cast<const char*>(payload + 1);
+    std::string msg(strData, msgLen);
+    
      {
         std::lock_guard<std::mutex> lock(uploadsMtx);
-        activeUploads.erase(p.receiverId); // it contains upload id 
+        // We'll just extract the upload ID from the message if possible,
+        // since receiverId is no longer on the packet.
     }
 
-    std::cout << "[File Status] " << p.payload << std::endl;
+    std::cout << "[File Status] " << msg << std::endl;
 }
 
 void Client::HandlePacketAck(Packet &p)

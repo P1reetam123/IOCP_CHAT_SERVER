@@ -19,6 +19,7 @@ class Client
 private:
     SOCKET clientSocket;
     std::string userId;
+    uint8_t serverId[UUID_SIZE];
     std::thread recvThread;
     std::mutex sendMtx;
 

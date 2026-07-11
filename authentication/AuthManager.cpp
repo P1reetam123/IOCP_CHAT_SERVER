@@ -85,14 +85,13 @@ AuthManager::~AuthManager()
 
 bool AuthManager::HandleLoginPacket(Packet *packet, Session *sender)
 {
-    // Parse the packet payload.
-    // Wire format: "senderId receiverId email password"
-    // After parseHeader() (called during network read), payload contains "email password"
-    packet->parseData();
-    std::istringstream iss(packet->payload);
-    std::string identifier, password;
-    iss >> identifier >> password;
-
+    const LoginPayload* loginData = packet->getPayload<LoginPayload>();
+    uint16_t idLen = ntohs(loginData->identifier_len);
+    uint16_t passLen = ntohs(loginData->password_len);
+    const char* strData = reinterpret_cast<const char*>(loginData + 1);
+    std::string identifier(strData, idLen);
+    std::string password(strData + idLen, passLen);
+   
     // Return the packet to the pool immediately — we've extracted what we need.
     // This minimizes pool pressure under load.
     PacketPool::Instance().returnPacket(packet);
@@ -125,10 +124,8 @@ bool AuthManager::HandleTokenPacket(Packet *packet, Session *sender)
 {
     // PKT_TOKEN: Client reconnecting with a saved access token.
     // The payload contains the raw binary AccessToken bytes.
-     packet->parseData();
-    const uint8_t *token_data =
-        reinterpret_cast<const uint8_t *>(packet->payload.data());
-    size_t token_len = packet->payload.size();
+    const uint8_t *token_data = reinterpret_cast<const uint8_t *>(packet->getPayload<uint8_t>());
+    size_t token_len = packet->header.payload_length;
 
     AccessTokenPayload verified_payload;
     bool valid = ValidateAccessToken(token_data, token_len, verified_payload);
@@ -166,10 +163,8 @@ bool AuthManager::HandleRefreshPacket(Packet *packet, Session *sender)
 {
     // PKT_REFRESH: Client requesting new tokens using their refresh token.
     // This is the primary integration point for Step 5 (rotation + reuse detection).
-    packet->parseData();
-    const uint8_t *token_data =
-        reinterpret_cast<const uint8_t *>(packet->payload.data());
-    size_t token_len = packet->payload.size();
+    const uint8_t *token_data = reinterpret_cast<const uint8_t *>(packet->getPayload<uint8_t>());
+    size_t token_len = packet->header.payload_length;
 
     RefreshTokenPayload verified_payload;
     bool valid = ValidateRefreshToken(token_data, token_len, verified_payload);
@@ -612,15 +607,7 @@ void AuthManager::SendAuthFailure(Session *sender, const std::string &reason)
         return;
     }
 
-    // Use the session's current userId (may be empty for unauthenticated sessions)
-    std::string receiver_id = sender->userId.empty() ? "PENDING" : sender->userId;
-
-    response->serialize(
-        PKT_AUTH_FAIL,
-        "SERVER",
-        receiver_id,
-        reason);
-
+    response->serializeString(PKT_AUTH_FAIL, reason);
     response->bypassQueue = true;
     if (!sender->sendPacket(response, sender->socket)) {
         PacketPool::Instance().returnPacket(response);
@@ -642,26 +629,13 @@ void AuthManager::SendTokenGranted(Session *sender, const LoginResult &tokens)
         return;
     }
 
-    // Build the binary payload: [AccessToken bytes][RefreshToken bytes]
-    // Both are packed structs with compile-time-known sizes, so the client
-    // can split them deterministically.
-    std::string binary_payload;
-    binary_payload.resize(sizeof(AccessToken) + sizeof(RefreshToken));
+    std::vector<uint8_t> accessTokenBuf(sizeof(AccessToken));
+    std::memcpy(accessTokenBuf.data(), &tokens.access_token, sizeof(AccessToken));
+    
+    std::vector<uint8_t> refreshTokenBuf(sizeof(RefreshToken));
+    std::memcpy(refreshTokenBuf.data(), &tokens.refresh_token, sizeof(RefreshToken));
 
-    std::memcpy(&binary_payload[0],
-                &tokens.access_token,
-                sizeof(AccessToken));
-
-    std::memcpy(&binary_payload[sizeof(AccessToken)],
-                &tokens.refresh_token,
-                sizeof(RefreshToken));
-    std::string receiver_id = sender->userId.empty() ? "PENDING" : sender->userId;
-    // send the acces token and refresh token
-    response->serialize(
-        PKT_TOKEN_GRANTED,
-        "SERVER",
-        receiver_id,
-        binary_payload);
+    response->serializeToken(PKT_TOKEN_GRANTED, accessTokenBuf, refreshTokenBuf);
 
     response->bypassQueue = true;
     if (!sender->sendPacket(response,sender->socket)) {

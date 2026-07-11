@@ -4,6 +4,7 @@
 #include <mutex>
 #include <winsock2.h>
 #include "Session.h"
+#include <absl/container/flat_hash_map.h>
 class IOCPManager ;
 
 class SessionManager

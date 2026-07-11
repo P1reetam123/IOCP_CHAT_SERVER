@@ -2,15 +2,22 @@
 build/
 build*/
 out/
-cmake            build            */
+cmake-build*/
 
-# CMake generated (in            source artifacts)
+# CMake generated files
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 CTestTestfile.cmake
 Testing/
 compile_commands.json
+
+# External dependencies / submodules you don't want to commit
+abseil-cpp/
+vcpkg/
+
+# vcpkg local install tree
+vcpkg_installed/
 
 # Visual Studio
 .vs/
@@ -34,9 +41,6 @@ compile_commands.json
 *.ilk
 *.idb
 *.exp
-
-# vcpkg local install tree (if used)
-vcpkg_installed/
 
 # OS junk
 Thumbs.db

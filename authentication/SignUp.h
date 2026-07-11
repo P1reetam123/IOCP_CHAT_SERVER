@@ -10,6 +10,7 @@
 
 class MessageRouter;
 class AuthManager;
+class Session;
 
 class SignUp{
  private:
@@ -55,8 +56,8 @@ void setRouter(MessageRouter* r) { router = r; }
 void setAuthManager(AuthManager* am) { authManager = am; }
 table<userInfo>& getDatabase() { return db; }
 std::string otpGenerator();
-void otpRequestHandler(Packet *p);
-void signUpRequestHandler(Packet *p);
+void otpRequestHandler(Packet *p, Session* sender);
+void signUpRequestHandler(Packet *p, Session* sender);
 void otpSenderLoop();
 bool SignupVerification(const std::string num,const size_t otp );
 void signupManager();
@@ -64,7 +65,7 @@ bool isValidEmail(const std::string email);
 bool isValidE164Phone(const std::string num);
 bool sendMail(const std::string& message,const std::string &emailAddress);
 bool isVerified(const std::string email);
-void onOtpVerificationRequest(Packet *p);
+void onOtpVerificationRequest(Packet *p, Session* sender);
 bool isAlreadySignup(const std::string email);
 std::string generateUserId();
 std::string hashStr(const std::string& input);

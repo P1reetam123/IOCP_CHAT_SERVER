@@ -19,7 +19,6 @@ bool MessageRouter::routePacket(Packet *packet, const std::string recvId)
     Session *receiver = sessionManager->findSession(recvId);
     if (receiver)
     {
-        packet->receiverId=recvId;
         std::cout<<" sending initialised to :- "<<recvId<<std::endl;
         return receiver->sendPacket(packet,receiver->socket); // here we initialise sending
     
@@ -35,27 +34,30 @@ bool MessageRouter::routePacket(Packet *packet, const std::string recvId)
 
 void MessageRouter::routeGroupMessage(Packet *packet)
 {
-    Group *group = groupManager->getGroup(packet->receiverId);
+    const ChatMessagePayload* payload = packet->getPayload<ChatMessagePayload>();
+    std::string recvId = AuthManager::UserIdToHexString(payload->receiver_id);
+    std::string sendId = AuthManager::UserIdToHexString(payload->sender_id);
+
+    Group *group = groupManager->getGroup(recvId);
     if (!group)
     {
-        Logger::warn("Group '" + packet->receiverId + "' not found");
+        Logger::warn("Group '" + recvId + "' not found");
         return;
     }
-std::lock_guard<std::mutex>lk(groupManager->mtx);
+    std::lock_guard<std::mutex>lk(groupManager->mtx);
     // Send to all group members except the sender
     for (const auto &memberId : group->members)
     {
-        if (memberId == packet->senderId)
+        if (memberId == sendId)
             continue;
         Packet *outgoing = PacketPool::Instance().borrowPacket();
         if (outgoing == nullptr)
         {
             return;
         }
-        std::memcpy(outgoing->data, packet->data, packet->header.size);
+        std::memcpy(outgoing->data, packet->data, packet->header.payload_length + HEADER_SIZE);
         outgoing->header = packet->header;
-        outgoing->in = outgoing->data + packet->header.size;
-        //  member->queuePacket(outgoing);
+        outgoing->in = outgoing->data + packet->header.payload_length + HEADER_SIZE;
         offManager->ManageCompletePacket(outgoing, memberId);
     }
     PacketPool::Instance().returnPacket(packet);
@@ -99,7 +101,7 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
             {
                 const std::string id = sender->userId;
                 Packet *p = PacketPool::Instance().borrowPacket();
-                p->serialize(PKT_USER_ID, "server", id, id);
+              p->serializeUserId(sender->cached_user_id,sender->cached_user_id);
                 p->bypassQueue = true;
                 bool routed = routePacket(p, id);
                 if (routed) {
@@ -161,8 +163,9 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
 
     case PKT_PRIVATE_MESSAGE:
     {
-        receivedPrivateMsg++;
-        offManager->ManageCompletePacket(packet, packet->receiverId);
+        const ChatMessagePayload* payload = packet->getPayload<ChatMessagePayload>();
+        std::string recvId = AuthManager::UserIdToHexString(payload->receiver_id);
+        offManager->ManageCompletePacket(packet, recvId);
         break;
     }
 
@@ -171,54 +174,64 @@ bool MessageRouter::handlePacket(Packet *packet, Session *sender)
         break;
 
     case PKT_CREATE_GROUP:
-        // group id         // admin id
-        if (groupManager->createGroup(packet->receiverId, packet->senderId))
+    {
+        const ChatMessagePayload* payload = packet->getPayload<ChatMessagePayload>();
+        std::string recvId = AuthManager::UserIdToHexString(payload->receiver_id);
+        std::string sendId = AuthManager::UserIdToHexString(payload->sender_id);
+        if (groupManager->createGroup(recvId, sendId))
         {
-            Logger::info("Group '" + packet->receiverId + "' created by " + packet->senderId);
+            Logger::info("Group '" + recvId + "' created by " + sendId);
         }
         break;
+    }
 
     case PKT_JOIN_GROUP:
-        if (groupManager->joinGroup(packet->receiverId, packet->senderId))
+    {
+        const ChatMessagePayload* payload = packet->getPayload<ChatMessagePayload>();
+        std::string recvId = AuthManager::UserIdToHexString(payload->receiver_id);
+        std::string sendId = AuthManager::UserIdToHexString(payload->sender_id);
+        if (groupManager->joinGroup(recvId, sendId))
         {
-            Logger::info("User '" + packet->senderId + "' joined group '" + packet->receiverId + "'");
+            Logger::info("User '" + sendId + "' joined group '" + recvId + "'");
         }
         break;
+    }
 
     case PKT_LEAVE_GROUP:
-        if (groupManager->leaveGroup(packet->receiverId, packet->senderId))
+    {
+        const ChatMessagePayload* payload = packet->getPayload<ChatMessagePayload>();
+        std::string recvId = AuthManager::UserIdToHexString(payload->receiver_id);
+        std::string sendId = AuthManager::UserIdToHexString(payload->sender_id);
+        if (groupManager->leaveGroup(recvId, sendId))
         {
-            Logger::info("User '" + packet->senderId + "' left group '" + packet->receiverId + "'");
+            Logger::info("User '" + sendId + "' left group '" + recvId + "'");
         }
         break;
+    }
 
     case PKT_FILE_START:
-Logger::info(" messagerouter for file start recid ; - "+sender->userId);
+        Logger::info(" messagerouter for file start recid ; - "+sender->userId);
         filemanager->handleFileStart(packet, sender->userId);
         break;
     case PKT_FILE_CHUNK:
         filemanager->handleFileChunk(packet);
         break;
     case PKT_ROUND_END:
-    std::cout<<" client asking for ack\n";
+        std::cout<<" client asking for ack\n";
         filemanager->handleRoundEnd(packet);
         break;
     case PKT_FILE_END:
         filemanager->handleFileEnd(packet);
         break;
     case PKT_FILE_ACK:
-    
         filemanager->onAckReceived(packet);
         break;
     case PKT_ACKNOWLEDGMENT:
         PacketPool::Instance().returnPacket(packet);
         break;
     case PKT_RESUME:
-        //   Logger::info("Received PKT_RESUME packet");
-        // filemanager->HandleResume(packet);
         break;
     case FILE_DWNLD_DISCONNECT_REQUEST:
-        //   Logger::info("Received FILE_DWNLD_DISCONNECT_REQUEST packet");
         filemanager->HandleDisconnectRequest(packet);
         break;
     case DOWNLOAD_REQUEST:
@@ -227,17 +240,17 @@ Logger::info(" messagerouter for file start recid ; - "+sender->userId);
 
     case PKT_OTP_REQ:
         if (signUpManager)
-            signUpManager->otpRequestHandler(packet);
+            signUpManager->otpRequestHandler(packet, sender);
         break;
 
     case PKT_OTP_VERIFY:
         if (signUpManager)
-            signUpManager->onOtpVerificationRequest(packet);
+            signUpManager->onOtpVerificationRequest(packet, sender);
         break;
 
     case PKT_SIGN_UP:
         if (signUpManager)
-            signUpManager->signUpRequestHandler(packet);
+            signUpManager->signUpRequestHandler(packet, sender);
         break;
 
     default:

@@ -47,16 +47,49 @@ std::string FileTransferManager::sanitize(const std::string& name) {
     return result;
 }
 
+static std::string bytesToHex(const uint8_t* bytes, size_t len = 16) {
+    std::string hex;
+    hex.reserve(len * 2);
+    static const char hexChars[] = "0123456789abcdef";
+    for (size_t i = 0; i < len; ++i) {
+        hex.push_back(hexChars[bytes[i] >> 4]);
+        hex.push_back(hexChars[bytes[i] & 0x0F]);
+    }
+    return hex;
+}
+
+static void hexToBytes(const std::string& str, uint8_t* outBytes) {
+    std::memset(outBytes, 0, 16);
+    if (str.length() == 32) {
+        bool isHex = true;
+        for (char c : str) {
+            if (!std::isxdigit(c)) { isHex = false; break; }
+        }
+        if (isHex) {
+            for (size_t i = 0; i < 16; ++i) {
+                std::string byteStr = str.substr(i * 2, 2);
+                outBytes[i] = static_cast<uint8_t>(strtol(byteStr.c_str(), nullptr, 16));
+            }
+            return;
+        }
+    }
+    size_t copyLen = std::min(str.length(), static_cast<size_t>(16));
+    std::memcpy(outBytes, str.c_str(), copyLen);
+}
+
 void FileTransferManager::handleFileStart(Packet* p, const std::string& senderId)
 {
     Logger::info("got request from sender id :- "+ senderId);
-    size_t pos = HEADER_SIZE;
-    uint64_t totalSize = p->readUint64(pos);
-    std::string recId=p->readString(pos);
-    std::string fileName = sanitize(p->readString(pos));
-    std::string uploadId = p->readString(pos);
-    uint32_t finalCrc = (pos + 4 <= p->header.size) ? p->readUint32(pos) : 0;
-
+    const FileStartPayload* payload = p->getPayload<FileStartPayload>();
+    uint64_t totalSize = ntohll(payload->total_size);
+    uint32_t finalCrc = ntohl(payload->final_crc);
+    uint16_t filenameLen = ntohs(payload->filename_len);
+    
+    std::string recId = bytesToHex(payload->receiver_id);
+    std::string uploadId = bytesToHex(payload->upload_id);
+    
+    const char* strData = reinterpret_cast<const char*>(payload + 1);
+    std::string fileName = sanitize(std::string(strData, filenameLen));
     PacketPool::Instance().returnPacket(p);
     if(totalSize>1024*1024*5){
         SendErrorPacket(recId,uploadId," file is too big ");
@@ -95,18 +128,22 @@ void FileTransferManager::handleFileStart(Packet* p, const std::string& senderId
 
     Logger::info("File transfer started: " + fileName + " resumeOffset=" + std::to_string(resumeOffset));
     Packet* resp = PacketPool::Instance().borrowPacket();
-    resp->serializeFileStartResponse(uploadId, resumeOffset);
+    uint8_t uploadIdBin[16];
+    hexToBytes(uploadId, uploadIdBin);
+    resp->serializeFileStartResponse(uploadIdBin, resumeOffset);
     off->ManageCompletePacket(resp, senderId);
 }
 
 void FileTransferManager::handleFileChunk(Packet* p)
 {
-    size_t pos = HEADER_SIZE;
-    std::string uploadId = p->readString(pos);
-    uint64_t byteOffset = p->readUint64(pos);
-    uint32_t chunkSize = p->readUint32(pos);
-    uint32_t crcReceived = p->readUint32(pos);
-    std::vector<uint8_t> chunkData = p->readBytes(pos, chunkSize);
+    const FileChunkPayload* payload = p->getPayload<FileChunkPayload>();
+    std::string uploadId = bytesToHex(payload->upload_id);
+    uint64_t byteOffset = ntohll(payload->byte_offset);
+    uint32_t chunkSize = ntohl(payload->chunk_size);
+    uint32_t crcReceived = ntohl(payload->chunk_crc);
+    
+    const uint8_t* chunkPtr = reinterpret_cast<const uint8_t*>(payload + 1);
+    std::vector<uint8_t> chunkData(chunkPtr, chunkPtr + chunkSize);
     PacketPool::Instance().returnPacket(p);
     Logger::debug(" got the file chunk");
     TransferState* state = getTransferState(uploadId);
@@ -132,10 +169,10 @@ void FileTransferManager::handleFileChunk(Packet* p)
 
 void FileTransferManager::handleRoundEnd(Packet* p)
 {
-    size_t pos = HEADER_SIZE;
-    std::string uploadId = p->readString(pos);
-    uint32_t roundId = p->readUint32(pos);
-    uint32_t expectedChunkCount = p->readUint32(pos);
+    const RoundEndPayload* payload = p->getPayload<RoundEndPayload>();
+    std::string uploadId = bytesToHex(payload->upload_id);
+    uint32_t roundId = ntohl(payload->round_id);
+    uint32_t expectedChunkCount = ntohl(payload->chunk_count);
     PacketPool::Instance().returnPacket(p);
 
     TransferState* state = getTransferState(uploadId);
@@ -173,9 +210,9 @@ void FileTransferManager::handleRoundEnd(Packet* p)
 
 void FileTransferManager::handleFileEnd(Packet* p)
 {
-    size_t pos = HEADER_SIZE;
-    std::string uploadId = p->readString(pos);
-    uint32_t finalCrc = p->readUint32(pos);
+    const FileEndPayload* payload = p->getPayload<FileEndPayload>();
+    std::string uploadId = bytesToHex(payload->upload_id);
+    uint32_t clientCrc = ntohl(payload->final_crc);
     PacketPool::Instance().returnPacket(p);
 
     TransferState* state = getTransferState(uploadId);
@@ -243,7 +280,9 @@ void FileTransferManager::sendAck(const std::string& uploadId, uint32_t roundId,
                                   const std::string& recId)
 {
     Packet* p = PacketPool::Instance().borrowPacket();
-    p->serializeFileAck(uploadId, roundId, missingChunks);
+    uint8_t uploadIdBin[16];
+    hexToBytes(uploadId, uploadIdBin);
+    p->serializeFileAck(uploadIdBin, roundId, missingChunks);
     std::cout<<" sendign round ack to :- "<<recId<<std::endl;
     off->ManageCompletePacket(p, recId);
 }
@@ -252,7 +291,7 @@ void FileTransferManager::sendFileStatus(const std::string& uploadId, bool succe
                                          const std::string& recId)
 {
     Packet* p = PacketPool::Instance().borrowPacket();
-    p->serialize(PKT_FILE_STATUS, "SERVER", uploadId, success ? "SUCCESS" : "FAILED");
+    p->serializeString(PKT_FILE_STATUS, uploadId + (success ? " SUCCESS" : " FAILED"));
     off->ManageCompletePacket(p, recId);
 }
 

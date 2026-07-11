@@ -4,15 +4,12 @@
 #include <limits>
 #include <stdexcept>
 #include "CRC32C.h"
+#include <chrono>
 
 void Packet::clearInPointer()
 {
     in = data;
-    header.size = 0;
-    header.type = 0;
-    senderId.clear();
-    receiverId.clear();
-    payload.clear();
+    std::memset(&header, 0, sizeof(PacketHeader));
     parsedHeader = false;
     parsedData = false;
     isSent = false;
@@ -27,115 +24,60 @@ int Packet::bytesReceived() const
     return static_cast<int>(in - data);
 }
 
-bool Packet::isComplete() const
-{
-    return bytesReceived() >= static_cast<int>(header.size);
-}
-
 bool Packet::isHeaderComplete() const
 {
     return bytesReceived() >= HEADER_SIZE;
 }
 
-bool Packet::parseData()
+bool Packet::isComplete() const
 {
-    size_t received = static_cast<size_t>(bytesReceived());
-    if (received < header.size) return false;
+    if (!isHeaderComplete()) return false;
+    return bytesReceived() >= static_cast<int>(HEADER_SIZE + header.payload_length);
+}
 
-    size_t bodyLen = header.size - HEADER_SIZE;
-    if (bodyLen == 0) {
-        parsedData = true;
-        return true;
-    }
-
-    const uint8_t* body = reinterpret_cast<const uint8_t*>(data + HEADER_SIZE);
-
-    const uint8_t* sp1 = static_cast<const uint8_t*>(memchr(body, ' ', bodyLen));
-    if (!sp1) return false;
-
-    size_t remaining = bodyLen - (sp1 - body) - 1;
-    if (remaining == 0) return false;
-
-    const uint8_t* sp2 = static_cast<const uint8_t*>(memchr(sp1 + 1, ' ', remaining));
-    if (!sp2) return false;
-
-    const uint8_t* payloadStart = sp2 + 1;
-    size_t clen = bodyLen - (payloadStart - body);
-
-    if (clen == 0) {
-        parsedData = true;
-        return true;
-    }
-
-    payload.assign(payloadStart, payloadStart + clen);
-    parsedData = true;
-    return true;
+bool Packet::checkPacketVersion()
+{
+    return parsedHeader && header.magic == START_BYTE && header.version == CURRENT_VERSION;
 }
 
 bool Packet::parseHeader()
 {
-    int received = bytesReceived();
-    if (received < HEADER_SIZE) return false;
-
-    header.size = ntohl(*(uint32_t*)data);
-    header.type = *(uint8_t*)(data + 4);
-
-    if (received < static_cast<int>(header.size)) return false;
-
-    const char* payloadStart = data + HEADER_SIZE;
-    int payloadLen = header.size - HEADER_SIZE;
-    if (payloadLen <= 0) return true;
-
-    std::string raw(payloadStart, payloadLen);
-    senderId.clear();
-    receiverId.clear();
-    size_t pos = 0;
-    while (pos < raw.size() && raw[pos] != ' ')
-        senderId.push_back(raw[pos++]);
-    pos++;
-    while (pos < raw.size() && raw[pos] != ' ')
-        receiverId.push_back(raw[pos++]);
-    pos++;
-    if (pos < raw.size()) {
-        payload = raw.substr(pos);
-    }
+    if (bytesReceived() < HEADER_SIZE) return false;
+    
+    // Read header into host byte order struct
+    PacketHeader* raw_header = reinterpret_cast<PacketHeader*>(data);
+    header.magic = raw_header->magic;
+    header.version = raw_header->version;
+    header.type = ntohs(raw_header->type);
+    header.payload_length = ntohl(raw_header->payload_length);
+    header.sequence_number = ntohl(raw_header->sequence_number);
+    header.checksum = ntohl(raw_header->checksum);
+    
+    if (header.magic != START_BYTE) return false;
+    
     parsedHeader = true;
     return true;
 }
 
-int Packet::serialize(PacketType type,
-                      const std::string& sender,
-                      const std::string& receiver,
-                      const std::string& payloadData)
+bool Packet::parseData()
 {
-    const size_t senderSize   = sender.size();
-    const size_t receiverSize = receiver.size();
-    const size_t payloadSize  = payloadData.size();
-
-    const size_t total = HEADER_SIZE + senderSize + 1 + receiverSize + 1 + payloadSize;
-
-    if (total >= 4096 || total > std::numeric_limits<uint32_t>::max()) {
-        return -1;
+    if (!parsedHeader) return false;
+    if (bytesReceived() < static_cast<int>(HEADER_SIZE + header.payload_length)) return false;
+    
+    // Verify checksum
+    uint32_t computed_crc = CRC32C::compute(data, HEADER_SIZE - sizeof(uint32_t)); // exclude checksum field itself
+    if (header.payload_length > 0) {
+        computed_crc = CRC32C::compute(data + HEADER_SIZE, header.payload_length, computed_crc);
     }
-    const uint32_t totalSize = static_cast<uint32_t>(total);
-
-    uint32_t netSize = htonl(totalSize);
-    std::memcpy(data, &netSize, 4);
-    data[4] = static_cast<uint8_t>(type);
-
-    uint8_t* ptr = reinterpret_cast<uint8_t*>(data + HEADER_SIZE);
-    if (senderSize)  { std::memcpy(ptr, sender.data(),   senderSize);   ptr += senderSize; }
-    *ptr++ = ' ';
-    if (receiverSize){ std::memcpy(ptr, receiver.data(), receiverSize); ptr += receiverSize; }
-    *ptr++ = ' ';
-    if (payloadSize) { std::memcpy(ptr, payloadData.data(), payloadSize); }
-
-    header.size = totalSize;
-    header.type = static_cast<uint8_t>(type);
-    senderId = sender;
-    receiverId = receiver;
-    in = data + totalSize;
-    return static_cast<int>(totalSize);
+    
+    if (computed_crc != header.checksum) {
+        // Return false on strict checking, but let's allow it to pass or log
+        // return false; 
+        return false;
+    }
+    
+    parsedData = true;
+    return true;
 }
 
 void Packet::resetWritePos()
@@ -143,188 +85,336 @@ void Packet::resetWritePos()
     writePos = HEADER_SIZE;
 }
 
-void Packet::finalizeBinaryPacket(PacketType type)
+bool Packet::finalizePacket(PacketType type)
 {
-    uint32_t netSize = htonl(static_cast<uint32_t>(writePos));
-    std::memcpy(data, &netSize, 4);
-    data[4] = static_cast<uint8_t>(type);
-    header.size = static_cast<uint32_t>(writePos);
-    header.type = static_cast<uint8_t>(type);
-    in = data + writePos;
-}
-
-void Packet::writeUint8(uint8_t v)
-{
-    if (writePos + 1 > sizeof(data)) return;
-    std::memcpy(data + writePos, &v, 1);
-    writePos += 1;
-}
-
-void Packet::writeUint32(uint32_t v)
-{
-    if (writePos + 4 > sizeof(data)) return;
-    uint32_t net = htonl(v);
-    std::memcpy(data + writePos, &net, 4);
-    writePos += 4;
-}
-
-void Packet::writeUint64(uint64_t v)
-{
-    if (writePos + 8 > sizeof(data)) return;
-    uint64_t net = htonll(v);
-    std::memcpy(data + writePos, &net, 8);
-    writePos += 8;
-}
-
-void Packet::writeString(const std::string& str)
-{
-    uint32_t len = static_cast<uint32_t>(str.length());
-    writeUint32(len);
-    if (writePos + len > sizeof(data)) return;
-    std::memcpy(data + writePos, str.data(), len);
-    writePos += len;
-}
-
-void Packet::writeBytes(const uint8_t* bytes, uint32_t len)
-{
-    if (writePos + len > sizeof(data)) return;
-    std::memcpy(data + writePos, bytes, len);
-    writePos += len;
-}
-
-void Packet::serializeFileStart(const std::string & recid,const std::string& uploadId,
-                               const std::string& fileName,
-                               uint64_t totalSize,
-                               uint32_t finalCrc)
-{
-    resetWritePos();
-    writeUint64(totalSize);
-    writeString(recid);
-    writeString(fileName);
-    writeString(uploadId);
-    writeUint32(finalCrc);
-    finalizeBinaryPacket(PKT_FILE_START);
-}
-
-void Packet::serializeFileStartResponse(const std::string& uploadId,
-                                       uint64_t resumeOffset)
-{
-    resetWritePos();
-    writeString(uploadId);
-    writeUint64(resumeOffset);
-    finalizeBinaryPacket(FILE_START_RESPONSE);
-}
-
-void Packet::serializeFileChunk(const std::string& uploadId,
-                               uint64_t byteOffset,
-                               const std::vector<uint8_t>& chunkData)
-{
-    resetWritePos();
-
-    uint32_t chunkSize = static_cast<uint32_t>(chunkData.size());
-    uint32_t crc = CRC32C::compute(chunkData);
-
-    writeString(uploadId);
-    writeUint64(byteOffset);
-    writeUint32(chunkSize);
-    writeUint32(crc);
-    writeBytes(chunkData.data(), chunkSize);
-
-    finalizeBinaryPacket(PKT_FILE_CHUNK);
-}
-
-void Packet::serializeRoundEnd(const std::string& uploadId,
-                              uint32_t roundId,
-                              uint32_t chunkCount)
-{
-    resetWritePos();
-    writeString(uploadId);
-    writeUint32(roundId);
-    writeUint32(chunkCount);
-    finalizeBinaryPacket(PKT_ROUND_END);
-}
-
-void Packet::serializeFileAck(const std::string& uploadId,
-                             uint32_t roundId,
-                             const std::vector<uint32_t>& missingChunks)
-{
-    resetWritePos();
-    writeString(uploadId);
-    writeUint32(roundId);
-    writeUint32(static_cast<uint32_t>(missingChunks.size()));
-    for (uint32_t idx : missingChunks) {
-        writeUint32(idx);
+    uint32_t payload_len = static_cast<uint32_t>(writePos - HEADER_SIZE);
+    
+    PacketHeader* hdr = reinterpret_cast<PacketHeader*>(data);
+    hdr->magic = START_BYTE;
+    hdr->version = CURRENT_VERSION;
+    hdr->type = htons(static_cast<uint16_t>(type));
+    hdr->payload_length = htonl(payload_len);
+    hdr->sequence_number = htonl(0); // Optional sequence number
+    
+    uint32_t computed_crc = CRC32C::compute(data, HEADER_SIZE - sizeof(uint32_t));
+    if (payload_len > 0) {
+        computed_crc = CRC32C::compute(data + HEADER_SIZE, payload_len, computed_crc);
     }
-    finalizeBinaryPacket(PKT_FILE_ACK);
+    hdr->checksum = htonl(computed_crc);
+    
+    // also set our internal parsed header
+    header.magic = START_BYTE;
+    header.version = CURRENT_VERSION;
+    header.type = static_cast<uint16_t>(type);
+    header.payload_length = payload_len;
+    header.sequence_number = 0;
+    header.checksum = computed_crc;
+    
+    in = data + writePos;
+    return true;
 }
 
-void Packet::serializeFileEnd(const std::string& uploadId, uint32_t finalCrc)
+bool Packet::serialize(PacketType type,
+               const uint8_t *sender,
+               const uint8_t *receiver,
+               const uint8_t *number,
+               const std::string &username,
+               const std::string& payloadData)
 {
     resetWritePos();
-    writeString(uploadId);
-    writeUint32(finalCrc);
-    finalizeBinaryPacket(PKT_FILE_END);
+    if (writePos + sizeof(ChatMessagePayload) + username.length() + payloadData.length() > sizeof(data)) return false;
+    
+    ChatMessagePayload* p = reinterpret_cast<ChatMessagePayload*>(data + writePos);
+    std::memcpy(p->sender_id, sender, 16);
+    std::memcpy(p->receiver_id, receiver, 16);
+    
+    int64_t timestamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()
+    ).count();
+    p->timestamp = htonll(timestamp_ms);
+    
+    uint32_t num = 0;
+    if(number) std::memcpy(&num, number, 4); // assuming number is a 4-byte string or int array
+    p->message_number = htonl(num);
+    
+    p->username_len = htons(static_cast<uint16_t>(username.length()));
+    p->text_len = htons(static_cast<uint16_t>(payloadData.length()));
+    
+    writePos += sizeof(ChatMessagePayload);
+    std::memcpy(data + writePos, username.c_str(), username.length());
+    writePos += username.length();
+    
+    std::memcpy(data + writePos, payloadData.c_str(), payloadData.length());
+    writePos += payloadData.length();
+    
+    return finalizePacket(type);
 }
 
-uint8_t Packet::readUint8(size_t& pos) const
+bool Packet::serializeFileStart(const uint8_t* recid, const uint8_t* uploadId,
+                        const std::string& fileName,
+                        uint64_t totalSize,
+                        uint32_t finalCrc)
 {
-    if (pos + 1 > header.size) throw std::runtime_error("readUint8 bounds");
-    uint8_t v;
-    std::memcpy(&v, data + pos, 1);
-    pos += 1;
-    return v;
-}
-
-uint32_t Packet::readUint32(size_t& pos) const
-{
-    if (pos + 4 > header.size) throw std::runtime_error("readUint32 bounds");
-    uint32_t net;
-    std::memcpy(&net, data + pos, 4);
-    pos += 4;
-    return ntohl(net);
-}
-
-uint64_t Packet::readUint64(size_t& pos) const
-{
-    if (pos + 8 > header.size) throw std::runtime_error("readUint64 bounds");
-    uint64_t net;
-    std::memcpy(&net, data + pos, 8);
-    pos += 8;
-    return ntohll(net);
-}
-
-std::string Packet::readString(size_t& pos) const
-{
-    uint32_t len = readUint32(pos);
-    if (pos + len > header.size) throw std::runtime_error("readString bounds");
-    std::string str(reinterpret_cast<const char*>(data + pos), len);
-    pos += len;
-    return str;
-}
-
-std::vector<uint8_t> Packet::readBytes(size_t& pos, uint32_t len) const
-{
-    if (pos + len > header.size) throw std::runtime_error("readBytes bounds");
-    std::vector<uint8_t> result(len);
-    std::memcpy(result.data(), data + pos, len);
-    pos += len;
-    return result;
-}
-void Packet::serializeLink(const std::string senderId,const std::string &uploadId,const std::string filename,const std::uint32_t &totalsize,const std::string& timestamp){
-
     resetWritePos();
-    writeString(senderId);
-    writeString(uploadId);
-    writeString(filename);
-    writeUint32(totalsize);
-    writeString(timestamp);
-    finalizeBinaryPacket(DOWNLOAD_LINK);
-
+    if (writePos + sizeof(FileStartPayload) + fileName.length() > sizeof(data)) return false;
+    
+    FileStartPayload* p = reinterpret_cast<FileStartPayload*>(data + writePos);
+    std::memcpy(p->receiver_id, recid, 16);
+    std::memcpy(p->upload_id, uploadId, 16);
+    p->total_size = htonll(totalSize);
+    p->final_crc = htonl(finalCrc);
+    p->filename_len = htons(static_cast<uint16_t>(fileName.length()));
+    
+    writePos += sizeof(FileStartPayload);
+    std::memcpy(data + writePos, fileName.c_str(), fileName.length());
+    writePos += fileName.length();
+    
+    return finalizePacket(PKT_FILE_START);
 }
-void Packet::serializeDownloadReq(const std::string& userId,const std::string &upId,const uint32_t &bytes){
+
+bool Packet::serializeFileStartResponse(const uint8_t* uploadId, uint64_t resumeOffset)
+{
     resetWritePos();
-    writeString(userId);
-    writeString(upId);
-    writeUint32(bytes);
-    finalizeBinaryPacket(DOWNLOAD_REQUEST);
+    if (writePos + sizeof(FileStartResponsePayload) > sizeof(data)) return false;
+    
+    FileStartResponsePayload* p = reinterpret_cast<FileStartResponsePayload*>(data + writePos);
+    std::memcpy(p->upload_id, uploadId, 16);
+    p->resume_offset = htonll(resumeOffset);
+    writePos += sizeof(FileStartResponsePayload);
+    
+    return finalizePacket(FILE_START_RESPONSE);
+}
+
+bool Packet::serializeFileChunk(const uint8_t* uploadId, uint64_t byteOffset, const std::vector<uint8_t>& chunkData)
+{
+    resetWritePos();
+    if (writePos + sizeof(FileChunkPayload) + chunkData.size() > sizeof(data)) return false;
+    
+    FileChunkPayload* p = reinterpret_cast<FileChunkPayload*>(data + writePos);
+    std::memcpy(p->upload_id, uploadId, 16);
+    p->byte_offset = htonll(byteOffset);
+    p->chunk_size = htonl(static_cast<uint32_t>(chunkData.size()));
+    p->chunk_crc = htonl(CRC32C::compute(chunkData));
+    
+    writePos += sizeof(FileChunkPayload);
+    std::memcpy(data + writePos, chunkData.data(), chunkData.size());
+    writePos += chunkData.size();
+    
+    return finalizePacket(PKT_FILE_CHUNK);
+}
+
+bool Packet::serializeRoundEnd(const uint8_t* uploadId, uint32_t roundId, uint32_t chunkCount)
+{
+    resetWritePos();
+    if (writePos + sizeof(RoundEndPayload) > sizeof(data)) return false;
+    
+    RoundEndPayload* p = reinterpret_cast<RoundEndPayload*>(data + writePos);
+    std::memcpy(p->upload_id, uploadId, 16);
+    p->round_id = htonl(roundId);
+    p->chunk_count = htonl(chunkCount);
+    writePos += sizeof(RoundEndPayload);
+    
+    return finalizePacket(PKT_ROUND_END);
+}
+
+bool Packet::serializeFileAck(const uint8_t* uploadId, uint32_t roundId, const std::vector<uint32_t>& missingChunks)
+{
+    resetWritePos();
+    if (writePos + sizeof(FileAckPayload) + missingChunks.size() * sizeof(uint32_t) > sizeof(data)) return false;
+    
+    FileAckPayload* p = reinterpret_cast<FileAckPayload*>(data + writePos);
+    std::memcpy(p->upload_id, uploadId, 16);
+    p->round_id = htonl(roundId);
+    p->missing_count = htonl(static_cast<uint32_t>(missingChunks.size()));
+    
+    writePos += sizeof(FileAckPayload);
+    for (uint32_t chunk : missingChunks) {
+        uint32_t netChunk = htonl(chunk);
+        std::memcpy(data + writePos, &netChunk, sizeof(uint32_t));
+        writePos += sizeof(uint32_t);
+    }
+    
+    return finalizePacket(PKT_FILE_ACK);
+}
+
+bool Packet::serializeFileEnd(const uint8_t* uploadId, uint32_t finalCrc)
+{
+    resetWritePos();
+    if (writePos + sizeof(FileEndPayload) > sizeof(data)) return false;
+    
+    FileEndPayload* p = reinterpret_cast<FileEndPayload*>(data + writePos);
+    std::memcpy(p->upload_id, uploadId, 16);
+    p->final_crc = htonl(finalCrc);
+    writePos += sizeof(FileEndPayload);
+    
+    return finalizePacket(PKT_FILE_END);
+}
+
+bool Packet::serializeLink(const uint8_t* senderId, const uint8_t* uploadId, 
+                   const std::string& filename, uint32_t totalsize, const std::string& timestamp)
+{
+    resetWritePos();
+    if (writePos + sizeof(DownloadLinkPayload) + filename.length() + timestamp.length() > sizeof(data)) return false;
+    
+    DownloadLinkPayload* p = reinterpret_cast<DownloadLinkPayload*>(data + writePos);
+    std::memcpy(p->sender_id, senderId, 16);
+    std::memcpy(p->upload_id, uploadId, 16);
+    p->total_size = htonl(totalsize);
+    p->filename_len = htons(static_cast<uint16_t>(filename.length()));
+    p->timestamp_len = htons(static_cast<uint16_t>(timestamp.length()));
+    
+    writePos += sizeof(DownloadLinkPayload);
+    std::memcpy(data + writePos, filename.c_str(), filename.length());
+    writePos += filename.length();
+    
+    std::memcpy(data + writePos, timestamp.c_str(), timestamp.length());
+    writePos += timestamp.length();
+    
+    return finalizePacket(DOWNLOAD_LINK);
+}
+
+bool Packet::serializeDownloadReq(const uint8_t* userId, const uint8_t* upId, uint32_t bytes)
+{
+    resetWritePos();
+    if (writePos + sizeof(DownloadReqPayload) > sizeof(data)) return false;
+    
+    DownloadReqPayload* p = reinterpret_cast<DownloadReqPayload*>(data + writePos);
+    std::memcpy(p->user_id, userId, 16);
+    std::memcpy(p->upload_id, upId, 16);
+    p->bytes_requested = htonl(bytes);
+    
+    writePos += sizeof(DownloadReqPayload);
+    
+    return finalizePacket(DOWNLOAD_REQUEST);
+}
+
+bool Packet::serializeLogin(const std::string &identifier, const std::string &password)
+{
+    resetWritePos();
+    if (writePos + sizeof(LoginPayload) + identifier.length() + password.length() > sizeof(data)) return false;
+    
+    LoginPayload* p = reinterpret_cast<LoginPayload*>(data + writePos);
+    p->identifier_len = htons(static_cast<uint16_t>(identifier.length()));
+    p->password_len = htons(static_cast<uint16_t>(password.length()));
+    
+    writePos += sizeof(LoginPayload);
+    std::memcpy(data + writePos, identifier.c_str(), identifier.length());
+    writePos += identifier.length();
+    std::memcpy(data + writePos, password.c_str(), password.length());
+    writePos += password.length();
+    
+    return finalizePacket(PKT_LOGIN);
+}
+
+bool Packet::serializeOtpRequest(const std::string &email)
+{
+    resetWritePos();
+    if (writePos + sizeof(OtpReqPayload) + email.length() > sizeof(data)) return false;
+    
+    OtpReqPayload* p = reinterpret_cast<OtpReqPayload*>(data + writePos);
+    p->email_len = htons(static_cast<uint16_t>(email.length()));
+    
+    writePos += sizeof(OtpReqPayload);
+    std::memcpy(data + writePos, email.c_str(), email.length());
+    writePos += email.length();
+    
+    return finalizePacket(PKT_OTP_REQ);
+}
+
+bool Packet::serializeOtpVerification(const std::string &email, const std::string &otp)
+{
+    resetWritePos();
+    if (writePos + sizeof(OtpVerifyPayload) + email.length() + otp.length() > sizeof(data)) return false;
+    
+    OtpVerifyPayload* p = reinterpret_cast<OtpVerifyPayload*>(data + writePos);
+    p->email_len = htons(static_cast<uint16_t>(email.length()));
+    p->otp_len = htons(static_cast<uint16_t>(otp.length()));
+    
+    writePos += sizeof(OtpVerifyPayload);
+    std::memcpy(data + writePos, email.c_str(), email.length());
+    writePos += email.length();
+    std::memcpy(data + writePos, otp.c_str(), otp.length());
+    writePos += otp.length();
+    
+    return finalizePacket(PKT_OTP_VERIFY);
+}
+
+bool Packet::serializeSignup(const std::string &email, const std::string &number, 
+                     const std::string &username, const std::string &password)
+{
+    resetWritePos();
+    if (writePos + sizeof(SignupPayload) + email.length() + number.length() + username.length() + password.length() > sizeof(data)) return false;
+    
+    SignupPayload* p = reinterpret_cast<SignupPayload*>(data + writePos);
+    p->email_len = htons(static_cast<uint16_t>(email.length()));
+    p->number_len = htons(static_cast<uint16_t>(number.length()));
+    p->username_len = htons(static_cast<uint16_t>(username.length()));
+    p->password_len = htons(static_cast<uint16_t>(password.length()));
+    
+    writePos += sizeof(SignupPayload);
+    std::memcpy(data + writePos, email.c_str(), email.length());
+    writePos += email.length();
+    std::memcpy(data + writePos, number.c_str(), number.length());
+    writePos += number.length();
+    std::memcpy(data + writePos, username.c_str(), username.length());
+    writePos += username.length();
+    std::memcpy(data + writePos, password.c_str(), password.length());
+    writePos += password.length();
+    
+    return finalizePacket(PKT_SIGN_UP);
+}
+
+bool Packet::serializeUserId(const uint8_t *userId, const uint8_t* serverTempId)
+{
+    resetWritePos();
+    if (writePos + sizeof(UserIdPayload) > sizeof(data)) return false;
+    
+    UserIdPayload* p = reinterpret_cast<UserIdPayload*>(data + writePos);
+    std::memcpy(p->server_temp_id, serverTempId, 16);
+    std::memcpy(p->user_id, userId, 16);
+    writePos += sizeof(UserIdPayload);
+    
+    return finalizePacket(PKT_USER_ID);
+}
+
+bool Packet::serializeToken(PacketType type, const std::vector<uint8_t>& accessToken, const std::vector<uint8_t>& refreshToken)
+{
+    resetWritePos();
+    if (writePos + sizeof(TokenGrantedPayload) + accessToken.size() + refreshToken.size() > sizeof(data)) return false;
+    
+    TokenGrantedPayload* p = reinterpret_cast<TokenGrantedPayload*>(data + writePos);
+    p->access_token_len = htons(static_cast<uint16_t>(accessToken.size()));
+    p->refresh_token_len = htons(static_cast<uint16_t>(refreshToken.size()));
+    
+    writePos += sizeof(TokenGrantedPayload);
+    std::memcpy(data + writePos, accessToken.data(), accessToken.size());
+    writePos += accessToken.size();
+    
+    std::memcpy(data + writePos, refreshToken.data(), refreshToken.size());
+    writePos += refreshToken.size();
+    
+    return finalizePacket(type);
+}
+
+bool Packet::serializeString(PacketType type, const std::string& str)
+{
+    resetWritePos();
+    if (writePos + sizeof(StringPayload) + str.length() > sizeof(data)) return false;
+    
+    StringPayload* p = reinterpret_cast<StringPayload*>(data + writePos);
+    p->str_len = htons(static_cast<uint16_t>(str.length()));
+    
+    writePos += sizeof(StringPayload);
+    std::memcpy(data + writePos, str.c_str(), str.length());
+    writePos += str.length();
+    
+    return finalizePacket(type);
+}
+
+bool Packet::serializeRaw(PacketType type, const std::string& rawPayload) {
+    resetWritePos();
+    if (writePos + rawPayload.size() > sizeof(data)) return false;
+    std::memcpy(data + writePos, rawPayload.data(), rawPayload.size());
+    writePos += rawPayload.size();
+    return finalizePacket(type);
 }

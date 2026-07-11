@@ -20,7 +20,7 @@ private:
 
 public:
 std::atomic<int>counter{0};
-std::atomic<int>receivedPrivateMsg{0};
+
     MessageRouter(SessionManager* sm, GroupManager* gm);
     void setOfflineManager(ManageOffline* om) { offManager = om; }
     void setFileManager(FileTransferManager* fm) { filemanager = fm; }
