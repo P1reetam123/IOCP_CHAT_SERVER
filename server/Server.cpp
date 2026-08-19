@@ -54,6 +54,11 @@ bool Server::start(int port)
 
 void Server::stop()
 {
+    bool expected = false;
+    if (!isShuttingDown.compare_exchange_strong(expected, true)) {
+        return; // Already shutting down
+    }
+
 //     Logger::info("Stopping server...");
 //    Logger::info("total packet sent from server "+std::to_string(router.counter));
 //    Logger::info("total packet recieved by server "+std::to_string(iocp.totalPacketRecieved));

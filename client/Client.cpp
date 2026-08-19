@@ -131,21 +131,50 @@ bool Client::login(const std::string &identifier, const std::string &password)
     p.serializeLogin(identifier,password);
     return sendRawPacket(p);
 }
-
 bool Client::reconnectWithToken()
 {
-    if (accessToken.size() != kAccessTokenSize)
+    const uint64_t now = static_cast<uint64_t>(std::time(nullptr));
+
+    // Try Access Token first
+    if (isAccessTokenValid(now))
     {
-        std::cerr << "[Auth] Refusing to reconnect\n";
-        return false;
+        Packet p;
+        std::string payload(reinterpret_cast<const char*>(&access), sizeof(AccessToken));
+        p.serializeRaw(PKT_TOKEN, payload);
+        
+        if (sendRawPacket(p)) {
+            std::cout << "[Auth] Reconnected using access token\n";
+            return true;
+        }
     }
 
-    Packet p;
-    std::string binary_payload(reinterpret_cast<const char*>(accessToken.data()), accessToken.size());
-    p.serializeRaw(PKT_TOKEN, binary_payload);
-    return sendRawPacket(p);
+    // Try Refresh Token
+    if (isRefreshTokenValid(now))
+    {
+        Packet p;
+        std::string payload(reinterpret_cast<const char*>(&refresh), sizeof(RefreshToken));
+        p.serializeRaw(PKT_REFRESH, payload);
+        
+        if (sendRawPacket(p)) {
+            std::cout << "[Auth] Reconnected using refresh token\n";
+            return true;
+        }
+    }
+
+    std::cout << "[Auth] Tokens expired or invalid - login required\n";
+    return false;
 }
 
+// Add these helper methods
+bool Client::isAccessTokenValid(uint64_t now) const
+{
+    return accessValid && access.payload.expiry > now;
+}
+
+bool Client::isRefreshTokenValid(uint64_t now) const
+{
+    return refreshValid && refresh.payload.expiry > now;
+}
 // Helper to parse hex strings to 16-byte array, or fallback to direct copy for non-hex IDs
 static void hexToBytes(const std::string& str, uint8_t* outBytes) {
     std::memset(outBytes, 0, 16);
@@ -361,6 +390,55 @@ bool Client::sendRawPacket(Packet &p)
         totalSent += sent;
     }
     return true;
+}bool Client::tokenBuildOnStartUp() {
+    const std::string userfile = "userID.bin";
+    const std::string accessfile = "accessToken.bin";
+    const std::string refreshfile = "refreshToken.bin";
+
+    // Helper lambda for safe binary read
+    auto safeRead = [](auto& stream, void* data, std::size_t size) -> bool {
+        stream.read(static_cast<char*>(data), size);
+        return stream.gcount() == static_cast<std::streamsize>(size) && stream;
+    };
+
+    // Check user ID
+    {
+        std::ifstream uf(userfile, std::ios::binary);
+        if (!uf || !std::filesystem::exists(userfile) ||
+            std::filesystem::file_size(userfile) != UUID_SIZE) {
+            return false;
+        }
+
+        if (!safeRead(uf, userId.data(), UUID_SIZE)) {
+            return false;
+        }
+    }
+
+    // Access token is optional
+    {
+        std::ifstream acf(accessfile, std::ios::binary);
+        if (acf && std::filesystem::file_size(accessfile) >= sizeof(AccessToken)) {
+           if( safeRead(acf, &access, sizeof(AccessToken)))accessValid=true;  // ignore failure, it's optional
+        }
+    }
+
+    // Refresh token is required
+    {
+        std::ifstream ref(refreshfile, std::ios::binary);
+        if (!ref || !std::filesystem::exists(refreshfile) ||
+            std::filesystem::file_size(refreshfile) != sizeof(RefreshToken)) {
+            return false;
+        }
+
+        if (!safeRead(ref, &refresh, sizeof(RefreshToken))) {
+            return false;
+        }
+        else{
+            refreshValid=true;
+        }
+    }
+
+    return true;
 }
 
 // ====================== AUTH CALLBACKS ======================
@@ -370,6 +448,11 @@ void Client::handleUserIdPacket(Packet &p)
     std::memcpy(serverId, p.data+pos, UUID_SIZE);
     pos+=UUID_SIZE;
     userId.assign(reinterpret_cast<const char*>(p.data+pos), UUID_SIZE);
+    std::ofstream userFile("userID.bin",std::ios::trunc);
+    if(userFile.is_open()){
+userFile.write(reinterpret_cast<char*>(&userId),UUID_SIZE);
+        userFile.close();
+    }
     std::cout << "user id updated successfully: " << std::endl;
 }
 
@@ -382,15 +465,29 @@ void Client::handleTokenGranted(Packet &p) {
     uint16_t accessLen = ntohs(payload->access_token_len);
     uint16_t refreshLen = ntohs(payload->refresh_token_len);
     const uint8_t *payloadPtr = reinterpret_cast<const uint8_t *>(payload + 1);
-    
+  
     if (accessLen != sizeof(AccessToken) || refreshLen != sizeof(RefreshToken)) {
         std::cerr << "[Client] Received invalid token lengths.\n";
         return;
     }
-    std::memcpy(&accessToken, payloadPtr, accessLen);
-    std::memcpy(&refreshToken, payloadPtr + accessLen, refreshLen);
+    std::memcpy(accessToken.data(), payloadPtr, accessLen);
+    std::memcpy(refreshToken.data(), payloadPtr + accessLen, refreshLen);
+    std::ofstream accesFile("accessToken.bin",std::ios::trunc|std::ios::binary);
+    if(accesFile.is_open()){
+        accesFile.write(reinterpret_cast<char*>(accessToken.data()),accessLen);
+        accesFile.close();
+    }
 
+    std::ofstream refreshFile("refreshToken.bin",std::ios::trunc|std::ios::binary);
+    if(refreshFile.is_open()){
+        refreshFile.write(reinterpret_cast<char*>(refreshToken.data()),refreshLen);
+        refreshFile.close();
+    }
+      std::memcpy(&access,accessToken.data(),accessLen);
+      std::memcpy(&refresh,refreshToken.data(),refreshLen);
     std::cout << "\n[Auth] Authentication successful! Tokens received.\n> ";
+    refreshValid=true;
+    accessValid=true;
     return;
 
 

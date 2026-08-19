@@ -296,10 +296,10 @@ if (otCopy.otp == hashedOtp)
         otpChecker.erase(key);
         std::cout<<"signup(273) routing to id :- "<<sessionId<<std::endl;
         bool routed = router->routePacket(okPacket, sessionId);
-        if(!routed) PacketPool::Instance().returnPacket(okPacket);
+        if(!routed) {PacketPool::Instance().returnPacket(okPacket);
             std::lock_guard<std::mutex> emtxLk(emtx);
             emailVerified[email] = false;
-
+        }
         }
     }
     return;

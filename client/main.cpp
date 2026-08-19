@@ -43,8 +43,12 @@ int main() {
         WSACleanup();
         return 1;
     }
-    
-    std::cout << "Connected!\n";
+    if(client.tokenBuildOnStartUp()&&client.reconnectWithToken()){
+  std::cout << "Connected! send messages \n";
+    }
+  else{
+    std::cout<<" login again!\n";
+  }
     printHelp();
 
     std::string line;

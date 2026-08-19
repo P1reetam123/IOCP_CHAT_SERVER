@@ -13,12 +13,13 @@
 #include <vector>
 #include "../protocol/Packet.h"
 #include "../protocol/FileTransferConstants.h"
-
+#include"./authentication/auth_types.h"
 class Client
 {
 private:
     SOCKET clientSocket;
-    std::string userId;
+     std::string userId;
+    uint8_t userId_bi[UUID_SIZE];
     uint8_t serverId[UUID_SIZE];
     std::thread recvThread;
     std::mutex sendMtx;
@@ -55,6 +56,7 @@ public:
 
     bool sendFile(const std::string &receiver, const std::string &filepath);
     bool downloadFile(const std::string &uploadId);
+      bool tokenBuildOnStartUp();
 
 private:
     struct UploadState {
@@ -105,7 +107,10 @@ private:
 
     std::vector<uint8_t> accessToken;
     std::vector<uint8_t> refreshToken;
-
+ AccessToken access;
+ RefreshToken refresh;
+ bool accessValid{false};
+ bool refreshValid{false};
     void receiveLoop();
     void handleIncomingPacket(Packet &p);
     bool sendRawPacket(Packet &p);
@@ -132,4 +137,8 @@ private:
     void handleAuthFail(Packet &p);
   std::string sanitize(const std::string& name);
     uint32_t computeFileCRC(const std::string& filepath);
+  
+   bool    isAccessTokenValid(uint64_t now) const;
+    bool isRefreshTokenValid(uint64_t now) const;
+    bool saveTokenToFile(const std::string& filename, const void* data, size_t size);
 };

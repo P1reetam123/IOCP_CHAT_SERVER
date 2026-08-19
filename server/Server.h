@@ -8,6 +8,8 @@
 #include"../authentication/SignUp.h"
 #include"../authentication/AuthManager.h"
 
+#include <atomic>
+
 class Server
 {
 private:
@@ -20,6 +22,7 @@ private:
     SignUp signUpManager;
     AuthManager authManager;
     bool wsaInitialized = false;
+    std::atomic<bool> isShuttingDown{false};
 
 public:
     Server();

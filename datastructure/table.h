@@ -14,6 +14,7 @@
 #include "./token/userInfo.h"
 #include <zlib.h> // For CRC32 checksum
 #include <thread>
+#include <algorithm>
 
 template <typename T = userInfo>
 class table
@@ -39,6 +40,12 @@ private:
     std::string backupDir = "./userData/backups/";
     size_t currentRecords = 0;
     const size_t CACHE_LIMIT = 10000;
+
+    // Headroom policy — smart growth instead of fixed 20k record allocation
+    static constexpr double HEADROOM_GROWTH_FACTOR = 1.5;
+    static constexpr size_t MIN_HEADROOM_RECORDS = 1000;
+    static constexpr size_t MAX_HEADROOM_RECORDS = 50000;
+    size_t mappedCapacityRecords = 0;
 
     std::mutex mtx;
     HANDLE hFile = INVALID_HANDLE_VALUE;
@@ -94,18 +101,68 @@ private:
             currentRecords = 0;
         }
 
-        // Truncate to the actual used size before extending
-        LARGE_INTEGER usedSize;
-        usedSize.QuadPart = currentRecords * sizeof(T);
-        SetFilePointerEx(hFile, usedSize, nullptr, FILE_BEGIN);
-        SetEndOfFile(hFile);
+        // Smart headroom: check existing file capacity before allocating
+        size_t fileCapacityRecords = (fileSize.QuadPart > 0)
+            ? static_cast<size_t>(fileSize.QuadPart / sizeof(T))
+            : 0;
+        size_t existingHeadroom = (fileCapacityRecords > currentRecords)
+            ? (fileCapacityRecords - currentRecords)
+            : 0;
 
-        mappedSize = (currentRecords + 20000) * sizeof(T); // headroom
+        if (existingHeadroom >= MIN_HEADROOM_RECORDS)
+        {
+            // Reuse existing file capacity — no truncation, no extension needed
+            mappedCapacityRecords = fileCapacityRecords;
+        }
+        else
+        {
+            // Calculate new capacity with growth factor, capped
+            size_t growthTarget = static_cast<size_t>(currentRecords * HEADROOM_GROWTH_FACTOR);
+            size_t minTarget = currentRecords + MIN_HEADROOM_RECORDS;
+            size_t maxTarget = currentRecords + MAX_HEADROOM_RECORDS;
+            mappedCapacityRecords = std::min(std::max(growthTarget, minTarget), maxTarget);
+        }
+
+        mappedSize = mappedCapacityRecords * sizeof(T);
         hMap = CreateFileMappingA(hFile, nullptr, PAGE_READWRITE, 0, (DWORD)mappedSize, nullptr);
         if (hMap)
         {
             mappedMemory = static_cast<char *>(MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, mappedSize));
         }
+    }
+
+    bool ensureCapacity(size_t neededRecords)
+    {
+        if (neededRecords <= mappedCapacityRecords)
+            return true;
+
+        // Unmap existing view before resizing
+        if (mappedMemory)
+        {
+            FlushViewOfFile(mappedMemory, 0);
+            UnmapViewOfFile(mappedMemory);
+            mappedMemory = nullptr;
+        }
+        if (hMap)
+        {
+            CloseHandle(hMap);
+            hMap = nullptr;
+        }
+        
+        // Grow with growth factor, capped
+        size_t growthTarget = static_cast<size_t>(neededRecords * HEADROOM_GROWTH_FACTOR);
+        size_t minTarget = neededRecords + MIN_HEADROOM_RECORDS;
+        size_t maxTarget = neededRecords + MAX_HEADROOM_RECORDS;
+        mappedCapacityRecords = std::min(std::max(growthTarget, minTarget), maxTarget);
+        mappedSize = mappedCapacityRecords * sizeof(T);
+
+        hMap = CreateFileMappingA(hFile, nullptr, PAGE_READWRITE, 0, (DWORD)mappedSize, nullptr);
+        if (hMap)
+        {
+            mappedMemory = static_cast<char *>(MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, mappedSize));
+        }
+
+        return (mappedMemory != nullptr);
     }
 
     void flushAndClose()
@@ -143,12 +200,14 @@ private:
         for (size_t i = 0; i < currentRecords; ++i)
         {
             memcpy(&rec, mappedMemory + i * sizeof(T), sizeof(T));
-            decryptRecord(rec); // decrypt for index building
 
+            // Check for empty (zeroed) headroom space BEFORE decrypting.
+            // CreateFileMapping initializes new space with zeros.
+            // If we decrypt zeros, they turn into garbage data and are counted as valid records!
             bool isEmpty = true;
             for (size_t j = 0; j < sizeof(rec.user_id); ++j)
             {
-                if (rec.user_id[j] != 0)
+                if (reinterpret_cast<uint8_t*>(&rec)[j] != 0)
                 {
                     isEmpty = false;
                     break;
@@ -158,6 +217,9 @@ private:
             {
                 break;
             }
+
+            decryptRecord(rec); // decrypt for index building
+
             actualRecords++;
 
             std::string uid = toKey(rec.user_id, sizeof(rec.user_id));
@@ -317,6 +379,9 @@ public:
         uint32_t *csPtr = reinterpret_cast<uint32_t *>(reinterpret_cast<char *>(&record) + sizeof(T) - sizeof(uint32_t));
         *csPtr = calculateChecksum(record);
         encryptRecord(record);
+
+        if (!ensureCapacity(currentRecords + 1))
+            return false;
 
         size_t idx = currentRecords;
         memcpy(mappedMemory + idx * sizeof(T), &record, sizeof(T));

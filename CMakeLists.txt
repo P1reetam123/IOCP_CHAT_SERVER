@@ -31,6 +31,7 @@ set(SERVER_SOURCES
     pool/PacketPool.cpp
     authentication/SignUp.cpp
     authentication/AuthManager.cpp
+    
 )
 add_subdirectory(abseil-cpp)
 add_executable(Server ${SERVER_SOURCES})

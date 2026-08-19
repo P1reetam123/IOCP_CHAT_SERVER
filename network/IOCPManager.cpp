@@ -12,10 +12,11 @@
 #include "./pool/PacketPool.h"
 #include "./pool/SessionPool.h"
 #include "./pool/IOContextPool.h"
+#include "./datastructure/circularBuffer.h"
 IOContextPool pio;
 struct ConnectionBuffer
 {
-    std::vector<char> buffer;
+   CircularBuffer buffer;
 };
 
 
@@ -175,7 +176,7 @@ void IOCPManager::workerThread()
         if ((!success || bytesTransferred == 0))
         {
             // Connection closed or error
-            //  If this was a pending send, recover the in-flight packet
+            //  If this was a pending send, recover the in-flight packet, note no need to recover packet as it is already habdled means it is not thrown from the queue 
             if (pData->operationType == 0 && pData->packet)
             {
                 pData->packet->isSending = false;
@@ -207,10 +208,19 @@ void IOCPManager::workerThread()
                 }
                 // this is slow create a circular buffer data structure
                 auto &recvBuffer = it->second.buffer;
-                recvBuffer.insert(
-                    recvBuffer.end(),
-                    pData->data,
-                    pData->data + bytesTransferred);
+                // extracting the data from kernel memory 
+                // while(true){
+                //             WSABUF buff;
+                //             buff.buf= &recvBuffer[6];
+                //     DWORD bytes =0 , flag =0;
+                //     int result = WSARecv(clientSocket,)
+
+                // }
+                  
+                bool inserted=recvBuffer.insert(bytesTransferred, pData->data);
+                if(!inserted){// failed to insert the bytes received
+
+                }
             }
             pio.returnIOPdata(pData);
             postRecv(clientSocket);
@@ -218,8 +228,7 @@ void IOCPManager::workerThread()
             // Process packets from buffer
             while (true)
             {
-                std::vector<char> packetData;
-                bool hasPacket = false;
+                Packet *p = nullptr;
 
                 // Safely extract packet from buffer
                 {
@@ -238,15 +247,17 @@ void IOCPManager::workerThread()
                     // Need at least header
                     if (recvBuffer.size() < HEADER_SIZE)
                         break;
-
-                    PacketHeader* hdr = reinterpret_cast<PacketHeader*>(recvBuffer.data());
-                    if (hdr->magic != START_BYTE) {
+                    size_t hdr_size= sizeof(PacketHeader);
+                   
+                    PacketHeader hdr ;//= reinterpret_cast<PacketHeader*>(recvBuffer.data());
+                     recvBuffer.copy(reinterpret_cast<uint8_t*>(&hdr) , hdr_size);
+                    if (hdr.magic != START_BYTE) {
                         Logger::warn("Invalid magic byte");
                         handleDisconnect(clientSocket);
                         break;
                     }
 
-                    uint32_t payloadSize = ntohl(hdr->payload_length);
+                    uint32_t payloadSize = ntohl(hdr.payload_length);
                     uint32_t packetSize = HEADER_SIZE + payloadSize;
 
                     if (packetSize < HEADER_SIZE) // Overflow check
@@ -265,27 +276,23 @@ void IOCPManager::workerThread()
                            break;
                        }
 
-                    // Extract packet data
-                    /// directly extract into the packet
-                    packetData.assign(recvBuffer.begin(), recvBuffer.begin() + packetSize);
-                    hasPacket = true;
+                    // Extract packet data directly into the packet
+                    p = PacketPool::Instance().borrowPacket();
+                    if (p == nullptr)
+                    {
+                        break; // Packet pool exhausted
+                    }
 
-                    // Remove consumed packet bytes this is also slow
-                    recvBuffer.erase(recvBuffer.begin(), recvBuffer.begin() + packetSize);
+                    recvBuffer.copy(reinterpret_cast<uint8_t*>(p->data), packetSize);
+                    p->in = p->data + packetSize;
+                    
+                    // Remove consumed packet bytes
+                    recvBuffer.erase(packetSize);
                 }
 
-                if (!hasPacket)
-                    break;
-
-                // Build packet from extracted data
-                Packet *p = PacketPool::Instance().borrowPacket();
                 if (p == nullptr)
-                {
-                    // Logger::info(" packet is ")
                     break;
-                }
-                std::memcpy(p->data, packetData.data(), packetData.size());
-                p->in = p->data + packetData.size();
+
              bool parsed=   p->parseHeader();
              if(!parsed){
                 Logger::info("failed to parse the header\n");
@@ -398,8 +405,8 @@ bool IOCPManager::postRecv(SOCKET s)
     size_t savedId = pData->id;
     ZeroMemory(pData, sizeof(PER_IO_OPERATION_DATA));
     pData->id = savedId;
-    pData->buffer.buf =reinterpret_cast<char*>( pData->data);
-    pData->buffer.len = sizeof(pData->data);
+    pData->buffer.buf =reinterpret_cast<char*>( pData->data);// NULL
+    pData->buffer.len = sizeof(pData->data); // 0 to telll the os not to lock memory from ram even if the socket is idle 
     pData->operationType = 1; // recv
 
     DWORD recvd = 0, flags = 0;
