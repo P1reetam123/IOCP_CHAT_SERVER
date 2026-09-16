@@ -1,0 +1,549 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "abseil-cpp/absl/strings/libabsl_str_format_internal.a"
+		}
+	],
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"absl_cc_library",
+			"target_link_libraries",
+			"target_compile_options",
+			"target_include_directories",
+			"target_compile_features",
+			"target_sources"
+		],
+		"files" : 
+		[
+			"abseil-cpp/CMake/AbseilHelpers.cmake",
+			"abseil-cpp/absl/strings/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 573,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 259,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 268,
+				"parent" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 290,
+				"parent" : 1
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 285,
+				"parent" : 1
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 307,
+				"parent" : 1
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 260,
+				"parent" : 1
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"compileDependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "absl_bits::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings::@a4cc995c3473953680d9"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_config::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_core_headers::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_fixed_array::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_inlined_vector::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_numeric_representation::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_type_traits::@de2a9f301f9421021c0e"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_utility::@2e8996aefc648aad8982"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_int128::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_span::@019a197c0fd06ca84799"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings_internal::@a4cc995c3473953680d9"
+		}
+	],
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=gnu++20"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wall"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wextra"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wcast-qual"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wconversion-null"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wformat-security"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wmissing-declarations"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wnon-virtual-dtor"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Woverlength-strings"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wpointer-arith"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wundef"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wunused-local-typedefs"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wunused-result"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wvarargs"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wvla"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-Wwrite-strings"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-DNOMINMAX"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 5,
+					"path" : "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					6
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "absl_hardening::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_log_severity::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_spinlock_wait::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_raw_logging_internal::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_base::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_throw_delegate::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_int128::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings::@a4cc995c3473953680d9"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings_internal::@a4cc995c3473953680d9"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_source_location::@019a197c0fd06ca84799"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "Abseil/internal"
+	},
+	"id" : "absl_str_format_internal::@a4cc995c3473953680d9",
+	"interfaceCompileDependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "absl_bits::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings::@a4cc995c3473953680d9"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_config::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_core_headers::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_fixed_array::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_inlined_vector::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_numeric_representation::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_type_traits::@de2a9f301f9421021c0e"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_utility::@2e8996aefc648aad8982"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_int128::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_span::@019a197c0fd06ca84799"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings_internal::@a4cc995c3473953680d9"
+		}
+	],
+	"interfaceLinkLibraries" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "absl_bits::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings::@a4cc995c3473953680d9"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_config::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_core_headers::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_fixed_array::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_inlined_vector::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_numeric_representation::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_type_traits::@de2a9f301f9421021c0e"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_utility::@2e8996aefc648aad8982"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_int128::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_span::@019a197c0fd06ca84799"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings_internal::@a4cc995c3473953680d9"
+		}
+	],
+	"linkLibraries" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "absl_bits::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings::@a4cc995c3473953680d9"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_config::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_core_headers::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_fixed_array::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_inlined_vector::@38979ed14ab5174a6c5b"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_numeric_representation::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_type_traits::@de2a9f301f9421021c0e"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_utility::@2e8996aefc648aad8982"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_int128::@35227d1743c50db2a020"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_span::@019a197c0fd06ca84799"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_strings_internal::@a4cc995c3473953680d9"
+		}
+	],
+	"name" : "absl_str_format_internal",
+	"nameOnDisk" : "libabsl_str_format_internal.a",
+	"paths" : 
+	{
+		"build" : "abseil-cpp/absl/strings",
+		"source" : "abseil-cpp/absl/strings"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/arg.cc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/bind.cc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/extension.cc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/float_conversion.cc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/output.cc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/parser.cc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/arg.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/bind.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/checker.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/constexpr_parser.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/extension.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/float_conversion.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/output.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "abseil-cpp/absl/strings/internal/str_format/parser.h",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

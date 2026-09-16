@@ -1,0 +1,1082 @@
+[
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -g -std=gnu++20 -o CMakeFiles\\Common.dir\\protocol\\Packet.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\protocol\\Packet.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/protocol/Packet.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Common.dir/protocol/Packet.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -g -std=gnu++20 -o CMakeFiles\\Common.dir\\protocol\\CRC32C.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\protocol\\CRC32C.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/protocol/CRC32C.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Common.dir/protocol/CRC32C.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -g -std=gnu++20 -o CMakeFiles\\Common.dir\\utils\\Logger.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\utils\\Logger.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/utils/Logger.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Common.dir/utils/Logger.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\main.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\main.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/main.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\session\\Session.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\session\\Session.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/session/Session.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/session/Session.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\session\\SessionManager.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\session\\SessionManager.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/session/SessionManager.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/session/SessionManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\chat\\Group.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\chat\\Group.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/chat/Group.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/chat/Group.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\chat\\GroupManager.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\chat\\GroupManager.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/chat/GroupManager.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/chat/GroupManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\chat\\MessageRouter.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\chat\\MessageRouter.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/chat/MessageRouter.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/chat/MessageRouter.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\filetransfer\\FileTransferManager.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\filetransfer\\FileTransferManager.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/filetransfer/FileTransferManager.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/filetransfer/FileTransferManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\filetransfer\\FIleDownload.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\filetransfer\\FIleDownload.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/filetransfer/FIleDownload.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/filetransfer/FIleDownload.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\network\\IOCPManager.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\network\\IOCPManager.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/network/IOCPManager.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/network/IOCPManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\server\\Server.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\server\\Server.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/server/Server.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/server/Server.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\offlineManager\\ManageOffline.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\offlineManager\\ManageOffline.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/offlineManager/ManageOffline.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/offlineManager/ManageOffline.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\pool\\SessionPool.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\pool\\SessionPool.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/pool/SessionPool.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/pool/SessionPool.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\pool\\PacketPool.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\pool\\PacketPool.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/pool/PacketPool.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/pool/PacketPool.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\authentication\\SignUp.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\authentication\\SignUp.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/authentication/SignUp.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/authentication/SignUp.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -o CMakeFiles\\Server.dir\\authentication\\AuthManager.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\authentication\\AuthManager.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/authentication/AuthManager.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Server.dir/authentication/AuthManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -g -std=gnu++20 -o CMakeFiles\\Client.dir\\client\\main.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\client\\main.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/client/main.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Client.dir/client/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat -g -std=gnu++20 -o CMakeFiles\\Client.dir\\client\\Client.cpp.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\client\\Client.cpp",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/client/Client.cpp",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/CMakeFiles/Client.dir/client/Client.cpp.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_base_cpu_detect.dir\\internal\\cpu_detect.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\cpu_detect.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/cpu_detect.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_base_cpu_detect.dir/internal/cpu_detect.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_hardening.dir\\internal\\hardening.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\hardening.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/hardening.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_hardening.dir/internal/hardening.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_log_severity.dir\\log_severity.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\log_severity.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/log_severity.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_log_severity.dir/log_severity.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_raw_logging_internal.dir\\internal\\raw_logging.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\raw_logging.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/raw_logging.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_raw_logging_internal.dir/internal/raw_logging.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_spinlock_wait.dir\\internal\\spinlock_wait.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\spinlock_wait.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/spinlock_wait.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_spinlock_wait.dir/internal/spinlock_wait.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_malloc_internal.dir\\internal\\low_level_alloc.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\low_level_alloc.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/low_level_alloc.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_malloc_internal.dir/internal/low_level_alloc.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_base.dir\\casts.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\casts.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/casts.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_base.dir/casts.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_base.dir\\internal\\cycleclock.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\cycleclock.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/cycleclock.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_base.dir/internal/cycleclock.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_base.dir\\internal\\spinlock.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\spinlock.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/spinlock.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_base.dir/internal/spinlock.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_base.dir\\internal\\sysinfo.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\sysinfo.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/sysinfo.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_base.dir/internal/sysinfo.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_base.dir\\internal\\thread_identity.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\thread_identity.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/thread_identity.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_base.dir/internal/thread_identity.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_base.dir\\internal\\unscaledcycleclock.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\unscaledcycleclock.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/unscaledcycleclock.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_base.dir/internal/unscaledcycleclock.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_throw_delegate.dir\\throw_delegate.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\throw_delegate.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/throw_delegate.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_throw_delegate.dir/throw_delegate.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_scoped_set_env.dir\\internal\\scoped_set_env.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\scoped_set_env.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/scoped_set_env.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_scoped_set_env.dir/internal/scoped_set_env.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_strerror.dir\\internal\\strerror.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\strerror.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/strerror.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_strerror.dir/internal/strerror.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_poison.dir\\internal\\poison.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\poison.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/poison.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_poison.dir/internal/poison.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\base\\CMakeFiles\\absl_tracing_internal.dir\\internal\\tracing.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\base\\internal\\tracing.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/base/internal/tracing.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/base/CMakeFiles/absl_tracing_internal.dir/internal/tracing.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\container\\CMakeFiles\\absl_hashtablez_sampler.dir\\internal\\hashtablez_sampler.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\container\\internal\\hashtablez_sampler.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/container/internal/hashtablez_sampler.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/container/CMakeFiles/absl_hashtablez_sampler.dir/internal/hashtablez_sampler.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\container\\CMakeFiles\\absl_hashtablez_sampler.dir\\internal\\hashtablez_sampler_force_weak_definition.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\container\\internal\\hashtablez_sampler_force_weak_definition.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/container/internal/hashtablez_sampler_force_weak_definition.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/container/CMakeFiles/absl_hashtablez_sampler.dir/internal/hashtablez_sampler_force_weak_definition.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\container\\CMakeFiles\\absl_raw_hash_set.dir\\internal\\raw_hash_set.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\container\\internal\\raw_hash_set.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/container/internal/raw_hash_set.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/container/CMakeFiles/absl_raw_hash_set.dir/internal/raw_hash_set.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\crc\\CMakeFiles\\absl_crc_internal.dir\\internal\\crc.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\crc\\internal\\crc.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/crc/internal/crc.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/crc/CMakeFiles/absl_crc_internal.dir/internal/crc.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\crc\\CMakeFiles\\absl_crc_internal.dir\\internal\\crc_x86_arm_combined.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\crc\\internal\\crc_x86_arm_combined.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/crc/internal/crc_x86_arm_combined.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/crc/CMakeFiles/absl_crc_internal.dir/internal/crc_x86_arm_combined.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\crc\\CMakeFiles\\absl_crc32c.dir\\crc32c.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\crc\\crc32c.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/crc/crc32c.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/crc/CMakeFiles/absl_crc32c.dir/crc32c.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\crc\\CMakeFiles\\absl_crc32c.dir\\internal\\crc_memcpy_fallback.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\crc\\internal\\crc_memcpy_fallback.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/crc/internal/crc_memcpy_fallback.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/crc/CMakeFiles/absl_crc32c.dir/internal/crc_memcpy_fallback.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\crc\\CMakeFiles\\absl_crc32c.dir\\internal\\crc_memcpy_x86_arm_combined.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\crc\\internal\\crc_memcpy_x86_arm_combined.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/crc/CMakeFiles/absl_crc32c.dir/internal/crc_memcpy_x86_arm_combined.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\crc\\CMakeFiles\\absl_crc32c.dir\\internal\\crc_non_temporal_memcpy.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\crc\\internal\\crc_non_temporal_memcpy.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/crc/internal/crc_non_temporal_memcpy.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/crc/CMakeFiles/absl_crc32c.dir/internal/crc_non_temporal_memcpy.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\crc\\CMakeFiles\\absl_crc_cord_state.dir\\internal\\crc_cord_state.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\crc\\internal\\crc_cord_state.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/crc/internal/crc_cord_state.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/crc/CMakeFiles/absl_crc_cord_state.dir/internal/crc_cord_state.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_stacktrace.dir\\stacktrace.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\stacktrace.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/stacktrace.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_stacktrace.dir/stacktrace.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_symbolize.dir\\symbolize.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\symbolize.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/symbolize.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_symbolize.dir/symbolize.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_examine_stack.dir\\internal\\examine_stack.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\examine_stack.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/examine_stack.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_examine_stack.dir/internal/examine_stack.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_failure_signal_handler.dir\\failure_signal_handler.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\failure_signal_handler.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/failure_signal_handler.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_failure_signal_handler.dir/failure_signal_handler.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_debugging_internal.dir\\internal\\address_is_readable.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\address_is_readable.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/address_is_readable.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_debugging_internal.dir/internal/address_is_readable.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_debugging_internal.dir\\internal\\elf_mem_image.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\elf_mem_image.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/elf_mem_image.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_debugging_internal.dir/internal/elf_mem_image.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_debugging_internal.dir\\internal\\vdso_support.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\vdso_support.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/vdso_support.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_debugging_internal.dir/internal/vdso_support.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_demangle_internal.dir\\internal\\demangle.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\demangle.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/demangle.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_demangle_internal.dir/internal/demangle.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_decode_rust_punycode.dir\\internal\\decode_rust_punycode.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\decode_rust_punycode.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/decode_rust_punycode.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_decode_rust_punycode.dir/internal/decode_rust_punycode.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_demangle_rust.dir\\internal\\demangle_rust.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\demangle_rust.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/demangle_rust.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_demangle_rust.dir/internal/demangle_rust.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_utf8_for_code_point.dir\\internal\\utf8_for_code_point.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\internal\\utf8_for_code_point.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/internal/utf8_for_code_point.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_utf8_for_code_point.dir/internal/utf8_for_code_point.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\debugging\\CMakeFiles\\absl_leak_check.dir\\leak_check.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\debugging\\leak_check.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/debugging/leak_check.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/debugging/CMakeFiles/absl_leak_check.dir/leak_check.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_program_name.dir\\internal\\program_name.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\internal\\program_name.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/internal/program_name.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_program_name.dir/internal/program_name.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_config.dir\\usage_config.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\usage_config.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/usage_config.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_config.dir/usage_config.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_marshalling.dir\\marshalling.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\marshalling.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/marshalling.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_marshalling.dir/marshalling.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_commandlineflag_internal.dir\\internal\\commandlineflag.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\internal\\commandlineflag.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/internal/commandlineflag.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_commandlineflag_internal.dir/internal/commandlineflag.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_commandlineflag.dir\\commandlineflag.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\commandlineflag.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/commandlineflag.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_commandlineflag.dir/commandlineflag.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_private_handle_accessor.dir\\internal\\private_handle_accessor.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\internal\\private_handle_accessor.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/internal/private_handle_accessor.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_private_handle_accessor.dir/internal/private_handle_accessor.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_reflection.dir\\reflection.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\reflection.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/reflection.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_reflection.dir/reflection.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_internal.dir\\internal\\flag.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\internal\\flag.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/internal/flag.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_internal.dir/internal/flag.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_usage_internal.dir\\internal\\usage.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\internal\\usage.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/internal/usage.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_usage_internal.dir/internal/usage.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_usage.dir\\usage.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\usage.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/usage.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_usage.dir/usage.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\flags\\CMakeFiles\\absl_flags_parse.dir\\parse.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\flags\\parse.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/flags/parse.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/flags/CMakeFiles/absl_flags_parse.dir/parse.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\hash\\CMakeFiles\\absl_hash.dir\\internal\\hash.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\hash\\internal\\hash.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/hash/internal/hash.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/hash/CMakeFiles/absl_hash.dir/internal/hash.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\hash\\CMakeFiles\\absl_city.dir\\internal\\city.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\hash\\internal\\city.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/hash/internal/city.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/hash/CMakeFiles/absl_city.dir/internal/city.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_check_op.dir\\internal\\check_op.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\check_op.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/check_op.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_check_op.dir/internal/check_op.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_conditions.dir\\internal\\conditions.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\conditions.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/conditions.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_conditions.dir/internal/conditions.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_format.dir\\internal\\log_format.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\log_format.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/log_format.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_format.dir/internal/log_format.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_globals.dir\\internal\\globals.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\globals.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/globals.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_globals.dir/internal/globals.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_proto.dir\\internal\\proto.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\proto.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/proto.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_proto.dir/internal/proto.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_message.dir\\internal\\log_message.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\log_message.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/log_message.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_message.dir/internal/log_message.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_log_sink_set.dir\\internal\\log_sink_set.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\log_sink_set.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/log_sink_set.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_log_sink_set.dir/internal/log_sink_set.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_nullguard.dir\\internal\\nullguard.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\nullguard.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/nullguard.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_nullguard.dir/internal/nullguard.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_die_if_null.dir\\die_if_null.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\die_if_null.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/die_if_null.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_die_if_null.dir/die_if_null.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_flags.dir\\flags.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\flags.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/flags.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_flags.dir/flags.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_globals.dir\\globals.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\globals.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/globals.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_globals.dir/globals.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_initialize.dir\\initialize.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\initialize.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/initialize.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_initialize.dir/initialize.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_entry.dir\\log_entry.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\log_entry.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/log_entry.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_entry.dir/log_entry.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_sink.dir\\log_sink.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\log_sink.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/log_sink.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_sink.dir/log_sink.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_structured_proto.dir\\internal\\structured_proto.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\structured_proto.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/structured_proto.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_structured_proto.dir/internal/structured_proto.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_vlog_config_internal.dir\\internal\\vlog_config.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\vlog_config.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/vlog_config.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_vlog_config_internal.dir/internal/vlog_config.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\log\\CMakeFiles\\absl_log_internal_fnmatch.dir\\internal\\fnmatch.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\log\\internal\\fnmatch.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/log/internal/fnmatch.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/log/CMakeFiles/absl_log_internal_fnmatch.dir/internal/fnmatch.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\numeric\\CMakeFiles\\absl_int128.dir\\int128.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\numeric\\int128.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/numeric/int128.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/numeric/CMakeFiles/absl_int128.dir/int128.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\profiling\\CMakeFiles\\absl_exponential_biased.dir\\internal\\exponential_biased.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\profiling\\internal\\exponential_biased.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/profiling/internal/exponential_biased.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/profiling/CMakeFiles/absl_exponential_biased.dir/internal/exponential_biased.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\profiling\\CMakeFiles\\absl_periodic_sampler.dir\\internal\\periodic_sampler.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\profiling\\internal\\periodic_sampler.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/profiling/internal/periodic_sampler.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/profiling/CMakeFiles/absl_periodic_sampler.dir/internal/periodic_sampler.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\profiling\\CMakeFiles\\absl_profile_builder.dir\\internal\\profile_builder.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\profiling\\internal\\profile_builder.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/profiling/internal/profile_builder.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/profiling/CMakeFiles/absl_profile_builder.dir/internal/profile_builder.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\profiling\\CMakeFiles\\absl_hashtable_profiler.dir\\hashtable.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\profiling\\hashtable.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/profiling/hashtable.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/profiling/CMakeFiles/absl_hashtable_profiler.dir/hashtable.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_distributions.dir\\discrete_distribution.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\discrete_distribution.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/discrete_distribution.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_distributions.dir/discrete_distribution.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_distributions.dir\\gaussian_distribution.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\gaussian_distribution.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/gaussian_distribution.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_distributions.dir/gaussian_distribution.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_seed_gen_exception.dir\\seed_gen_exception.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\seed_gen_exception.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/seed_gen_exception.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_seed_gen_exception.dir/seed_gen_exception.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_seed_sequences.dir\\seed_sequences.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\seed_sequences.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/seed_sequences.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_seed_sequences.dir/seed_sequences.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_seed_material.dir\\internal\\seed_material.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\seed_material.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/seed_material.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_seed_material.dir/internal/seed_material.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_entropy_pool.dir\\internal\\entropy_pool.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\entropy_pool.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/entropy_pool.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_entropy_pool.dir/internal/entropy_pool.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_platform.dir\\internal\\randen_round_keys.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\randen_round_keys.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/randen_round_keys.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_platform.dir/internal/randen_round_keys.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_randen.dir\\internal\\randen.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\randen.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/randen.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_randen.dir/internal/randen.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_randen_slow.dir\\internal\\randen_slow.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\randen_slow.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/randen_slow.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_randen_slow.dir/internal/randen_slow.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_randen_hwaes.dir\\internal\\randen_detect.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\randen_detect.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/randen_detect.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_randen_hwaes.dir/internal/randen_detect.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_randen_hwaes_impl.dir\\internal\\randen_hwaes.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\randen_hwaes.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/randen_hwaes.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_randen_hwaes_impl.dir/internal/randen_hwaes.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_distribution_test_util.dir\\internal\\chi_square.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\chi_square.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/chi_square.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_distribution_test_util.dir/internal/chi_square.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\random\\CMakeFiles\\absl_random_internal_distribution_test_util.dir\\internal\\distribution_test_util.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\random\\internal\\distribution_test_util.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/random/internal/distribution_test_util.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/random/CMakeFiles/absl_random_internal_distribution_test_util.dir/internal/distribution_test_util.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\status\\CMakeFiles\\absl_status.dir\\internal\\status_internal.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\status\\internal\\status_internal.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/status/internal/status_internal.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/status/CMakeFiles/absl_status.dir/internal/status_internal.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\status\\CMakeFiles\\absl_status.dir\\status.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\status\\status.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/status/status.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/status/CMakeFiles/absl_status.dir/status.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\status\\CMakeFiles\\absl_status.dir\\status_payload_printer.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\status\\status_payload_printer.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/status/status_payload_printer.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/status/CMakeFiles/absl_status.dir/status_payload_printer.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\status\\CMakeFiles\\absl_statusor.dir\\statusor.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\status\\statusor.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/status/statusor.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/status/CMakeFiles/absl_statusor.dir/statusor.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\status\\CMakeFiles\\absl_status_builder.dir\\status_builder.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\status\\status_builder.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/status/status_builder.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/status/CMakeFiles/absl_status_builder.dir/status_builder.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\ascii.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\ascii.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/ascii.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/ascii.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\charconv.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\charconv.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/charconv.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/charconv.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\escaping.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\escaping.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/escaping.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/escaping.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\internal\\charconv_bigint.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\charconv_bigint.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/charconv_bigint.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/internal/charconv_bigint.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\internal\\charconv_parse.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\charconv_parse.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/charconv_parse.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/internal/charconv_parse.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\internal\\damerau_levenshtein_distance.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\damerau_levenshtein_distance.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/damerau_levenshtein_distance.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/internal/damerau_levenshtein_distance.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\internal\\memutil.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\memutil.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/memutil.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/internal/memutil.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\internal\\stringify_sink.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\stringify_sink.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/stringify_sink.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/internal/stringify_sink.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\match.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\match.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/match.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/match.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\numbers.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\numbers.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/numbers.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/numbers.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\str_cat.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\str_cat.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/str_cat.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/str_cat.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\str_replace.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\str_replace.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/str_replace.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/str_replace.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\str_split.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\str_split.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/str_split.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/str_split.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings.dir\\substitute.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\substitute.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/substitute.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings.dir/substitute.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings_internal.dir\\internal\\ostringstream.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\ostringstream.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/ostringstream.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings_internal.dir/internal/ostringstream.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings_internal.dir\\internal\\utf8.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\utf8.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/utf8.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings_internal.dir/internal/utf8.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_strings_internal.dir\\internal\\escaping.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\escaping.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/escaping.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_strings_internal.dir/internal/escaping.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_str_format_internal.dir\\internal\\str_format\\arg.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\str_format\\arg.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/str_format/arg.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_str_format_internal.dir/internal/str_format/arg.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_str_format_internal.dir\\internal\\str_format\\bind.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\str_format\\bind.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/str_format/bind.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_str_format_internal.dir/internal/str_format/bind.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_str_format_internal.dir\\internal\\str_format\\extension.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\str_format\\extension.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/str_format/extension.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_str_format_internal.dir/internal/str_format/extension.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_str_format_internal.dir\\internal\\str_format\\float_conversion.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\str_format\\float_conversion.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/str_format/float_conversion.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_str_format_internal.dir/internal/str_format/float_conversion.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_str_format_internal.dir\\internal\\str_format\\output.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\str_format\\output.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/str_format/output.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_str_format_internal.dir/internal/str_format/output.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_str_format_internal.dir\\internal\\str_format\\parser.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\str_format\\parser.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/str_format/parser.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_str_format_internal.dir/internal/str_format/parser.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord_internal.dir\\internal\\cord_internal.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cord_internal.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cord_internal.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord_internal.dir/internal/cord_internal.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord_internal.dir\\internal\\cord_rep_btree.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cord_rep_btree.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cord_rep_btree.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord_internal.dir/internal/cord_rep_btree.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord_internal.dir\\internal\\cord_rep_btree_navigator.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cord_rep_btree_navigator.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cord_rep_btree_navigator.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord_internal.dir/internal/cord_rep_btree_navigator.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord_internal.dir\\internal\\cord_rep_btree_reader.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cord_rep_btree_reader.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cord_rep_btree_reader.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord_internal.dir/internal/cord_rep_btree_reader.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord_internal.dir\\internal\\cord_rep_crc.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cord_rep_crc.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cord_rep_crc.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord_internal.dir/internal/cord_rep_crc.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord_internal.dir\\internal\\cord_rep_consume.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cord_rep_consume.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cord_rep_consume.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord_internal.dir/internal/cord_rep_consume.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cordz_functions.dir\\internal\\cordz_functions.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cordz_functions.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cordz_functions.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cordz_functions.dir/internal/cordz_functions.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cordz_handle.dir\\internal\\cordz_handle.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cordz_handle.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cordz_handle.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cordz_handle.dir/internal/cordz_handle.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cordz_info.dir\\internal\\cordz_info.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cordz_info.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cordz_info.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cordz_info.dir/internal/cordz_info.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cordz_sample_token.dir\\internal\\cordz_sample_token.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\cordz_sample_token.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/cordz_sample_token.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cordz_sample_token.dir/internal/cordz_sample_token.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord.dir\\cord.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\cord.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/cord.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord.dir/cord.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_cord.dir\\cord_analysis.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\cord_analysis.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/cord_analysis.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_cord.dir/cord_analysis.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\strings\\CMakeFiles\\absl_generic_printer_internal.dir\\internal\\generic_printer.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\strings\\internal\\generic_printer.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/strings/internal/generic_printer.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/strings/CMakeFiles/absl_generic_printer_internal.dir/internal/generic_printer.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_graphcycles_internal.dir\\internal\\graphcycles.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\graphcycles.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/graphcycles.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_graphcycles_internal.dir/internal/graphcycles.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_kernel_timeout_internal.dir\\internal\\kernel_timeout.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\kernel_timeout.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/kernel_timeout.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_kernel_timeout_internal.dir/internal/kernel_timeout.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\barrier.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\barrier.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/barrier.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/barrier.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\blocking_counter.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\blocking_counter.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/blocking_counter.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/blocking_counter.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\create_thread_identity.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\create_thread_identity.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/create_thread_identity.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/create_thread_identity.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\futex_waiter.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\futex_waiter.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/futex_waiter.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/futex_waiter.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\per_thread_sem.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\per_thread_sem.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/per_thread_sem.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/per_thread_sem.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\pthread_waiter.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\pthread_waiter.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/pthread_waiter.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/pthread_waiter.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\sem_waiter.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\sem_waiter.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/sem_waiter.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/sem_waiter.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\stdcpp_waiter.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\stdcpp_waiter.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/stdcpp_waiter.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/stdcpp_waiter.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\waiter_base.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\waiter_base.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/waiter_base.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/waiter_base.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\internal\\win32_waiter.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\internal\\win32_waiter.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/internal/win32_waiter.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/internal/win32_waiter.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\notification.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\notification.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/notification.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/notification.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\synchronization\\CMakeFiles\\absl_synchronization.dir\\mutex.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\synchronization\\mutex.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/synchronization/mutex.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/synchronization/CMakeFiles/absl_synchronization.dir/mutex.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time.dir\\civil_time.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\civil_time.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/civil_time.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time.dir/civil_time.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time.dir\\clock.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\clock.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/clock.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time.dir/clock.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time.dir\\duration.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\duration.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/duration.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time.dir/duration.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time.dir\\format.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\format.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/format.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time.dir/format.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time.dir\\time.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\time.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/time.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time.dir/time.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_civil_time.dir\\internal\\cctz\\src\\civil_time_detail.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\civil_time_detail.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/civil_time_detail.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_civil_time.dir/internal/cctz/src/civil_time_detail.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_fixed.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_fixed.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_fixed.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_fixed.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_format.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_format.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_format.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_format.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_if.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_if.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_if.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_if.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_impl.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_impl.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_impl.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_impl.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_info.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_info.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_info.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_info.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_libc.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_libc.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_libc.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_libc.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_lookup.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_lookup.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_lookup.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_lookup.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_posix.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_posix.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_posix.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_posix.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\zone_info_source.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\zone_info_source.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/zone_info_source.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/zone_info_source.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_time_zone.dir\\internal\\cctz\\src\\time_zone_name_win.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\internal\\cctz\\src\\time_zone_name_win.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/internal/cctz/src/time_zone_name_win.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_time_zone.dir/internal/cctz/src/time_zone_name_win.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\time\\CMakeFiles\\absl_clock_interface.dir\\clock_interface.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\time\\clock_interface.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/time/clock_interface.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/time/CMakeFiles/absl_clock_interface.dir/clock_interface.cc.obj"
+},
+{
+  "directory": "C:/Users/pande/OneDrive/Desktop/chat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -IC:/Users/pande/OneDrive/Desktop/chat/abseil-cpp -g -std=gnu++20 -Wall -Wextra -Wcast-qual -Wconversion-null -Wformat-security -Wmissing-declarations -Wnon-virtual-dtor -Woverlength-strings -Wpointer-arith -Wundef -Wunused-local-typedefs -Wunused-result -Wvarargs -Wvla -Wwrite-strings -DNOMINMAX -o abseil-cpp\\absl\\types\\CMakeFiles\\absl_source_location.dir\\source_location.cc.obj -c C:\\Users\\pande\\OneDrive\\Desktop\\chat\\abseil-cpp\\absl\\types\\source_location.cc",
+  "file": "C:/Users/pande/OneDrive/Desktop/chat/abseil-cpp/absl/types/source_location.cc",
+  "output": "C:/Users/pande/OneDrive/Desktop/chat/build/abseil-cpp/absl/types/CMakeFiles/absl_source_location.dir/source_location.cc.obj"
+}
+]

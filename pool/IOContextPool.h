@@ -33,7 +33,7 @@ IOContextPool::~IOContextPool()
 {
 }
 
- PER_IO_OPERATION_DATA* IOContextPool::borrowIOPdata(){
+ inline PER_IO_OPERATION_DATA* IOContextPool::borrowIOPdata(){
 std::optional<size_t> id;
      id=freeIndices.pop();
      if(!id.has_value()) return nullptr;
@@ -52,12 +52,12 @@ std::optional<size_t> id;
     return &(pool[idx]);
 
 }
-void IOContextPool::returnIOPdata(PER_IO_OPERATION_DATA* pio){
+inline void IOContextPool::returnIOPdata(PER_IO_OPERATION_DATA* pio){
 
 if(pio==nullptr)return;
 size_t idx=pio->id;
 if(idx>=maxSize)return;
-memset(pio->data,0,16384);
+//memset(pio->data,0,16384);
 pio->packet=nullptr;
 pio->totalToSend=0;
 pio->bytesSent=0;
@@ -66,6 +66,6 @@ currentPacketUse--;
 return ;
 
 }
-int IOContextPool::returnPeak(){
+inline int IOContextPool::returnPeak(){
   return peak;
 }

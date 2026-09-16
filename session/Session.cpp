@@ -54,7 +54,7 @@ Session& Session::operator=(Session&& other) noexcept
 void Session::close()
 {
     if (socket != INVALID_SOCKET) {
-        closesocket(socket);
+      //  closesocket(socket);
         socket = INVALID_SOCKET;
     }
     

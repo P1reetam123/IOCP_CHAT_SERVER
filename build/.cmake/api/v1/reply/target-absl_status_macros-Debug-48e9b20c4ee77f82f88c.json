@@ -1,0 +1,102 @@
+{
+	"abstract" : true,
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"absl_cc_library",
+			"target_link_libraries"
+		],
+		"files" : 
+		[
+			"abseil-cpp/CMake/AbseilHelpers.cmake",
+			"abseil-cpp/absl/status/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 164,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 321,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 337,
+				"parent" : 1
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"id" : "absl_status_macros::@87803965b4bca9d8e792",
+	"interfaceCompileDependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "absl_core_headers::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_source_location::@019a197c0fd06ca84799"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_status::@87803965b4bca9d8e792"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_status_builder::@87803965b4bca9d8e792"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_statusor::@87803965b4bca9d8e792"
+		}
+	],
+	"interfaceLinkLibraries" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "absl_core_headers::@75832566c74ae67f1846"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_source_location::@019a197c0fd06ca84799"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_status::@87803965b4bca9d8e792"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_status_builder::@87803965b4bca9d8e792"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "absl_statusor::@87803965b4bca9d8e792"
+		}
+	],
+	"name" : "absl_status_macros",
+	"paths" : 
+	{
+		"build" : "abseil-cpp/absl/status",
+		"source" : "abseil-cpp/absl/status"
+	},
+	"sources" : [],
+	"type" : "INTERFACE_LIBRARY"
+}

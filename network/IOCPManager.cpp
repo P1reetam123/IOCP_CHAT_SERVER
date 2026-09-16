@@ -7,6 +7,7 @@
 #include "../utils/Logger.h"
 #include <ws2tcpip.h>
 #include <cstring>
+#include <memory>
 #include <unordered_map>
 #include "./protocol/Packet.h"
 #include "./pool/PacketPool.h"
@@ -16,11 +17,13 @@
 IOContextPool pio;
 struct ConnectionBuffer
 {
-   CircularBuffer buffer;
+    CircularBuffer buffer;
+    std::mutex bufMtx;                    // per-buffer lock
+    std::atomic<bool> disconnected{false}; // poison flag
+   
 };
 
-
-std::unordered_map<SOCKET, ConnectionBuffer> socketBuffers;
+std::unordered_map<SOCKET, std::shared_ptr<ConnectionBuffer>> socketBuffers;
 std::mutex IOCPManager::socketBuffersMutex;
 
 IOCPManager::IOCPManager()
@@ -139,7 +142,7 @@ void IOCPManager::acceptLoop()
         // Session userId will be set when client sends LOGIN packet
         {
             std::lock_guard<std::mutex> lock(IOCPManager::socketBuffersMutex);
-            socketBuffers[clientSocket] = ConnectionBuffer();
+            socketBuffers[clientSocket] = std::make_shared<ConnectionBuffer>();
         }
 
         Logger::info("New connection accepted (socket: " + std::to_string(clientSocket) + ")");
@@ -148,7 +151,7 @@ void IOCPManager::acceptLoop()
         if (!postRecv(clientSocket))
         {
             Logger::warn("Failed to post initial recv on new connection");
-            // PacketPool::Instance().returnPacket(p);
+            handleDisconnect(clientSocket);
         }
     }
 }
@@ -173,18 +176,21 @@ void IOCPManager::workerThread()
         SOCKET clientSocket = (SOCKET)completionKey;
         PER_IO_OPERATION_DATA *pData = (PER_IO_OPERATION_DATA *)lpOverlapped;
         // socket closed during receving
-        if ((!success || bytesTransferred == 0))
+        if (!success || (bytesTransferred == 0 && pData->operationType != 2))
         {
             // Connection closed or error
-            //  If this was a pending send, recover the in-flight packet, note no need to recover packet as it is already habdled means it is not thrown from the queue 
+            //  If this was a pending send, recover the in-flight packet, note no need to recover packet as it is already habdled means it is not thrown from the queue
             if (pData->operationType == 0 && pData->packet)
             {
                 pData->packet->isSending = false;
                 pData->packet->isSentFail = true;
-                if (!pData->packet->bypassQueue) {
+                if (!pData->packet->bypassQueue)
+                {
                     std::string recvId = sessionManager->getUserIdBySocket(clientSocket);
                     offlineManager->ManageCompletePacket(pData->packet, recvId);
-                } else {
+                }
+                else
+                {
                     PacketPool::Instance().returnPacket(pData->packet);
                 }
             }
@@ -193,166 +199,191 @@ void IOCPManager::workerThread()
             continue;
         }
 
-        if (pData->operationType == 1)
-        { // recv
+        if (pData->operationType == 2)
+        { // zero-byte recv notification
+            pio.returnIOPdata(pData);
 
-            // Add received data to buffer
+            bool shouldDisconnect = false;
+            std::vector<Packet *> localQueue;
+            localQueue.reserve(8);
+
+            // Step 1: Short global lock — just grab a shared_ptr copy
+            std::shared_ptr<ConnectionBuffer> connBuf;
             {
                 std::lock_guard<std::mutex> lock(IOCPManager::socketBuffersMutex);
                 auto it = socketBuffers.find(clientSocket);
-                if (it == socketBuffers.end())
+                if (it != socketBuffers.end())
                 {
-                    pio.returnIOPdata(pData);
-                    handleDisconnect(clientSocket);
-                    continue;
-                }
-                // this is slow create a circular buffer data structure
-                auto &recvBuffer = it->second.buffer;
-                // extracting the data from kernel memory 
-                // while(true){
-                //             WSABUF buff;
-                //             buff.buf= &recvBuffer[6];
-                //     DWORD bytes =0 , flag =0;
-                //     int result = WSARecv(clientSocket,)
-
-                // }
-                  
-                bool inserted=recvBuffer.insert(bytesTransferred, pData->data);
-                if(!inserted){// failed to insert the bytes received
-
+                    connBuf = it->second; // refcount++ keeps buffer alive
                 }
             }
-            pio.returnIOPdata(pData);
-            postRecv(clientSocket);
+            // Global lock released — other sockets are unblocked
 
-            // Process packets from buffer
-            while (true)
+            if (!connBuf)
             {
-                Packet *p = nullptr;
+                shouldDisconnect = true;
+            }
+            else
+            {
+                // Step 2: Per-buffer lock — only blocks THIS socket's operations
+                std::lock_guard<std::mutex> bufLock(connBuf->bufMtx);
 
-                // Safely extract packet from buffer
+                if (connBuf->disconnected.load(std::memory_order_acquire))
                 {
-                    std::lock_guard<std::mutex> lock(IOCPManager::socketBuffersMutex);
-                    auto it = socketBuffers.find(clientSocket);
-                    if (it == socketBuffers.end())
-                    {
-                        // Socket already cleaned up — stop parsing.
-                        // Note: pData was already deleted before this loop,
-                        // so we  do NOT delete it again here.
-                        break;
-                    }
-
-                    auto &recvBuffer = it->second.buffer;
-
-                    // Need at least header
-                    if (recvBuffer.size() < HEADER_SIZE)
-                        break;
-                    size_t hdr_size= sizeof(PacketHeader);
-                   
-                    PacketHeader hdr ;//= reinterpret_cast<PacketHeader*>(recvBuffer.data());
-                     recvBuffer.copy(reinterpret_cast<uint8_t*>(&hdr) , hdr_size);
-                    if (hdr.magic != START_BYTE) {
-                        Logger::warn("Invalid magic byte");
-                        handleDisconnect(clientSocket);
-                        break;
-                    }
-
-                    uint32_t payloadSize = ntohl(hdr.payload_length);
-                    uint32_t packetSize = HEADER_SIZE + payloadSize;
-
-                    if (packetSize < HEADER_SIZE) // Overflow check
-                    {
-                        Logger::warn("Invalid packet size");
-                        handleDisconnect(clientSocket);
-                        break;
-                    }
-
-                    // Full packet not yet received
-                    if (recvBuffer.size() < packetSize || packetSize>sizeof(Packet::data))
-                       {
-                           if (packetSize > sizeof(Packet::data)) {
-                               handleDisconnect(clientSocket);
-                           }
-                           break;
-                       }
-
-                    // Extract packet data directly into the packet
-                    p = PacketPool::Instance().borrowPacket();
-                    if (p == nullptr)
-                    {
-                        break; // Packet pool exhausted
-                    }
-
-                    recvBuffer.copy(reinterpret_cast<uint8_t*>(p->data), packetSize);
-                    p->in = p->data + packetSize;
-                    
-                    // Remove consumed packet bytes
-                    recvBuffer.erase(packetSize);
+                    shouldDisconnect = true;
                 }
+                else
+                {
+                    auto &recvBuffer = connBuf->buffer;
 
-                if (p == nullptr)
-                    break;
+                    WSABUF bufs[2];
+                    int bufferCount = recvBuffer.getWriteBuffers(bufs);
 
-             bool parsed=   p->parseHeader();
-             if(!parsed){
-                Logger::info("failed to parse the header\n");
-                break;
-             }
+                    if (bufferCount > 0)
+                    {
+                        DWORD bytesRead = 0, flags = 0;
 
-                // this is slow
+                        // Synchronous WSARecv — 0-byte notification guarantees data is available
+                        int result = WSARecv(clientSocket, bufs, bufferCount, &bytesRead, &flags, NULL, NULL);
+
+                        if (result != SOCKET_ERROR && bytesRead > 0)
+                        {
+                            recvBuffer.commitWrite(bytesRead);
+
+                            while (true)
+                            {
+                                if (recvBuffer.size() < HEADER_SIZE) break;
+
+                                PacketHeader hdr;
+                                recvBuffer.copy(reinterpret_cast<uint8_t *>(&hdr), sizeof(PacketHeader));
+
+                                if (hdr.magic != START_BYTE || hdr.version != CURRENT_VERSION)
+                                {
+                                    Logger::warn("Invalid magic byte");
+                                    shouldDisconnect = true;
+                                    break;
+                                }
+
+                                uint32_t payloadSize = ntohl(hdr.payload_length);
+                                uint32_t packetSize = HEADER_SIZE + payloadSize;
+
+                                if (packetSize < HEADER_SIZE)
+                                {
+                                    Logger::warn("Invalid packet size");
+                                    shouldDisconnect = true;
+                                    break;
+                                }
+
+                                if (packetSize > sizeof(Packet::data))
+                                {
+                                    Logger::warn("Packet too large");
+                                    shouldDisconnect = true;
+                                    break;
+                                }
+
+                                if (recvBuffer.size() < packetSize)
+                                {
+                                    break; // Incomplete packet, wait for more data
+                                }
+
+                                Packet *p = PacketPool::Instance().borrowPacket();
+                                if (p == nullptr) break;
+
+                                recvBuffer.consume(reinterpret_cast<uint8_t *>(p->data), packetSize);
+                                p->in = p->data + packetSize;
+
+                                localQueue.push_back(p);
+                            }
+                        }
+                        else if (result == SOCKET_ERROR && WSAGetLastError() != WSAEWOULDBLOCK)
+                        {
+                            shouldDisconnect = true;
+                        }
+                        else if (result == 0 && bytesRead == 0)
+                        {
+                            // Graceful close
+                            shouldDisconnect = true;
+                        }
+                    }
+                }
+            } // Per-buffer lock released here
+
+            // Dispatch packets completely lock-free
+            if (!localQueue.empty())
+            {
                 Session *s = sessionManager->findBySocket(clientSocket);
-                  std::string tempId = std::to_string(static_cast<int>(clientSocket)) + "id";
+                std::string tempId = std::to_string(static_cast<uintptr_t>(clientSocket)) + "id";
 
                 if (!s)
                 {
-                    // means no session has been for this socket
                     s = SessionPool::Instance().borrowSession(clientSocket);
                     if (s)
                     {
                         s->iocp = this;
-                        // s->socket=clientSocket;
                         s->socket = clientSocket;
-                        s->userId = tempId; 
-                        sessionManager->addSession(tempId, s); // temp user id will be used here
+                        s->userId = tempId;
+                        sessionManager->addSession(tempId, s);
                     }
                 }
 
                 if (!s)
                 {
-                    PacketPool::Instance().returnPacket(p);
+                    for (Packet *p : localQueue) PacketPool::Instance().returnPacket(p);
                     Logger::warn("Failed to get or create session for socket");
-                    handleDisconnect(clientSocket);
-                    break;
+                    shouldDisconnect = true;
                 }
-                
-                bool handled =
-                    messageRouter->handlePacket(p, s);
-               
-                if (!handled)
+                else
                 {
-                    PacketPool::Instance().returnPacket(p);
-                    Logger::info("iocpmanager.cpp :  223");
+                    for (Packet *p : localQueue)
+                    {
+                        bool parsed = p->parseHeader();
+                        bool parsedData = p->parseData();
+                        if (!parsed||!parsedData)
+                        {
+                            Logger::info("failed to parse the header\n");
+                            PacketPool::Instance().returnPacket(p);
+                            continue;
+                        }
+
+                        bool handled = messageRouter->handlePacket(p, s);
+                        if (!handled)
+                        {
+                            PacketPool::Instance().returnPacket(p);
+                            Logger::info("iocpmanager.cpp : packet not handled");
+                        }
+                    }
                 }
             }
 
-            // cleanup_recv:
+            // All handleDisconnect calls are OUTSIDE both locks — no deadlock possible
+            if (shouldDisconnect)
+            {
+                handleDisconnect(clientSocket);
+            }
+            else
+            {
+                if (!postRecv(clientSocket)) {
+    handleDisconnect(clientSocket);
+}
+            }
         }
         else if (pData->operationType == 0)
         { // send
             Packet *sentPacket = pData->packet;
 
-            sentPacket->isSending = false;
-           // sentPacket->isSentFail = true;
+          
+            // sentPacket->isSentFail = true;
 
             if (sentPacket)
-            {
+            { 
+              
                 pData->bytesSent += bytesTransferred;
 
                 if (pData->bytesSent < pData->totalToSend)
                 {
                     // Partial send: re-post WSASend for remaining bytes
                     int remaining = pData->totalToSend - pData->bytesSent;
-                    pData->buffer.buf =reinterpret_cast<char*>( pData->data) + pData->bytesSent;
+                    pData->buffer.buf = reinterpret_cast<char *>(pData->packet->data) + pData->bytesSent;
                     pData->buffer.len = remaining;
 
                     DWORD sent = 0;
@@ -386,9 +417,11 @@ void IOCPManager::workerThread()
                     sentPacket->isSending = false;
                     sentPacket->isSent = true;
                     PacketPool::Instance().returnPacket(sentPacket);
-                     std::cout<<"packet sent succesfully to \n" << recvId;
+                    std::cout << "packet sent succesfully to \n"
+                              << recvId;
                     // drain next packet
-                    if (!bypassQ) {
+                    if (!bypassQ)
+                    {
                         offlineManager->drainNext(recvId, clientSocket);
                     }
                 }
@@ -405,9 +438,9 @@ bool IOCPManager::postRecv(SOCKET s)
     size_t savedId = pData->id;
     ZeroMemory(pData, sizeof(PER_IO_OPERATION_DATA));
     pData->id = savedId;
-    pData->buffer.buf =reinterpret_cast<char*>( pData->data);// NULL
-    pData->buffer.len = sizeof(pData->data); // 0 to telll the os not to lock memory from ram even if the socket is idle 
-    pData->operationType = 1; // recv
+    pData->buffer.buf = NULL; // NULL
+    pData->buffer.len = 0;    // 0 to telll the os not to lock memory from ram even if the socket is idle
+    pData->operationType = 2; // 2- zero byte wait
 
     DWORD recvd = 0, flags = 0;
     int result = WSARecv(s, &pData->buffer, 1, &recvd, &flags, &pData->overlapped, NULL);
@@ -434,14 +467,14 @@ bool IOCPManager::initiateSend(SOCKET s, Packet *p)
     // For a fully built packet, we just send header.size bytes from `data`
     p->isSending = true;
     p->isSentFail = false;
-    int toCopy = p->header.payload_length + HEADER_SIZE;
-    if (toCopy > static_cast<int>(sizeof(pData->data)))
-    {
-        toCopy = static_cast<int>(sizeof(pData->data)); // Safety clamp
-    }
+    uint32_t toCopy =  ntohl(*(uint32_t*)(p->data + 4)); + HEADER_SIZE;
+    // if (toCopy > static_cast<int>(sizeof(pData->data)))
+    // {
+    //     toCopy = static_cast<int>(sizeof(pData->data)); // Safety clamp
+    // }
 
-    std::memcpy(pData->data, p->data, toCopy);
-    pData->buffer.buf =reinterpret_cast<char*>( pData->data);
+   // std::memcpy(pData->data, p->data, toCopy);
+    pData->buffer.buf = reinterpret_cast<char *>(p->data);
     pData->buffer.len = toCopy;
     pData->operationType = 0; // send
 
@@ -500,9 +533,24 @@ void IOCPManager::handleDisconnect(SOCKET s)
     {
         Logger::info("Unknown socket disconnected: " + std::to_string(s));
     }
+
+    // Extract shared_ptr from map and poison the buffer.
+    // Any in-flight worker holding a shared_ptr copy will see the flag and bail out.
+    // The buffer is destroyed when the last shared_ptr goes out of scope.
+    std::shared_ptr<ConnectionBuffer> connBuf;
     {
         std::lock_guard<std::mutex> lock(IOCPManager::socketBuffersMutex);
-        socketBuffers.erase(s);
+        auto it = socketBuffers.find(s);
+        if (it != socketBuffers.end())
+        {
+            connBuf = std::move(it->second);
+            socketBuffers.erase(it);
+        }
+    }
+    if (connBuf)
+    {
+        std::lock_guard<std::mutex> lock(connBuf->bufMtx);
+        connBuf->disconnected.store(true, std::memory_order_release);
     }
 
     closesocket(s);
@@ -518,10 +566,22 @@ void IOCPManager::HandleDisconnectWithoutLock(SOCKET s)
         disconnectedSockets.insert(s);
     }
 
+    std::shared_ptr<ConnectionBuffer> connBuf;
     {
         std::lock_guard<std::mutex> lock(IOCPManager::socketBuffersMutex);
-        socketBuffers.erase(s);
+        auto it = socketBuffers.find(s);
+        if (it != socketBuffers.end())
+        {
+            connBuf = std::move(it->second);
+            socketBuffers.erase(it);
+        }
     }
+    if (connBuf)
+    {
+        std::lock_guard<std::mutex> lock(connBuf->bufMtx);
+        connBuf->disconnected.store(true, std::memory_order_release);
+    }
+
     closesocket(s);
 }
 void IOCPManager::shutdown()
